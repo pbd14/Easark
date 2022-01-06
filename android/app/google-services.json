@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "264308689519",
+    "project_id": "easarkuz",
+    "storage_bucket": "easarkuz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264308689519:android:68e8dfcbc8052849865b9a",
+        "android_client_info": {
+          "package_name": "com.easark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264308689519-43qak08adlfkjs7qlaf1vqhbd2n27bf8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.easark",
+            "certificate_hash": "191592fa6dee798988637a595c45758330267433"
+          }
+        },
+        {
+          "client_id": "264308689519-4nup6v32acjvac9osjsg2g0knivnc1q8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXDIzqGlIMCb04sVOw54amSQghjmH2AbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264308689519-4nup6v32acjvac9osjsg2g0knivnc1q8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
