@@ -48,7 +48,8 @@ dependencies:
   firebase_remote_config: ^1.0.3
   overlay_support: ^1.2.0
   shared_preferences: ^2.0.5
-  firebase_messaging: ^10.0.0
+  firebase_messaging: ^11.2.4
+  persistent_bottom_nav_bar: ^4.0.2
 
 dev_dependencies:
   flutter_test:

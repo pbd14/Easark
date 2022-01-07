@@ -1,46 +1,80 @@
+import 'package:easark/Screens/MapScreen/map_screen.dart';
+import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/constants.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   String error;
   HomeScreen({Key? key, this.error = 'Something Went Wrong'}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
+
+  List<Widget> _buildScreens() {
+    return [
+      MapScreen(),
+      ProfileScreen(),
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.map),
+        // title: ("Home"),
+        activeColorPrimary: lightDarkColor,
+        inactiveColorPrimary: darkDarkColor,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.person),
+        // title: ("Settings"),
+        activeColorPrimary: lightDarkColor,
+        inactiveColorPrimary: darkDarkColor,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: darkColor,
-        iconTheme: const IconThemeData(
-          color: primaryColor,
-        ),
-        title: Text(
-          'Error',
-          textScaleFactor: 1,
-          overflow: TextOverflow.ellipsis,
-          style: GoogleFonts.montserrat(
-            textStyle: const TextStyle(
-                color: whiteColor, fontSize: 20, fontWeight: FontWeight.w300),
-          ),
-        ),
-        centerTitle: true,
+    return PersistentTabView(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Colors.white, // Default is Colors.white.
+      handleAndroidBackButtonPress: true, // Default is true.
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+      stateManagement: true, // Default is true.
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+      decoration: NavBarDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        colorBehindNavBar: Colors.white,
       ),
-      backgroundColor: whiteColor,
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Center(
-          child: Text(
-            error,
-            style: GoogleFonts.montserrat(
-              textStyle: const TextStyle(
-                color: darkColor,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: const ItemAnimationProperties(
+        // Navigation Bar's items animation properties.
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
       ),
+      screenTransitionAnimation: const ScreenTransitionAnimation(
+        // Screen transition animation on change of selected tab.
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle: NavBarStyle.style12,
     );
   }
 }

@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return loading
         ? const LoadingScreen()
         : Scaffold(
-            backgroundColor: darkPrimaryColor,
+            backgroundColor: const Color.fromRGBO(247, 247, 247, 1.0),
             body: SingleChildScrollView(
               child: Column(
                 children: [
@@ -69,10 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: size.height * 0.2,
                   ),
                   Text(
-                    Languages.of(context)!.welcomeToFooty,
+                    Languages.of(context)!.welcomeToEasark,
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
-                        color: whiteColor,
+                        color: darkColor,
                         fontSize: 25,
                         fontWeight: FontWeight.w700,
                       ),
@@ -152,13 +152,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           clipBehavior: Clip.none,
                           children: [
                             Image.asset(
-                              'assets/images/nature1.jpg',
-                              height: 200,
+                              'assets/images/login1.png',
+                              height: 300,
                               width: size.width * 0.9,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitWidth,
                             ),
                             Positioned(
-                              top: 120,
+                              top: 200,
                               child: SizedBox(
                                 width: size.width * 0.8,
                                 child: Card(
@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         )
                       : Container(),
                   SizedBox(
-                    height: !codeSent ? 200 : 0,
+                    height: !codeSent ? 150 : 0,
                   ),
                   !codeSent
                       ? Stack(
@@ -222,13 +222,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           clipBehavior: Clip.none,
                           children: [
                             Image.asset(
-                              'assets/images/nature2.jpg',
+                              'assets/images/login2.png',
                               height: 200,
                               width: size.width * 0.9,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitWidth,
                             ),
                             Positioned(
-                              top: 120,
+                              top: 170,
                               child: SizedBox(
                                 width: size.width * 0.8,
                                 child: Card(
@@ -292,13 +292,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           clipBehavior: Clip.none,
                           children: [
                             Image.asset(
-                              'assets/images/nature3.jpg',
+                              'assets/images/login3.png',
                               height: 200,
                               width: size.width * 0.9,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitWidth,
                             ),
                             Positioned(
-                              top: 120,
+                              top: 165,
                               child: SizedBox(
                                 width: size.width * 0.8,
                                 child: Card(
@@ -358,8 +358,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Center(
                     child: SizedBox(
-                      width: size.width * 0.95,
+                      width: size.width * 0.9,
                       child: Card(
+                        elevation: 10,
                         margin: const EdgeInsets.all(10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -419,32 +420,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )
                                   : SizedBox(height: size.height * 0),
                               codeSent
-                                  ? TextFormField(
-                                      style:
-                                          const TextStyle(color: darkDarkColor),
-                                      validator: (val) =>
-                                          val!.isEmpty ? 'Enter a code' : null,
-                                      keyboardType: TextInputType.emailAddress,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          smsCode = val;
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        focusedBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: darkColor, width: 1.0),
+                                  ? SizedBox(
+                                    width: size.width * 0.7,
+                                    child: TextFormField(
+                                        style:
+                                            const TextStyle(color: darkDarkColor),
+                                        validator: (val) =>
+                                            val!.isEmpty ? 'Enter a code' : null,
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            smsCode = val;
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                          focusedBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: darkColor, width: 1.0),
+                                          ),
+                                          enabledBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: darkColor, width: 1.0),
+                                          ),
+                                          hintStyle: TextStyle(
+                                              color: darkColor.withOpacity(0.7)),
+                                          hintText: 'Code',
+                                          border: InputBorder.none,
                                         ),
-                                        enabledBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: darkColor, width: 1.0),
-                                        ),
-                                        hintStyle: TextStyle(
-                                            color: darkColor.withOpacity(0.7)),
-                                        hintText: 'Code',
-                                        border: InputBorder.none,
                                       ),
-                                    )
+                                  )
                                   : SizedBox(height: size.height * 0),
                               codeSent
                                   ? const SizedBox(height: 20)
@@ -498,7 +502,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 page: const LoginScreen()));
                                       },
                                       color: lightPrimaryColor,
-                                      textColor: darkPrimaryColor,
+                                      textColor: whiteColor,
                                     )
                                   : SizedBox(height: size.height * 0),
                               const SizedBox(

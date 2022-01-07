@@ -56,8 +56,8 @@ class AuthService {
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .set({
+        'id': FirebaseAuth.instance.currentUser?.uid,
         'status': 'default',
-        'cancellations_num': 0,
         'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
       });
       final pushNotificationService =

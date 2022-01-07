@@ -2,7 +2,7 @@ import 'languages.dart';
 
 class LanguageUz extends Languages {
   @override
-  String get welcomeToFooty => "HUSH KELIBSIZ";
+  String get welcomeToEasark => "HUSH KELIBSIZ";
   @override
   String get labelSelectLanguage => "O'zbek";
   @override

@@ -2,24 +2,24 @@ import 'languages.dart';
 
 class LanguageEn extends Languages {
   @override
-  String get welcomeToFooty => "WELCOME TO FOOTY";
+  String get welcomeToEasark => "WELCOME TO EASARK";
   @override
   String get labelSelectLanguage => "English";
   @override
-  String get loginScreen1head => "Online bookings";
+  String get loginScreen1head =>"Easy Parking";
   @override
   String get loginScreen1text =>
-      "Make bookings online without problems. No more need to contact administrators and have time-consuming talks";
+      "Find parking placed with a few clicks";
   @override
-  String get loginScreen2head => "2 minutes";
+  String get loginScreen2head => "Reservation";
   @override
   String get loginScreen2text =>
-      "You will need only 2 minutes to make booking anywhere";
+      "No rush. You can reserve your parking place, so no one will take it from you";
   @override
-  String get loginScreen3head => "Timetable";
+  String get loginScreen3head => "Profitable";
   @override
   String get loginScreen3text =>
-      "Convenient timetable that organizes your bookings and regulates them";
+      "You can share your own parking place with others";
   @override
   String get getStarted => "Get started";
   @override

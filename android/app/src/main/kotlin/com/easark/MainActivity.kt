@@ -1,4 +1,4 @@
-package com.easark.easark
+package com.easark
 
 import io.flutter.embedding.android.FlutterActivity
 
