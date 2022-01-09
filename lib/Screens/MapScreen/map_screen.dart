@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
+import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/point_object.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
@@ -26,12 +27,16 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   double pinPillPosition = -100;
+  double searchButtonPosition = -100;
+  double mapZoom = 15;
   bool loading = false;
-  final Set<Marker> _markers = HashSet<Marker>();
+  Set<Marker> _markers = HashSet<Marker>();
+  List<QueryDocumentSnapshot>? places;
   GoogleMapController? _mapController;
   // ignore: avoid_init_to_null
   static LatLng _initialPosition =
       const LatLng(41.36426966573496, 69.21005744487047);
+  LatLng? cameraPosition;
   BitmapDescriptor? pinLocationIcon;
   String currentPinInfo = 'Loading ...';
 
@@ -100,40 +105,7 @@ class _MapScreenState extends State<MapScreen> {
   void prepare() async {
     QuerySnapshot data =
         await FirebaseFirestore.instance.collection('parking_places').get();
-    final places = data.docs;
-    pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(devicePixelRatio: 3),
-      'assets/icons/marker.png',
-    );
-
-    setState(() {
-      for (QueryDocumentSnapshot place in places) {
-        _markers.add(
-          Marker(
-            markerId: MarkerId(place.id),
-            position: LatLng(place.get('lat'), place.get('lon')),
-            onTap: () async {
-              await _mapController?.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: LatLng(
-                      place.get('lat') - 0.0001,
-                      place.get('lon'),
-                    ),
-                    zoom: 15,
-                  ),
-                ),
-              );
-              setState(() {
-                currentPinInfo = place.get('ppm').toString() + ' ' + place.get('currency');
-                pinPillPosition = 100;
-              });
-            },
-            icon: pinLocationIcon!,
-          ),
-        );
-      }
-    });
+    places = data.docs;
   }
 
   @override
@@ -153,7 +125,7 @@ class _MapScreenState extends State<MapScreen> {
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                     target: _initialPosition,
-                    zoom: 15,
+                    zoom: mapZoom,
                   ),
                   markers: _markers,
                   onTap: (LatLng location) {
@@ -162,6 +134,128 @@ class _MapScreenState extends State<MapScreen> {
                       pinPillPosition = -100;
                     });
                   },
+                  onCameraMove: (position) {
+                    setState(() {
+                      searchButtonPosition = -100;
+                      cameraPosition = position.target;
+                    });
+                  },
+                  onCameraIdle: () {
+                    setState(() {
+                      searchButtonPosition = 50;
+                    });
+                  },
+                ),
+                AnimatedPositioned(
+                  top: searchButtonPosition,
+                  right: 0,
+                  left: 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(0),
+                          child: CupertinoButton(
+                            onPressed: () async {
+                              Set<Marker> middleMarkers = HashSet<Marker>();
+                              for (QueryDocumentSnapshot place in places!) {
+                                if (geolocator.Geolocator.distanceBetween(
+                                        cameraPosition!.latitude,
+                                        cameraPosition!.longitude,
+                                        place.get('lat'),
+                                        place.get('lon')) <=
+                                    2000) {
+                                  pinLocationIcon =
+                                      await BitmapDescriptor.fromAssetImage(
+                                    const ImageConfiguration(
+                                        devicePixelRatio: 3),
+                                    'assets/icons/marker.png',
+                                  );
+                                  middleMarkers.add(
+                                    Marker(
+                                      markerId: MarkerId(place.id),
+                                      position: LatLng(
+                                          place.get('lat'), place.get('lon')),
+                                      onTap: () async {
+                                        await _mapController?.animateCamera(
+                                          CameraUpdate.newCameraPosition(
+                                            CameraPosition(
+                                              target: LatLng(
+                                                place.get('lat') - 0.0001,
+                                                place.get('lon'),
+                                              ),
+                                              zoom: 15,
+                                            ),
+                                          ),
+                                        );
+                                        setState(() {
+                                          currentPinInfo =
+                                              place.get('ppm').toString() +
+                                                  ' ' +
+                                                  place.get('currency');
+                                          pinPillPosition = 100;
+                                        });
+                                      },
+                                      icon: pinLocationIcon!,
+                                    ),
+                                  );
+                                }
+                              }
+                              setState(() {
+                                _markers = {};
+                                _markers = middleMarkers;
+                                middleMarkers = {};
+                                _mapController?.animateCamera(
+                                  CameraUpdate.newCameraPosition(
+                                    CameraPosition(
+                                      target: LatLng(
+                                        cameraPosition!.latitude,
+                                        cameraPosition!.longitude,
+                                      ),
+                                      zoom: 13.5,
+                                    ),
+                                  ),
+                                );
+                                searchButtonPosition = -100;
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  Languages.of(context)!.mapScreenSearchHere,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: darkColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Icon(
+                                  CupertinoIcons.arrow_right,
+                                  color: darkColor,
+                                  size: 20,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 AnimatedPositioned(
                   bottom: pinPillPosition,
