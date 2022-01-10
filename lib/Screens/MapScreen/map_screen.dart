@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
+import 'package:easark/Widgets/loading_map_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/point_object.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
@@ -30,6 +31,7 @@ class _MapScreenState extends State<MapScreen> {
   double searchButtonPosition = -100;
   double mapZoom = 15;
   bool loading = false;
+  bool loading1 = true;
   Set<Marker> _markers = HashSet<Marker>();
   List<QueryDocumentSnapshot>? places;
   GoogleMapController? _mapController;
@@ -84,6 +86,8 @@ class _MapScreenState extends State<MapScreen> {
     if (mounted) {
       setState(() {
         _initialPosition = LatLng(position.latitude, position.longitude);
+        cameraPosition = _initialPosition;
+        loading1 = false;
       });
     }
   }
@@ -116,36 +120,39 @@ class _MapScreenState extends State<MapScreen> {
           : Stack(
               clipBehavior: Clip.hardEdge,
               children: <Widget>[
-                GoogleMap(
-                  mapType: MapType.normal,
-                  minMaxZoomPreference: const MinMaxZoomPreference(5.0, 40.0),
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  mapToolbarEnabled: false,
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: _initialPosition,
-                    zoom: mapZoom,
-                  ),
-                  markers: _markers,
-                  onTap: (LatLng location) {
-                    setState(() {
-                      currentPinInfo = 'Loading ...';
-                      pinPillPosition = -100;
-                    });
-                  },
-                  onCameraMove: (position) {
-                    setState(() {
-                      searchButtonPosition = -100;
-                      cameraPosition = position.target;
-                    });
-                  },
-                  onCameraIdle: () {
-                    setState(() {
-                      searchButtonPosition = 50;
-                    });
-                  },
-                ),
+                loading1
+                    ? const LoadingMapScreen()
+                    : GoogleMap(
+                        mapType: MapType.normal,
+                        minMaxZoomPreference:
+                            const MinMaxZoomPreference(5.0, 40.0),
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: true,
+                        mapToolbarEnabled: false,
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: CameraPosition(
+                          target: _initialPosition,
+                          zoom: mapZoom,
+                        ),
+                        markers: _markers,
+                        onTap: (LatLng location) {
+                          setState(() {
+                            currentPinInfo = 'Loading ...';
+                            pinPillPosition = -100;
+                          });
+                        },
+                        onCameraMove: (position) {
+                          setState(() {
+                            searchButtonPosition = -100;
+                            cameraPosition = position.target;
+                          });
+                        },
+                        onCameraIdle: () {
+                          setState(() {
+                            searchButtonPosition = 50;
+                          });
+                        },
+                      ),
                 AnimatedPositioned(
                   top: searchButtonPosition,
                   right: 0,

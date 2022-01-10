@@ -6,10 +6,9 @@ class LanguageEn extends Languages {
   @override
   String get labelSelectLanguage => "English";
   @override
-  String get loginScreen1head =>"Easy Parking";
+  String get loginScreen1head => "Easy Parking";
   @override
-  String get loginScreen1text =>
-      "Find parking placed with a few clicks";
+  String get loginScreen1text => "Find parking placed with a few clicks";
   @override
   String get loginScreen2head => "Reservation";
   @override
@@ -38,5 +37,13 @@ class LanguageEn extends Languages {
 
   @override
   String get mapScreenSearchHere => "Search nearby parkings";
+  @override
+  String get mapScreenLoadingMap => "Loading map...";
 
+  @override
+  String get businessScreentext1 =>
+      "Do you have some unused parking places? Monetize them.";
+  @override
+  String get businessScreentext2 =>
+      "Rent out your parking place and earn money with Easark. It is easy, comfortable and profitable.";
 }

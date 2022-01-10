@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easark/Screens/BusinessScreen/business_screen.dart';
 import 'package:easark/Screens/MapScreen/map_screen.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/constants.dart';
@@ -9,8 +10,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
-  String error;
-  HomeScreen({Key? key, this.error = 'Something Went Wrong'}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,8 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _buildScreens() {
     return [
       MapScreen(),
+      BusinessScreen(),
       ProfileScreen(),
     ];
+  }
+
+  void changeTabNumber(int number) {
+    _controller.jumpToTab(number);
   }
 
   Future<void> checkUserProfile() async {
@@ -54,8 +59,15 @@ class _HomeScreenState extends State<HomeScreen> {
         inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),
       ),
       PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.money_dollar_circle),
+        title: ("Business"),
+        activeColorPrimary: whiteColor,
+        activeColorSecondary: whiteColor,
+        inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),
+      ),
+      PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.person),
-        title: ("Settings"),
+        title: ("Profile"),
         activeColorPrimary: whiteColor,
         activeColorSecondary: whiteColor,
         inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),

@@ -31,11 +31,20 @@ class LanguageRu extends Languages {
   @override
   String get loginScreenReenterPhone => "Поменять номер телефона";
   @override
-  String get loginScreenPolicy => "Продолжая вы принимаете все правила пользования приложением и нашу Политику Конфиденциальности";
-@override
+  String get loginScreenPolicy =>
+      "Продолжая вы принимаете все правила пользования приложением и нашу Политику Конфиденциальности";
+  @override
   String get loginScreenCodeIsNotValid => "Время действия кода истекло";
-
 
   @override
   String get mapScreenSearchHere => "Искать близлежащие парковки";
+  @override
+  String get mapScreenLoadingMap => "Загрузка карты...";
+
+  @override
+  String get businessScreentext1 =>
+      "У вас есть неиспользуемые парковочные места? Монетизируйте их.";
+  @override
+  String get businessScreentext2 =>
+      "Сдавайте парковочное место в аренду и зарабатывайте вместе с Easark. Это просто, удобно и выгодно.";
 }

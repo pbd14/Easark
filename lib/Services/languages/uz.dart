@@ -37,5 +37,15 @@ class LanguageUz extends Languages {
   String get loginScreenCodeIsNotValid => "Kodning muddati tugadi";
 
   @override
-  String get mapScreenSearchHere => "Yaqin atrofdagi avtoturargohlarni qidirish";
+  String get mapScreenSearchHere =>
+      "Yaqin atrofdagi avtoturargohlarni qidirish";
+  @override
+  String get mapScreenLoadingMap => "Xarita yuklanmoqda...";
+
+  @override
+  String get businessScreentext1 =>
+      "Sizda foydalanilmayotgan to'xtash joylari bormi? Ularni pulga aylantiring.";
+  @override
+  String get businessScreentext2 =>
+      "Avtoturargohingizni ijaraga bering va Easark bilan pul ishlang. Bu oson, qulay va foydali.";
 }

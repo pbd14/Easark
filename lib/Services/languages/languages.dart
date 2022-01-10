@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract class Languages {
-  
   static Languages? of(BuildContext context) {
     return Localizations.of<Languages>(context, Languages);
   }
@@ -23,5 +22,8 @@ abstract class Languages {
   String get loginScreenCodeIsNotValid;
 
   String get mapScreenSearchHere;
+  String get mapScreenLoadingMap;
 
+  String get businessScreentext1;
+  String get businessScreentext2;
 }
