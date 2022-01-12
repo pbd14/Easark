@@ -10,7 +10,11 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  int tabNum;
+  HomeScreen({
+    Key? key,
+    this.tabNum = 0,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -77,6 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    if (widget.tabNum != 0) {
+      _controller.jumpToTab(widget.tabNum);
+    }
     checkUserProfile();
     super.initState();
   }

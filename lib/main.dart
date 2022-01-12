@@ -1,3 +1,4 @@
+import 'package:easark/Screens/HomeScreen/home_screen.dart';
 import 'package:easark/Services/auth_service.dart';
 import 'package:easark/Services/languages/applocalizationsdelegate.dart';
 import 'package:easark/constants.dart';
@@ -52,6 +53,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return OverlaySupport(
       child: MaterialApp(
+        routes: {
+          Routes.businessScreen: (BuildContext context) => HomeScreen(
+                tabNum: 1,
+              ),
+        },
         debugShowCheckedModeBanner: false,
         title: 'Easark',
         locale: _locale,
@@ -81,4 +87,8 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+class Routes {
+  static const String businessScreen = '/businessScreen';
 }

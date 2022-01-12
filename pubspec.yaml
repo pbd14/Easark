@@ -55,6 +55,7 @@ dependencies:
   custom_info_window: ^1.0.1
   animate_do: ^2.0.0
   image_picker: ^0.8.4+4
+  csc_picker: ^0.2.6
 
 dev_dependencies:
   flutter_test:

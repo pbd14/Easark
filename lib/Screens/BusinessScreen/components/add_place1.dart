@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csc_picker/csc_picker.dart';
+import 'package:easark/Screens/BusinessScreen/components/add_place2.dart';
 import 'package:easark/Screens/BusinessScreen/components/introduction.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
@@ -22,10 +23,14 @@ class AddPlaceScreen extends StatefulWidget {
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  String? name, description;
+  int? numberOfSpaces;
+  String? description;
   bool needsVer = false;
   String error = '';
   File? i1, i2, i3, i4, i5, i6;
+  String? country;
+  String? state;
+  String? city;
 
   Future _getImage(int i) async {
     var picker = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -125,31 +130,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               ),
                               const Divider(),
                               const SizedBox(height: 20),
-                              TextFormField(
-                                validator: (val) => val!.length >= 2
-                                    ? null
-                                    : 'Minimum 2 characters',
-                                style: const TextStyle(color: darkDarkColor),
-                                keyboardType: TextInputType.text,
-                                onChanged: (val) {
-                                  name = val;
-                                },
-                                decoration: InputDecoration(
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: darkColor, width: 1.0),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: darkColor, width: 1.0),
-                                  ),
-                                  hintStyle: TextStyle(
-                                      color: darkColor.withOpacity(0.7)),
-                                  hintText: 'Name',
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                              const SizedBox(height: 30),
+
                               TextFormField(
                                 validator: (val) => val!.length >= 5
                                     ? null
@@ -174,7 +155,49 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                   border: InputBorder.none,
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 30),
+                              TextFormField(
+                                validator: (val) =>
+                                    val!.isNotEmpty ? null : 'Minimum 1 number',
+                                style: const TextStyle(color: darkDarkColor),
+                                keyboardType: TextInputType.number,
+                                onChanged: (val) {
+                                  numberOfSpaces = int.parse(val);
+                                },
+                                decoration: InputDecoration(
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: darkColor.withOpacity(0.7)),
+                                  hintText: 'Number of parking spaces',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              CSCPicker(
+                                defaultCountry: DefaultCountry.Uzbekistan,
+                                onCountryChanged: (value) {
+                                  setState(() {
+                                    country = value;
+                                  });
+                                },
+                                onStateChanged: (value) {
+                                  setState(() {
+                                    state = value;
+                                  });
+                                },
+                                onCityChanged: (value) {
+                                  setState(() {
+                                    city = value;
+                                  });
+                                },
+                              ),
 
                               // IMPORTANT
 
@@ -457,28 +480,31 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                             Navigator.push(
                               context,
                               SlideRightRoute(
-                                page: IntroductionScreen(
-                                    // data: {
-                                    //   'name': name,
-                                    //   'description': description,
-                                    //   'type': needsVer,
-                                    //   'images': [
-                                    //       await a1!.ref.getDownloadURL(),
-                                    //       await a2!.ref.getDownloadURL(),
-                                    //       await a3!.ref.getDownloadURL(),
-                                    //       await a4!.ref.getDownloadURL(),
-                                    //       await a5!.ref.getDownloadURL(),
-                                    //       await a6!.ref.getDownloadURL(),
-                                    //   ],
-                                    //   'owner':
-                                    //       FirebaseAuth.instance.currentUser!.uid,
-                                    // },
-                                    ),
+                                page: AddPlaceScreen2(
+                                  data: {
+                                    'number_of_spaces': numberOfSpaces,
+                                    'description': description,
+                                    'country': country,
+                                    'state': state,
+                                    'city': city,
+                                    'type': needsVer,
+                                    'images': [
+                                      await a1?.ref.getDownloadURL(),
+                                      await a2?.ref.getDownloadURL(),
+                                      await a3?.ref.getDownloadURL(),
+                                      await a4?.ref.getDownloadURL(),
+                                      await a5?.ref.getDownloadURL(),
+                                      await a6?.ref.getDownloadURL(),
+                                    ],
+                                    'owner':
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                  },
+                                ),
                               ),
                             );
                             setState(() {
                               loading = false;
-                              name = '';
+                              numberOfSpaces = 0;
                               description = '';
                               needsVer = true;
                             });

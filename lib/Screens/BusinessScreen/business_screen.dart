@@ -43,7 +43,9 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
     return loading
         ? const LoadingScreen()
         : Scaffold(
-            body: Container(),
+            body: Container(
+              child: Text('Business'),
+            ),
           );
   }
 }
