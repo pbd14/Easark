@@ -7,7 +7,6 @@ import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
-import 'package:easark/main.dart';
 import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -29,7 +28,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
   bool loading1 = true;
   static LatLng _initialPosition =
       const LatLng(41.36426966573496, 69.21005744487047);
-  Set<Marker> _markers = HashSet<Marker>();
+  final Set<Marker> _markers = HashSet<Marker>();
   GoogleMapController? _mapController;
   double? lat, lon;
   // ignore: avoid_init_to_null
@@ -169,7 +168,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         markers: _markers,
                       ),
                 Positioned(
-                  bottom: 60,
+                  bottom: 70,
                   right: size.width * 0.15,
                   child: RoundedButton(
                     width: 0.7,
@@ -201,17 +200,20 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         'country': widget.data['country'],
                         'state': widget.data['state'],
                         'city': widget.data['city'],
-                        'type': widget.data['type'],
+                        'needs_verification': widget.data['needs_verification'],
+                        'currency': widget.data['currency'],
+                        'ppm': widget.data['ppm'],
+                        'is24/7': widget.data['is24/7'],
+                        'payment_methods': widget.data['payment_methods'],
+                        'days': widget.data['days'],
+                        'vacation_days': widget.data['vacationDays'],
                         'lat': lat,
                         'lon': lon,
                         'images': widget.data['images'],
-                        'by': widget.data['by'],
                         'spaces': spaces,
                         'rates': {},
-                        'owner': widget.data['owner'],
+                        'owner_id': widget.data['owner_id'],
                       }).catchError((error) {
-                        print('MISTAKE HERE');
-                        print(error);
                         PushNotificationMessage notification =
                             PushNotificationMessage(
                           title: 'Fail',

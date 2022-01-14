@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Screens/BusinessScreen/components/introduction.dart';
 import 'package:easark/Widgets/loading_screen.dart';
+import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
+import 'package:easark/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -43,8 +45,22 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
     return loading
         ? const LoadingScreen()
         : Scaffold(
-            body: Container(
-              child: Text('Business'),
+            body: Center(
+              child: RoundedButton(
+                width: 0.4,
+                ph: 45,
+                text: 'ADD PLACE',
+                press: () async {
+                  Navigator.push(
+                    context,
+                    SlideRightRoute(
+                      page: const IntroductionScreen(),
+                    ),
+                  );
+                },
+                color: darkPrimaryColor,
+                textColor: whiteColor,
+              ),
             ),
           );
   }

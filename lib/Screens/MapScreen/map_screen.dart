@@ -1,13 +1,10 @@
-import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_map_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
-import 'package:easark/Widgets/point_object.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,4 +1,3 @@
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable

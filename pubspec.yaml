@@ -47,15 +47,16 @@ dependencies:
   geolocator: ^7.0.3
   url_launcher: ^6.0.9
   encrypt: ^5.0.0
-  firebase_remote_config: ^1.0.3
   overlay_support: ^1.2.0
   shared_preferences: ^2.0.5
   firebase_messaging: ^11.2.4
   persistent_bottom_nav_bar: ^4.0.2
   custom_info_window: ^1.0.1
-  animate_do: ^2.0.0
+  animate_do: ^2.0.0 
   image_picker: ^0.8.4+4
   csc_picker: ^0.2.6
+  firebase_remote_config: ^1.0.4
+  date_format: ^2.0.5
 
 dev_dependencies:
   flutter_test:

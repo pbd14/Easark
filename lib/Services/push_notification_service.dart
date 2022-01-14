@@ -14,15 +14,15 @@ class PushNotificationService {
       _fcm.requestPermission();
     }
 
-    NotificationSettings settings = await _fcm.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+    // NotificationSettings settings = await _fcm.requestPermission(
+    //   alert: true,
+    //   announcement: false,
+    //   badge: true,
+    //   carPlay: false,
+    //   criticalAlert: false,
+    //   provisional: false,
+    //   sound: true,
+    // );
 
     String? token = await _fcm.getToken();
     if (FirebaseAuth.instance.currentUser != null) {
