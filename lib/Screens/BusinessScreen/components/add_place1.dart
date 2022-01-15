@@ -471,10 +471,20 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
         ? const LoadingScreen()
         : Scaffold(
             appBar: AppBar(
-              backgroundColor: darkPrimaryColor,
+              elevation: 0,
+              backgroundColor: const Color.fromRGBO(247, 247, 247, 1.0),
               iconTheme: const IconThemeData(
-                color: whiteColor,
+                color: darkDarkColor,
               ),
+              // title: Text(
+              //   'Info',
+              //   textScaleFactor: 1,
+              //   overflow: TextOverflow.ellipsis,
+              //   style: GoogleFonts.montserrat(
+              //     textStyle: const TextStyle(
+              //         color: darkColor, fontSize: 20, fontWeight: FontWeight.w300),
+              //   ),
+              // ),
               centerTitle: true,
             ),
             body: SingleChildScrollView(

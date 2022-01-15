@@ -206,13 +206,14 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         'is24/7': widget.data['is24/7'],
                         'payment_methods': widget.data['payment_methods'],
                         'days': widget.data['days'],
-                        'vacation_days': widget.data['vacationDays'],
+                        'vacation_days': widget.data['vacation_days'],
                         'lat': lat,
                         'lon': lon,
                         'images': widget.data['images'],
                         'spaces': spaces,
                         'rates': {},
                         'owner_id': widget.data['owner_id'],
+                        'is_blocked': false,
                       }).catchError((error) {
                         PushNotificationMessage notification =
                             PushNotificationMessage(
