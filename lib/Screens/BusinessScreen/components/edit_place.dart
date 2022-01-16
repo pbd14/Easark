@@ -1,7 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/components/add_place2.dart';
+import 'package:easark/Screens/BusinessScreen/components/place_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
@@ -15,19 +19,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:date_format/date_format.dart';
+import 'package:overlay_support/overlay_support.dart';
 
-class AddPlaceScreen extends StatefulWidget {
-  const AddPlaceScreen({
+class EditPlaceScreen extends StatefulWidget {
+  String placeId;
+  EditPlaceScreen({
     Key? key,
+    required this.placeId,
   }) : super(key: key);
   @override
-  _AddPlaceScreenState createState() => _AddPlaceScreenState();
+  _EditPlaceScreenState createState() => _EditPlaceScreenState();
 }
 
-class _AddPlaceScreenState extends State<AddPlaceScreen> {
+class _EditPlaceScreenState extends State<EditPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = true;
-  int? numberOfSpaces;
   int? ppm;
   bool? is24hours = false;
   String? description;
@@ -40,12 +46,13 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   String? state;
   String? city;
   RemoteConfig remoteConfig = RemoteConfig.instance;
+  DocumentSnapshot? place;
 
   String selectedDay = '';
   String? _hour, _minute, _time;
   String? _hour2, _minute2, _time2;
   // ignore: non_constant_identifier_names
-  List<String> payment_methods = [];
+  List payment_methods = [];
   List currencies = [];
   Map mon = {};
   Map tue = {};
@@ -67,6 +74,68 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final TextEditingController _timeController2 = TextEditingController();
   bool workingDay = true;
   bool fixedDuration = false;
+
+  Future<void> prepare() async {
+    place = await FirebaseFirestore.instance
+        .collection('parking_places')
+        .doc(widget.placeId)
+        .get();
+    setState(() {
+      ppm = place!.get('ppm');
+      is24hours = place!.get("is24");
+      description = place!.get('description');
+      currency = place!.get('currency');
+      needsVer = place!.get('needs_verification');
+      vacationDays = place!.get('vacation_days');
+      payment_methods = place!.get('payment_methods');
+      country = place!.get('country');
+      state = place!.get('state');
+      city = place!.get('city');
+      mon = {
+        'status': place!.get('days')['Mon']['status'],
+        'from': place!.get('days')['Mon']['from'],
+        'to': place!.get('days')['Mon']['to']
+      };
+      tue = {
+        'status': place!.get('days')['Tue']['status'],
+        'from': place!.get('days')['Tue']['from'],
+        'to': place!.get('days')['Tue']['to']
+      };
+      wed = {
+        'status': place!.get('days')['Wed']['status'],
+        'from': place!.get('days')['Wed']['from'],
+        'to': place!.get('days')['Wed']['to']
+      };
+      thu = {
+        'status': place!.get('days')['Thu']['status'],
+        'from': place!.get('days')['Thu']['from'],
+        'to': place!.get('days')['Thu']['to']
+      };
+      fri = {
+        'status': place!.get('days')['Fri']['status'],
+        'from': place!.get('days')['Fri']['from'],
+        'to': place!.get('days')['Fri']['to']
+      };
+      sat = {
+        'status': place!.get('days')['Sat']['status'],
+        'from': place!.get('days')['Sat']['from'],
+        'to': place!.get('days')['Sat']['to']
+      };
+      sun = {
+        'status': place!.get('days')['Sun']['status'],
+        'from': place!.get('days')['Sun']['from'],
+        'to': place!.get('days')['Sun']['to']
+      };
+    });
+    remoteConfigUpdated = await remoteConfig.fetchAndActivate().then((value) {
+      setState(() {
+        currencies = jsonDecode(remoteConfig
+            .getValue('available_currencies')
+            .asString())['currencies'];
+        loading = false;
+      });
+    });
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -447,17 +516,6 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     });
   }
 
-  Future<void> prepare() async {
-    remoteConfigUpdated = await remoteConfig.fetchAndActivate().then((value) {
-      setState(() {
-        currencies = jsonDecode(remoteConfig
-            .getValue('available_currencies')
-            .asString())['currencies'];
-        loading = false;
-      });
-    });
-  }
-
   @override
   void initState() {
     prepare();
@@ -498,7 +556,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                       padding: const EdgeInsets.all(10.0),
                       child: Center(
                         child: Text(
-                          'Add new place',
+                          'Edit place #' + place!.id,
                           style: GoogleFonts.montserrat(
                             textStyle: const TextStyle(
                               color: darkPrimaryColor,
@@ -543,6 +601,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                 onChanged: (val) {
                                   description = val;
                                 },
+                                initialValue: description,
                                 decoration: InputDecoration(
                                   focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -559,30 +618,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                 ),
                               ),
                               const SizedBox(height: 30),
-                              TextFormField(
-                                validator: (val) =>
-                                    val!.isNotEmpty ? null : 'Minimum 1 number',
-                                style: const TextStyle(color: darkDarkColor),
-                                keyboardType: TextInputType.number,
-                                onChanged: (val) {
-                                  numberOfSpaces = int.parse(val);
-                                },
-                                decoration: InputDecoration(
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: darkColor, width: 1.0),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: darkColor, width: 1.0),
-                                  ),
-                                  hintStyle: TextStyle(
-                                      color: darkColor.withOpacity(0.7)),
-                                  hintText: 'Number of parking spaces',
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                              const SizedBox(height: 30),
+
                               DropdownButton<String>(
                                 value: currency,
                                 hint: Text(
@@ -631,6 +667,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                     val!.isNotEmpty ? null : 'Minimum 1 number',
                                 style: const TextStyle(color: darkDarkColor),
                                 keyboardType: TextInputType.number,
+                                initialValue: ppm.toString(),
                                 onChanged: (val) {
                                   ppm = int.parse(val);
                                 },
@@ -654,7 +691,10 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
                               const SizedBox(height: 30),
                               CSCPicker(
-                                defaultCountry: DefaultCountry.Uzbekistan,
+                                currentState: state,
+                                currentCountry: country,
+                                currentCity: city,
+                                flagState: CountryFlag.SHOW_IN_DROP_DOWN_ONLY,
                                 onCountryChanged: (value) {
                                   setState(() {
                                     country = value;
@@ -1822,10 +1862,25 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                               BorderRadius.circular(20.0),
                                         ),
                                         child: i1 == null
-                                            ? const Icon(
-                                                Icons.add,
-                                                color: whiteColor,
-                                              )
+                                            ? place!
+                                                    .get('images')
+                                                    .asMap()
+                                                    .containsKey(0)
+                                                ? place!.get('images')[0] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        imageUrl: place!
+                                                            .get('images')[0],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.add,
+                                                        color: whiteColor,
+                                                      )
+                                                : const Icon(
+                                                    Icons.add,
+                                                    color: whiteColor,
+                                                  )
                                             : Image.file(i1!),
                                         color: darkColor,
                                       ),
@@ -1840,10 +1895,25 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                               BorderRadius.circular(20.0),
                                         ),
                                         child: i2 == null
-                                            ? const Icon(
-                                                Icons.add,
-                                                color: whiteColor,
-                                              )
+                                            ? place!
+                                                    .get('images')
+                                                    .asMap()
+                                                    .containsKey(1)
+                                                ? place!.get('images')[1] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        imageUrl: place!
+                                                            .get('images')[1],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.add,
+                                                        color: whiteColor,
+                                                      )
+                                                : const Icon(
+                                                    Icons.add,
+                                                    color: whiteColor,
+                                                  )
                                             : Image.file(i2!),
                                         color: darkColor,
                                       ),
@@ -1858,10 +1928,25 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                               BorderRadius.circular(20.0),
                                         ),
                                         child: i3 == null
-                                            ? const Icon(
-                                                Icons.add,
-                                                color: whiteColor,
-                                              )
+                                            ? place!
+                                                    .get('images')
+                                                    .asMap()
+                                                    .containsKey(2)
+                                                ? place!.get('images')[2] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        imageUrl: place!
+                                                            .get('images')[2],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.add,
+                                                        color: whiteColor,
+                                                      )
+                                                : const Icon(
+                                                    Icons.add,
+                                                    color: whiteColor,
+                                                  )
                                             : Image.file(i3!),
                                         color: darkColor,
                                       ),
@@ -1876,10 +1961,25 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                               BorderRadius.circular(20.0),
                                         ),
                                         child: i4 == null
-                                            ? const Icon(
-                                                Icons.add,
-                                                color: whiteColor,
-                                              )
+                                            ? place!
+                                                    .get('images')
+                                                    .asMap()
+                                                    .containsKey(3)
+                                                ? place!.get('images')[3] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        imageUrl: place!
+                                                            .get('images')[3],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.add,
+                                                        color: whiteColor,
+                                                      )
+                                                : const Icon(
+                                                    Icons.add,
+                                                    color: whiteColor,
+                                                  )
                                             : Image.file(i4!),
                                         color: darkColor,
                                       ),
@@ -1894,10 +1994,25 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                               BorderRadius.circular(20.0),
                                         ),
                                         child: i5 == null
-                                            ? const Icon(
-                                                Icons.add,
-                                                color: whiteColor,
-                                              )
+                                            ? place!
+                                                    .get('images')
+                                                    .asMap()
+                                                    .containsKey(4)
+                                                ? place!.get('images')[4] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        imageUrl: place!
+                                                            .get('images')[4],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.add,
+                                                        color: whiteColor,
+                                                      )
+                                                : const Icon(
+                                                    Icons.add,
+                                                    color: whiteColor,
+                                                  )
                                             : Image.file(i5!),
                                         color: darkColor,
                                       ),
@@ -1912,10 +2027,25 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                               BorderRadius.circular(20.0),
                                         ),
                                         child: i6 == null
-                                            ? const Icon(
-                                                Icons.add,
-                                                color: whiteColor,
-                                              )
+                                            ? place!
+                                                    .get('images')
+                                                    .asMap()
+                                                    .containsKey(5)
+                                                ? place!.get('images')[5] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        imageUrl: place!
+                                                            .get('images')[5],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.add,
+                                                        color: whiteColor,
+                                                      )
+                                                : const Icon(
+                                                    Icons.add,
+                                                    color: whiteColor,
+                                                  )
                                             : Image.file(i6!),
                                         color: darkColor,
                                       ),
@@ -1940,7 +2070,13 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               i3 != null ||
                               i4 != null ||
                               i5 != null ||
-                              i6 != null) {
+                              i6 != null ||
+                              place!.get('images')[0] != null ||
+                              place!.get('images')[1] != null ||
+                              place!.get('images')[2] != null ||
+                              place!.get('images')[3] != null ||
+                              place!.get('images')[4] != null ||
+                              place!.get('images')[5] != null) {
                             setState(() {
                               loading = true;
                             });
@@ -1982,49 +2118,67 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                   .ref('uploads/$id/$i5/')
                                   .putFile(i6!);
                             }
+                            FirebaseFirestore.instance
+                                .collection('parking_places')
+                                .doc(place!.id)
+                                .update({
+                              'description': description,
+                              'country': country,
+                              'state': state,
+                              'city': city,
+                              'currency': currency,
+                              'ppm': ppm,
+                              'is24': is24hours,
+                              'payment_methods': payment_methods,
+                              'days': {
+                                'Mon': mon,
+                                'Tue': tue,
+                                'Wed': wed,
+                                'Thu': thu,
+                                'Fri': fri,
+                                'Sat': sat,
+                                'Sun': sun,
+                              },
+                              'vacation_days': vacationDays,
+                              'images': [
+                                await a1?.ref.getDownloadURL(),
+                                await a2?.ref.getDownloadURL(),
+                                await a3?.ref.getDownloadURL(),
+                                await a4?.ref.getDownloadURL(),
+                                await a5?.ref.getDownloadURL(),
+                                await a6?.ref.getDownloadURL(),
+                              ],
+                            }).catchError((error) {
+                              PushNotificationMessage notification =
+                                  PushNotificationMessage(
+                                title: 'Fail',
+                                body: 'Failed to update',
+                              );
+                              showSimpleNotification(
+                                Container(child: Text(notification.body)),
+                                position: NotificationPosition.top,
+                                background: Colors.red,
+                              );
+                            });
+                            PushNotificationMessage notification =
+                                PushNotificationMessage(
+                              title: 'Success',
+                              body: 'Updated',
+                            );
+                            showSimpleNotification(
+                              Container(child: Text(notification.body)),
+                              position: NotificationPosition.top,
+                              background: greenColor,
+                            );
                             Navigator.push(
                               context,
                               SlideRightRoute(
-                                page: AddPlaceScreen2(
-                                  data: {
-                                    'number_of_spaces': numberOfSpaces,
-                                    'description': description,
-                                    'country': country,
-                                    'state': state,
-                                    'city': city,
-                                    'needs_verification': needsVer,
-                                    'currency': currency,
-                                    'ppm': ppm,
-                                    'is24': is24hours,
-                                    'payment_methods': payment_methods,
-                                    'days': {
-                                      'Mon': mon,
-                                      'Tue': tue,
-                                      'Wed': wed,
-                                      'Thu': thu,
-                                      'Fri': fri,
-                                      'Sat': sat,
-                                      'Sun': sun,
-                                    },
-                                    'vacation_days': vacationDays,
-                                    'isActive': true,
-                                    'images': [
-                                      await a1?.ref.getDownloadURL(),
-                                      await a2?.ref.getDownloadURL(),
-                                      await a3?.ref.getDownloadURL(),
-                                      await a4?.ref.getDownloadURL(),
-                                      await a5?.ref.getDownloadURL(),
-                                      await a6?.ref.getDownloadURL(),
-                                    ],
-                                    'owner_id':
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                  },
-                                ),
-                              ),
+                                  page: PlaceScreen(
+                                placeId: widget.placeId,
+                              )),
                             );
                             setState(() {
                               loading = false;
-                              numberOfSpaces = 0;
                               description = '';
                               needsVer = true;
                             });
@@ -2052,6 +2206,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                           ),
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.2,
                     ),
                   ],
                 ),

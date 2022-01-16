@@ -203,7 +203,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         'needs_verification': widget.data['needs_verification'],
                         'currency': widget.data['currency'],
                         'ppm': widget.data['ppm'],
-                        'is24/7': widget.data['is24/7'],
+                        'is24': widget.data['is24'],
                         'payment_methods': widget.data['payment_methods'],
                         'days': widget.data['days'],
                         'vacation_days': widget.data['vacation_days'],
