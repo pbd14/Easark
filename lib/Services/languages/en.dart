@@ -46,4 +46,36 @@ class LanguageEn extends Languages {
   @override
   String get businessScreentext2 =>
       "Rent out your parking place and earn money with Easark. It is easy, comfortable and profitable.";
+
+
+  @override
+  String get serviceScreenNoInternet => "No Internet";
+  @override
+  String get serviceScreenClosed => "Closed";
+  @override
+  String get serviceScreenDate => "Date";
+  @override
+  String get serviceScreenFrom => "From";
+  @override
+  String get serviceScreenTo => "To";
+  @override
+  String get serviceScreenAlreadyBooked => "Already booked";
+  @override
+  String get serviceScreenIncorrectDate => "Incorrect date selected";
+  @override
+  String get serviceScreenIncorrectTime => "Incorrect time selected";
+  @override
+  String get serviceScreenTooEarly => "Too early";
+  @override
+  String get serviceScreenTooLate => "Too late";
+  @override
+  String get serviceScreen2HoursAdvance => "Booking should be made 2 hours in advance for this place";
+  @override
+  String get serviceScreenPaymentMethod => "Choose payment method";
+  @override
+  String get serviceScreenCash => "Cash";
+  @override
+  String get serviceScreenCreditCard => "Credit card";
+
+
 }

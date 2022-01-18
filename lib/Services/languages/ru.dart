@@ -47,4 +47,34 @@ class LanguageRu extends Languages {
   @override
   String get businessScreentext2 =>
       "Сдавайте парковочное место в аренду и зарабатывайте вместе с Easark. Это просто, удобно и выгодно.";
+
+  @override
+  String get serviceScreenNoInternet => "Нет соединения с Интернетом";
+  @override
+  String get serviceScreenClosed => "Закрыто";
+  @override
+  String get serviceScreenDate => "Дата";
+  @override
+  String get serviceScreenFrom => "От";
+  @override
+  String get serviceScreenTo => "До";
+  @override
+  String get serviceScreenAlreadyBooked => "Уже забронированно";
+  @override
+  String get serviceScreenIncorrectDate => "Выбрана неверная дата";
+  @override
+  String get serviceScreenIncorrectTime => "Выбрано неверное время";
+  @override
+  String get serviceScreenTooEarly => "Слишком рано";
+  @override
+  String get serviceScreenTooLate => "Слишком поздно";
+  @override
+  String get serviceScreen2HoursAdvance =>
+      "Для этого места необходимо сделать предварительный заказ за 2 часа.";
+  @override
+  String get serviceScreenPaymentMethod => "Выберите способ оплаты";
+  @override
+  String get serviceScreenCash => "Наличка";
+  @override
+  String get serviceScreenCreditCard => "Карта";
 }

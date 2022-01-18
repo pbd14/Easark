@@ -561,7 +561,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               const SizedBox(height: 30),
                               TextFormField(
                                 validator: (val) =>
-                                    val!.isNotEmpty ? null : 'Minimum 1 number',
+                                    val!.isNotEmpty ? int.parse(val) > 500 ? 'Maximum 500 spaces' :  null : 'Minimum 1 number',
                                 style: const TextStyle(color: darkDarkColor),
                                 keyboardType: TextInputType.number,
                                 onChanged: (val) {

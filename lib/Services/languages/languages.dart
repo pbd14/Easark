@@ -26,4 +26,20 @@ abstract class Languages {
 
   String get businessScreentext1;
   String get businessScreentext2;
+
+
+  String get serviceScreenNoInternet;
+  String get serviceScreenClosed;
+  String get serviceScreenDate;
+  String get serviceScreenFrom;
+  String get serviceScreenTo;
+  String get serviceScreenAlreadyBooked;
+  String get serviceScreenIncorrectDate;
+  String get serviceScreenIncorrectTime;
+  String get serviceScreenTooEarly;
+  String get serviceScreenTooLate;
+  String get serviceScreen2HoursAdvance;
+  String get serviceScreenPaymentMethod;
+  String get serviceScreenCash;
+  String get serviceScreenCreditCard;
 }

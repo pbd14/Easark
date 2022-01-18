@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easark/Screens/BookingScreen/components/place_info_screen.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_map_screen.dart';
@@ -38,6 +39,7 @@ class _MapScreenState extends State<MapScreen> {
   LatLng? cameraPosition;
   BitmapDescriptor? pinLocationIcon;
   String currentPinInfo = 'Loading ...';
+  String? pinId;
 
   @override
   void initState() {
@@ -203,7 +205,8 @@ class _MapScreenState extends State<MapScreen> {
                                           currentPinInfo =
                                               place.get('ppm').toString() +
                                                   ' ' +
-                                                  place.get('currency');
+                                                  place.get('currency') + ' per minute';
+                                          pinId = place.id;
                                           pinPillPosition = 100;
                                         });
                                       },
@@ -305,7 +308,7 @@ class _MapScreenState extends State<MapScreen> {
                                   Navigator.push(
                                     context,
                                     SlideRightRoute(
-                                      page: ProfileScreen(),
+                                      page: PlaceInfoScreen(placeId: pinId!,),
                                     ),
                                   );
                                 },

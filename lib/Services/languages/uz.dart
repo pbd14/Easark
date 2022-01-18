@@ -48,4 +48,33 @@ class LanguageUz extends Languages {
   @override
   String get businessScreentext2 =>
       "Avtoturargohingizni ijaraga bering va Easark bilan pul ishlang. Bu oson, qulay va foydali.";
+  @override
+  String get serviceScreenNoInternet => "Internet aloqasi yo'q";
+  @override
+  String get serviceScreenClosed => "Yopiq";
+  @override
+  String get serviceScreenDate => "Sana";
+  @override
+  String get serviceScreenFrom => "Boshlanish";
+  @override
+  String get serviceScreenTo => "Tugash";
+  @override
+  String get serviceScreenAlreadyBooked => "Bron qilingan";
+  @override
+  String get serviceScreenIncorrectDate => "Sana noto'g'ri tanlangan";
+  @override
+  String get serviceScreenIncorrectTime => "Vaqt noto'g'ri tanlangan";
+  @override
+  String get serviceScreenTooEarly => "Juda erta";
+  @override
+  String get serviceScreenTooLate => "Juda kech";
+  @override
+  String get serviceScreen2HoursAdvance =>
+      "Bu joyni bron qilish 2 soat oldin amalga oshirilishi kerak";
+  @override
+  String get serviceScreenPaymentMethod => "To'lov usulini tanlang";
+  @override
+  String get serviceScreenCash => "Naqd pul";
+  @override
+  String get serviceScreenCreditCard => "Kredit karta";
 }

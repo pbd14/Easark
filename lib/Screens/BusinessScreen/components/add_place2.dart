@@ -183,7 +183,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                           i <= widget.data['number_of_spaces'];
                           i++) {
                         spaces.add({
-                          'id': i,
+                          'id': i - 1,
                           'isFree': true,
                           'isActive': true,
                         });

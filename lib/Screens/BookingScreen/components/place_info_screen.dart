@@ -1,26 +1,25 @@
 import 'dart:async';
-
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easark/Screens/BusinessScreen/components/edit_place.dart';
+import 'package:easark/Screens/BookingScreen/components/space_info_screen.dart';
+import 'package:easark/Screens/BookingScreen/components/space_info_type2_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
-import 'package:easark/Widgets/rounded_button.dart';
-import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
-class PlaceScreen extends StatefulWidget {
+class PlaceInfoScreen extends StatefulWidget {
   String placeId;
-  PlaceScreen({Key? key, required this.placeId}) : super(key: key);
+  PlaceInfoScreen({Key? key, required this.placeId}) : super(key: key);
 
   @override
-  State<PlaceScreen> createState() => _PlaceScreenState();
+  State<PlaceInfoScreen> createState() => _PlaceInfoScreenState();
 }
 
-class _PlaceScreenState extends State<PlaceScreen> {
+class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
   bool loading = true;
   bool infoExpansionPanel = false;
   DocumentSnapshot? place;
@@ -118,75 +117,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
                               fontSize: 15,
                               fontWeight: FontWeight.w400),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RoundedButton(
-                            pw: 100,
-                            ph: 45,
-                            text: 'EDIT',
-                            press: () async {
-                              Navigator.push(
-                                context,
-                                SlideRightRoute(
-                                  page: EditPlaceScreen(
-                                    placeId: place!.id,
-                                  ),
-                                ),
-                              );
-                            },
-                            color: lightPrimaryColor,
-                            textColor: whiteColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          RoundedButton(
-                            pw: 100,
-                            ph: 45,
-                            text: 'DELETE',
-                            press: () async {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Delete?'),
-                                    content: const Text(
-                                        'Are your sure you want to delete this parking place?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          // prefs.setBool('local_auth', false);
-                                          // prefs.setString('local_password', '');
-                                          Navigator.of(context).pop(true);
-                                        },
-                                        child: const Text(
-                                          'Yes',
-                                          style: TextStyle(color: primaryColor),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                        child: const Text(
-                                          'No',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            color: Colors.red,
-                            textColor: whiteColor,
-                          ),
-                        ],
                       ),
                       const SizedBox(
                         height: 40,
@@ -305,72 +235,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Center(
-                        child: RoundedButton(
-                          width: 0.4,
-                          ph: 45,
-                          text: 'ADD SPACE',
-                          press: () {
-                            if (spaces.length < 1000) {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Sure?'),
-                                    content: const Text(
-                                        'Do you want to add a parking space?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          // prefs.setBool('local_auth', false);
-                                          // prefs.setString('local_password', '');
-                                          Navigator.of(context).pop(true);
-                                          FirebaseFirestore.instance
-                                              .collection('parking_places')
-                                              .doc(place!.id)
-                                              .update({
-                                            'number_of_places':
-                                                place!.get('number_of_places') +
-                                                    1,
-                                            'spaces': FieldValue.arrayUnion(
-                                              [
-                                                {
-                                                  'id': spaces.length + 1,
-                                                  'isActive': true,
-                                                  'isFree': true,
-                                                },
-                                              ],
-                                            )
-                                          });
-                                          _refresh();
-                                        },
-                                        child: const Text(
-                                          'Yes',
-                                          style: TextStyle(color: primaryColor),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                        child: const Text(
-                                          'No',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          color: darkPrimaryColor,
-                          textColor: whiteColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
                       Flexible(
                         child: GridView.count(
                           crossAxisSpacing: 10,
@@ -381,33 +245,57 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
                             for (Map space in spaces)
-                              Column(
-                                children: [
-                                  Text(
-                                    '#' + space['id'].toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: const TextStyle(
-                                          color: darkPrimaryColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  // const SizedBox(
-                                  //   height: 5,
-                                  // ),
-                                  Expanded(
-                                    child: Image.asset(
-                                      !space['isFree']
-                                          ? 'assets/images/parking1.png'
-                                          : space['isActive']
-                                              ? 'assets/images/parking2.png'
-                                              : 'assets/images/parking3.png',
-                                      width: 75,
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  ),
-                                ],
+                              OpenContainer(
+                                transitionDuration: const Duration(seconds: 1),
+                                transitionType:
+                                    ContainerTransitionType.fadeThrough,
+                                openColor:
+                                    const Color.fromRGBO(247, 247, 247, 1.0),
+                                closedColor:
+                                    const Color.fromRGBO(247, 247, 247, 1.0),
+                                closedBuilder: (context, action) {
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        '#' + space['id'].toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: const TextStyle(
+                                              color: darkPrimaryColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      // const SizedBox(
+                                      //   height: 5,
+                                      // ),
+                                      Expanded(
+                                        child: Image.asset(
+                                          !space['isFree']
+                                              ? 'assets/images/parking1.png'
+                                              : space['isActive']
+                                                  ? 'assets/images/parking2.png'
+                                                  : 'assets/images/parking3.png',
+                                          width: 75,
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                                openBuilder: (BuildContext context,
+                                    void Function({Object? returnValue})
+                                        action) {
+                                  return place!.get('is24')
+                                      ? SpaceInfoScreenType2(
+                                          placeId: place!.id,
+                                          spaceId: space['id'],
+                                        )
+                                      : SpaceInfoScreen(
+                                          placeId: place!.id,
+                                          spaceId: space['id'],
+                                        );
+                                },
                               )
                           ],
                         ),
