@@ -555,7 +555,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
       setState(() {
         place = value;
         loading = false;
-        space = value.get('spaces')[widget.spaceId];
+        space = value.get('spaces').where((element) => element['id'] == widget.spaceId).first;
       });
     });
   }

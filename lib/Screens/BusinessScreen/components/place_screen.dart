@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Screens/BusinessScreen/components/edit_place.dart';
+import 'package:easark/Screens/BusinessScreen/components/space_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
@@ -336,7 +338,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                             'spaces': FieldValue.arrayUnion(
                                               [
                                                 {
-                                                  'id': spaces.length + 1,
+                                                  'id': spaces.last['id'] + 1,
                                                   'isActive': true,
                                                   'isFree': true,
                                                 },
@@ -381,33 +383,51 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
                             for (Map space in spaces)
-                              Column(
-                                children: [
-                                  Text(
-                                    '#' + space['id'].toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: const TextStyle(
-                                          color: darkPrimaryColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  // const SizedBox(
-                                  //   height: 5,
-                                  // ),
-                                  Expanded(
-                                    child: Image.asset(
-                                      !space['isFree']
-                                          ? 'assets/images/parking1.png'
-                                          : space['isActive']
-                                              ? 'assets/images/parking2.png'
-                                              : 'assets/images/parking3.png',
-                                      width: 75,
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  ),
-                                ],
+                              OpenContainer(
+                                transitionDuration: const Duration(seconds: 1),
+                                transitionType:
+                                    ContainerTransitionType.fadeThrough,
+                                openColor:
+                                    const Color.fromRGBO(247, 247, 247, 1.0),
+                                closedColor:
+                                    const Color.fromRGBO(247, 247, 247, 1.0),
+                                closedBuilder: (context, action) {
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        '#' + space['id'].toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: const TextStyle(
+                                              color: darkPrimaryColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      // const SizedBox(
+                                      //   height: 5,
+                                      // ),
+                                      Expanded(
+                                        child: Image.asset(
+                                          !space['isFree']
+                                              ? 'assets/images/parking1.png'
+                                              : space['isActive']
+                                                  ? 'assets/images/parking2.png'
+                                                  : 'assets/images/parking3.png',
+                                          width: 75,
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                                openBuilder: (BuildContext context,
+                                    void Function({Object? returnValue})
+                                        action) {
+                                  return SpaceScreen(
+                                      placeId: widget.placeId,
+                                      spaceId: space['id']);
+                                },
                               )
                           ],
                         ),

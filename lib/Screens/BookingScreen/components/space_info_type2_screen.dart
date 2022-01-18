@@ -30,14 +30,15 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
   Map space = {};
 
   Future<void> prepare() async {
-    place = await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('parking_places')
         .doc(widget.placeId)
         .get()
         .then((value) {
       setState(() {
+        place = value;
         loading = false;
-        space = value.get('spaces')[widget.spaceId];
+        space = value.get('spaces').where((element) => element['id'] == widget.spaceId).first;
       });
     });
   }
