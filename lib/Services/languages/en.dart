@@ -36,6 +36,18 @@ class LanguageEn extends Languages {
   String get loginScreenCodeIsNotValid => "Code is not valid anymore";
 
   @override
+  String get homeScreenBook => "Book";
+  @override
+  String get homeScreenFail => "Fail";
+  @override
+  String get homeScreenFailedToUpdate => "Failed to update";
+  @override
+  String get homeScreenSaved => "Saved";
+
+  @override
+  String get searchScreenName => "Place name";
+
+  @override
   String get mapScreenSearchHere => "Search nearby parkings";
   @override
   String get mapScreenLoadingMap => "Loading map...";
@@ -76,6 +88,22 @@ class LanguageEn extends Languages {
   String get serviceScreenCash => "Cash";
   @override
   String get serviceScreenCreditCard => "Credit card";
+
+
+  @override
+  String get historyScreenSchedule => "Schedule";
+  @override
+  String get historyScreenHistory => "History";
+  @override
+  String get historyScreenUnpaid => "Unpaid";
+  @override
+  String get historyScreenInProcess => "In Process";
+  @override
+  String get historyScreenUpcoming => "Upcoming";
+  @override
+  String get historyScreenUnrated => "Unrated";
+  @override
+  String get historyScreenVerificationNeeded => "Verification needed";
 
 
 }

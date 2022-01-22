@@ -283,6 +283,7 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                     ],
                                   );
                                 },
+                                tappable: space['isActive'],
                                 openBuilder: (BuildContext context,
                                     void Function({Object? returnValue})
                                         action) {

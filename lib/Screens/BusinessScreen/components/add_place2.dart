@@ -221,7 +221,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                           body: 'Failed to create',
                         );
                         showSimpleNotification(
-                          Container(child: Text(notification.body)),
+                          Text(notification.body),
                           position: NotificationPosition.top,
                           background: Colors.red,
                         );
@@ -232,7 +232,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         body: 'Added new place',
                       );
                       showSimpleNotification(
-                        Container(child: Text(notification.body)),
+                        Text(notification.body),
                         position: NotificationPosition.top,
                         background: greenColor,
                       );

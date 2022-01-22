@@ -37,6 +37,15 @@ class LanguageUz extends Languages {
   String get loginScreenCodeIsNotValid => "Kodning muddati tugadi";
 
   @override
+  String get homeScreenBook => "Bron qilish";
+  @override
+  String get homeScreenFail => "Xato";
+  @override
+  String get homeScreenFailedToUpdate => "Yangilanmadi";
+  @override
+  String get homeScreenSaved => "Saqlandi";
+
+  @override
   String get mapScreenSearchHere =>
       "Yaqin atrofdagi avtoturargohlarni qidirish";
   @override
@@ -77,4 +86,19 @@ class LanguageUz extends Languages {
   String get serviceScreenCash => "Naqd pul";
   @override
   String get serviceScreenCreditCard => "Kredit karta";
+
+  @override
+  String get historyScreenSchedule => "Jadval";
+  @override
+  String get historyScreenHistory => "Tarix";
+  @override
+  String get historyScreenUnpaid => "To'lanmagan";
+  @override
+  String get historyScreenInProcess => "Jarayonda";
+  @override
+  String get historyScreenUpcoming => "Tugallanmagan";
+  @override
+  String get historyScreenUnrated => "Baholanmagan";
+  @override
+  String get historyScreenVerificationNeeded => "Kelishuv kutilmoqda";
 }

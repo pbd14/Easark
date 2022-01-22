@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
-import 'package:easark/Screens/BusinessScreen/components/add_place2.dart';
 import 'package:easark/Screens/BusinessScreen/components/place_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
@@ -2155,7 +2154,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                 body: 'Failed to update',
                               );
                               showSimpleNotification(
-                                Container(child: Text(notification.body)),
+                                Text(notification.body),
                                 position: NotificationPosition.top,
                                 background: Colors.red,
                               );
@@ -2166,7 +2165,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                               body: 'Updated',
                             );
                             showSimpleNotification(
-                              Container(child: Text(notification.body)),
+                              Text(notification.body),
                               position: NotificationPosition.top,
                               background: greenColor,
                             );

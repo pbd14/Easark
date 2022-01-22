@@ -37,6 +37,15 @@ class LanguageRu extends Languages {
   String get loginScreenCodeIsNotValid => "Время действия кода истекло";
 
   @override
+  String get homeScreenBook => "Брон";
+  @override
+  String get homeScreenFail => "Ошибка";
+  @override
+  String get homeScreenFailedToUpdate => "Не удалось обновить";
+  @override
+  String get homeScreenSaved => "Сохранено";
+
+  @override
   String get mapScreenSearchHere => "Искать близлежащие парковки";
   @override
   String get mapScreenLoadingMap => "Загрузка карты...";
@@ -77,4 +86,19 @@ class LanguageRu extends Languages {
   String get serviceScreenCash => "Наличка";
   @override
   String get serviceScreenCreditCard => "Карта";
+
+  @override
+  String get historyScreenSchedule => "Расписание";
+  @override
+  String get historyScreenHistory => "История";
+  @override
+  String get historyScreenUnpaid => "Неоплачено";
+  @override
+  String get historyScreenInProcess => "В процессе";
+  @override
+  String get historyScreenUpcoming => "Предстоящие";
+  @override
+  String get historyScreenUnrated => "Без оценки";
+  @override
+  String get historyScreenVerificationNeeded => "Ожидание согласия владельца";
 }

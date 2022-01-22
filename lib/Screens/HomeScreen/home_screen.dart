@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Screens/BusinessScreen/business_screen.dart';
+import 'package:easark/Screens/HistoryScreen/history_screen.dart';
 import 'package:easark/Screens/MapScreen/map_screen.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/constants.dart';
@@ -27,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _buildScreens() {
     return [
       MapScreen(),
-      BusinessScreen(),
+      const BusinessScreen(),
+      HistoryScreen(),
       ProfileScreen(),
     ];
   }
@@ -65,6 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.money_dollar_circle),
         title: ("Business"),
+        activeColorPrimary: whiteColor,
+        activeColorSecondary: whiteColor,
+        inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.clock),
+        title: ("History"),
         activeColorPrimary: whiteColor,
         activeColorSecondary: whiteColor,
         inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),

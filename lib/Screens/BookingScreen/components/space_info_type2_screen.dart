@@ -1,17 +1,9 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easark/Models/PushNotificationMessage.dart';
-import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_screen.dart';
-import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:date_format/date_format.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:overlay_support/overlay_support.dart';
 
 // ignore: must_be_immutable
 class SpaceInfoScreenType2 extends StatefulWidget {
@@ -51,7 +43,7 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    // Size size = MediaQuery.of(context).size;
     return loading
         ? const LoadingScreen()
         : Container(

@@ -7,7 +7,6 @@ import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -61,8 +60,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _timeController2 = TextEditingController();
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -325,7 +322,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<Null> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
@@ -378,7 +375,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<Null> _selectTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
@@ -449,7 +446,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<Null> _selectTime2(BuildContext context) async {
+  Future<void> _selectTime2(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: selectedTime2,
@@ -555,7 +552,10 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
       setState(() {
         place = value;
         loading = false;
-        space = value.get('spaces').where((element) => element['id'] == widget.spaceId).first;
+        space = value
+            .get('spaces')
+            .where((element) => element['id'] == widget.spaceId)
+            .first;
       });
     });
   }
@@ -922,53 +922,56 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                   const SizedBox(
                     height: 25,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        Languages.of(context)!.serviceScreenDate,
-                        style: GoogleFonts.montserrat(
-                          textStyle: const TextStyle(
-                            color: darkColor,
-                            fontSize: 30,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _selectDate(context);
-                        },
-                        child: Container(
-                          width: _width! * 0.5,
-                          height: _height! * 0.1,
-                          margin: const EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: lightPrimaryColor,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: TextFormField(
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                fontSize: 27,
-                                color: whiteColor,
+                  space['isFree']
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              Languages.of(context)!.serviceScreenDate,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: darkColor,
+                                  fontSize: 30,
+                                ),
                               ),
                             ),
-                            textAlign: TextAlign.center,
-                            enabled: false,
-                            keyboardType: TextInputType.text,
-                            controller: _dateController,
-                            onSaved: (String? val) {
-                              _setDate = val;
-                            },
-                            decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                contentPadding: EdgeInsets.only(top: 0.0)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                            InkWell(
+                              onTap: () {
+                                _selectDate(context);
+                              },
+                              child: Container(
+                                width: _width! * 0.5,
+                                height: _height! * 0.1,
+                                margin: const EdgeInsets.all(10),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: lightPrimaryColor,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: TextFormField(
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      fontSize: 27,
+                                      color: whiteColor,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  controller: _dateController,
+                                  onSaved: (String? val) {
+                                    _setDate = val;
+                                  },
+                                  decoration: const InputDecoration(
+                                      disabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      contentPadding:
+                                          EdgeInsets.only(top: 0.0)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
                   _dow != null
                       ? place!.get('days')[_dow]['status'] == 'closed'
                           ? Container()
@@ -1020,810 +1023,823 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                               ),
                             )
                       : Container(),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        Languages.of(context)!.serviceScreenFrom,
-                        style: GoogleFonts.montserrat(
-                          textStyle: const TextStyle(
-                            color: darkColor,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _selectTime(context);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          width: _width! * 0.3,
-                          height: _height! * 0.085,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: lightPrimaryColor,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: TextFormField(
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                color: whiteColor,
-                                fontSize: 20,
+                  space['isFree']
+                      ? Row(
+                          children: <Widget>[
+                            Text(
+                              Languages.of(context)!.serviceScreenFrom,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: darkColor,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
-                            textAlign: TextAlign.center,
-                            onSaved: (String? val) {
-                              _setTime = val;
-                            },
-                            enabled: false,
-                            keyboardType: TextInputType.text,
-                            controller: _timeController,
-                            decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                // labelText: 'Time',
-                                contentPadding: EdgeInsets.all(5)),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        Languages.of(context)!.serviceScreenTo,
-                        style: GoogleFonts.montserrat(
-                          textStyle: const TextStyle(
-                            color: darkColor,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      // widget.data['isFixed'] != null && widget.data['isFixed']
-                      //     ? _time2 != null
-                      //         ? Text(
-                      //             '  ' + _time2,
-                      //             style: GoogleFonts.montserrat(
-                      //               textStyle: const TextStyle(
-                      //                 color: darkColor,
-                      //                 fontSize: 20,
-                      //               ),
-                      //             ),
-                      //           )
-                      //         : Container()
-                      //     :
-                      InkWell(
-                        onTap: () {
-                          _selectTime2(context);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(10),
-                          width: _width! * 0.3,
-                          height: _height! * 0.085,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: lightPrimaryColor,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: TextFormField(
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                color: whiteColor,
-                                fontSize: 20,
+                            InkWell(
+                              onTap: () {
+                                _selectTime(context);
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(10),
+                                width: _width! * 0.3,
+                                height: _height! * 0.085,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: lightPrimaryColor,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: TextFormField(
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: whiteColor,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  onSaved: (String? val) {
+                                    _setTime = val;
+                                  },
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  controller: _timeController,
+                                  decoration: const InputDecoration(
+                                      disabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      // labelText: 'Time',
+                                      contentPadding: EdgeInsets.all(5)),
+                                ),
                               ),
                             ),
-                            textAlign: TextAlign.center,
-                            onSaved: (String? val) {
-                              _setTime2 = val;
-                            },
-                            enabled: false,
-                            keyboardType: TextInputType.text,
-                            controller: _timeController2,
-                            decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                // labelText: 'Time',
-                                contentPadding: EdgeInsets.all(5)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                            Text(
+                              Languages.of(context)!.serviceScreenTo,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: darkColor,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            // widget.data['isFixed'] != null && widget.data['isFixed']
+                            //     ? _time2 != null
+                            //         ? Text(
+                            //             '  ' + _time2,
+                            //             style: GoogleFonts.montserrat(
+                            //               textStyle: const TextStyle(
+                            //                 color: darkColor,
+                            //                 fontSize: 20,
+                            //               ),
+                            //             ),
+                            //           )
+                            //         : Container()
+                            //     :
+                            InkWell(
+                              onTap: () {
+                                _selectTime2(context);
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(10),
+                                width: _width! * 0.3,
+                                height: _height! * 0.085,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: lightPrimaryColor,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: TextFormField(
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: whiteColor,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  onSaved: (String? val) {
+                                    _setTime2 = val;
+                                  },
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  controller: _timeController2,
+                                  decoration: const InputDecoration(
+                                      disabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      // labelText: 'Time',
+                                      contentPadding: EdgeInsets.all(5)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
                   const SizedBox(height: 10),
-                  verifying
-                      ? Container(
-                          width: size.width * 0.8,
-                          child: Card(
-                            elevation: 10,
-                            child: loading1
-                                ? Container()
-                                : verified
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                DateFormat.yMMMd()
-                                                    .format(selectedDate)
-                                                    .toString(),
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: const TextStyle(
-                                                    color: darkColor,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                Languages.of(context)!
-                                                        .serviceScreenFrom +
-                                                    ' ' +
-                                                    _time!,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: const TextStyle(
-                                                    color: darkColor,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                Languages.of(context)!
-                                                        .serviceScreenTo +
-                                                    ' ' +
-                                                    _time2!,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: const TextStyle(
-                                                    color: darkColor,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 15,
-                                              ),
-                                              Text(
-                                                price.toString() + " UZS ",
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: const TextStyle(
-                                                    color: darkColor,
-                                                    fontSize: 25,
-                                                  ),
-                                                ),
-                                              ),
-
-                                              const SizedBox(height: 30),
-                                              Text(
-                                                Languages.of(context)!
-                                                    .serviceScreenPaymentMethod,
-                                                maxLines: 2,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: const TextStyle(
-                                                    color: darkPrimaryColor,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 20),
-                                              Row(
+                  space['isFree']
+                      ? verifying
+                          ? SizedBox(
+                              width: size.width * 0.8,
+                              child: Card(
+                                elevation: 10,
+                                child: loading1
+                                    ? Container()
+                                    : verified
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Center(
+                                              child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  place!
-                                                          .get(
-                                                              'payment_methods')
-                                                          .contains('cash')
-                                                      ? CupertinoButton(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          onPressed: () {
-                                                            if (payment_way ==
-                                                                'cash') {
-                                                              setState(() {
-                                                                payment_way =
-                                                                    '';
-                                                              });
-                                                            } else {
-                                                              setState(() {
-                                                                payment_way =
-                                                                    'cash';
-                                                              });
-                                                            }
-                                                          },
-                                                          child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: payment_way ==
-                                                                      'cash'
-                                                                  ? primaryColor
-                                                                  : whiteColor,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: payment_way ==
-                                                                          'cash'
-                                                                      ? primaryColor
-                                                                          .withOpacity(
-                                                                              0.5)
-                                                                      : darkColor
-                                                                          .withOpacity(
-                                                                              0.5),
-                                                                  spreadRadius:
-                                                                      5,
-                                                                  blurRadius: 7,
-                                                                  offset: const Offset(
-                                                                      0,
-                                                                      3), // changes position of shadow
-                                                                ),
-                                                              ],
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                              shape: BoxShape
-                                                                  .rectangle,
-                                                            ),
-                                                            width: size.width *
-                                                                0.3,
-                                                            height: 100,
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Icon(
-                                                                  CupertinoIcons
-                                                                      .money_dollar,
-                                                                  size: 40,
-                                                                  color: payment_way ==
-                                                                          'cash'
-                                                                      ? whiteColor
-                                                                      : darkPrimaryColor,
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Text(
-                                                                  payment_way ==
-                                                                          'cash'
-                                                                      ? 'Done'
-                                                                      : Languages.of(
-                                                                              context)!
-                                                                          .serviceScreenCash,
-                                                                  maxLines: 3,
-                                                                  style: GoogleFonts
-                                                                      .montserrat(
-                                                                    textStyle:
-                                                                        TextStyle(
-                                                                      color: payment_way ==
-                                                                              'cash'
-                                                                          ? whiteColor
-                                                                          : darkPrimaryColor,
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : Container(),
-                                                  const SizedBox(
-                                                    width: 20,
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    DateFormat.yMMMd()
+                                                        .format(selectedDate)
+                                                        .toString(),
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
                                                   ),
-                                                  place!
-                                                          .get(
-                                                              'payment_methods')
-                                                          .contains('octo')
-                                                      ? CupertinoButton(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          onPressed: () {
-                                                            if (payment_way ==
-                                                                'octo') {
-                                                              setState(() {
-                                                                payment_way =
-                                                                    '';
-                                                              });
-                                                            } else {
-                                                              setState(() {
-                                                                payment_way =
-                                                                    'octo';
-                                                              });
-                                                            }
-                                                          },
-                                                          child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: payment_way ==
-                                                                      'octo'
-                                                                  ? primaryColor
-                                                                  : whiteColor,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: payment_way ==
-                                                                          'octo'
-                                                                      ? primaryColor
-                                                                          .withOpacity(
-                                                                              0.5)
-                                                                      : darkColor
-                                                                          .withOpacity(
-                                                                              0.5),
-                                                                  spreadRadius:
-                                                                      5,
-                                                                  blurRadius: 7,
-                                                                  offset: const Offset(
-                                                                      0,
-                                                                      3), // changes position of shadow
-                                                                ),
-                                                              ],
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                              shape: BoxShape
-                                                                  .rectangle,
-                                                            ),
-                                                            width: size.width *
-                                                                0.3,
-                                                            height: 100,
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Icon(
-                                                                  CupertinoIcons
-                                                                      .creditcard,
-                                                                  size: 40,
-                                                                  color: payment_way ==
-                                                                          'octo'
-                                                                      ? whiteColor
-                                                                      : darkPrimaryColor,
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Text(
-                                                                  payment_way ==
-                                                                          'octo'
-                                                                      ? 'Done'
-                                                                      : Languages.of(
-                                                                              context)!
-                                                                          .serviceScreenCreditCard,
-                                                                  maxLines: 3,
-                                                                  style: GoogleFonts
-                                                                      .montserrat(
-                                                                    textStyle:
-                                                                        TextStyle(
-                                                                      color: payment_way ==
-                                                                              'octo'
-                                                                          ? whiteColor
-                                                                          : darkPrimaryColor,
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : Container(),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 35,
-                                              ),
-                                              payment_way.isNotEmpty
-                                                  ? Center(
-                                                      child: Builder(
-                                                        builder: (context) =>
-                                                            RoundedButton(
-                                                          ph: 40,
-                                                          pw: 100,
-                                                          text: 'Book',
-                                                          press: () async {
-                                                            setState(() {
-                                                              loading = true;
-                                                            });
-                                                            await _bookButton(
-                                                              formatDate(
-                                                                  DateTime(
-                                                                      2019,
-                                                                      08,
-                                                                      1,
-                                                                      selectedTime
-                                                                          .hour,
-                                                                      selectedTime.minute),
-                                                                  [
-                                                                    HH,
-                                                                    ':',
-                                                                    nn
-                                                                  ]),
-                                                              formatDate(
-                                                                  DateTime(
-                                                                      2019,
-                                                                      08,
-                                                                      1,
-                                                                      selectedTime2
-                                                                          .hour,
-                                                                      selectedTime2.minute),
-                                                                  [
-                                                                    HH,
-                                                                    ':',
-                                                                    nn
-                                                                  ]),
-                                                            );
-                                                            try {
-                                                              final response =
-                                                                  await InternetAddress
-                                                                      .lookup(
-                                                                          'footyuz.web.app');
-                                                              if (response
-                                                                  .isNotEmpty) {
-                                                                setState(() {
-                                                                  isConnected =
-                                                                      true;
-                                                                });
-                                                                if (can) {
-                                                                  String id = DateTime
-                                                                          .now()
-                                                                      .millisecondsSinceEpoch
-                                                                      .toString();
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'bookings')
-                                                                      .doc(id)
-                                                                      .set({
-                                                                    'place_id':
-                                                                        widget
-                                                                            .placeId,
-                                                                    'space_id':
-                                                                        widget
-                                                                            .spaceId,
-                                                                    'client_id': FirebaseAuth
-                                                                        .instance
-                                                                        .currentUser!
-                                                                        .uid,
-                                                                    'price': price
-                                                                        .roundToDouble(),
-                                                                    'from':
-                                                                        _time,
-                                                                    'to':
-                                                                        _time2,
-                                                                    // 'date': selectedDate
-                                                                    //     .toString(),
-                                                                    'timestamp_date':
-                                                                        selectedDate,
-                                                                    'status': place!
-                                                                            .get('needs_verification')
-                                                                        ? 'verification_needed'
-                                                                        : 'unfinished',
-                                                                    'deadline':
-                                                                        DateTime(
-                                                                      selectedDate
-                                                                          .year,
-                                                                      selectedDate
-                                                                          .month,
-                                                                      selectedDate
-                                                                          .day,
-                                                                      int.parse(
-                                                                              _hour!) -
-                                                                          1,
-                                                                      int.parse(
-                                                                          _minute!),
-                                                                    ),
-                                                                    'seen_status':
-                                                                        'unseen',
-                                                                    'isRated':
-                                                                        false,
-                                                                    'payment_method':
-                                                                        payment_way,
-                                                                  }).catchError(
-                                                                          (error) {
-                                                                    PushNotificationMessage
-                                                                        notification =
-                                                                        PushNotificationMessage(
-                                                                      title:
-                                                                          'Fail',
-                                                                      body:
-                                                                          'Failed to make booking',
-                                                                    );
-                                                                    showSimpleNotification(
-                                                                      Text(notification
-                                                                          .body),
-                                                                      position:
-                                                                          NotificationPosition
-                                                                              .top,
-                                                                      background:
-                                                                          Colors
-                                                                              .red,
-                                                                    );
-                                                                    if (mounted) {
-                                                                      setState(
-                                                                          () {
-                                                                        loading =
-                                                                            false;
-                                                                      });
-                                                                    } else {
-                                                                      loading =
-                                                                          false;
-                                                                    }
-                                                                  });
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                            .serviceScreenFrom +
+                                                        ' ' +
+                                                        _time!,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                            .serviceScreenTo +
+                                                        ' ' +
+                                                        _time2!,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 15,
+                                                  ),
+                                                  Text(
+                                                    price.toString() + " UZS ",
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
+                                                        fontSize: 25,
+                                                      ),
+                                                    ),
+                                                  ),
 
-                                                                  // Here comes notification
-
+                                                  const SizedBox(height: 30),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                        .serviceScreenPaymentMethod,
+                                                    maxLines: 2,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkPrimaryColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      place!
+                                                              .get(
+                                                                  'payment_methods')
+                                                              .contains('cash')
+                                                          ? CupertinoButton(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              onPressed: () {
+                                                                if (payment_way ==
+                                                                    'cash') {
                                                                   setState(() {
-                                                                    _dateController
-                                                                        .clear();
-                                                                    _timeController
-                                                                        .clear();
-                                                                    _timeController2
-                                                                        .clear();
-                                                                    selectedDate =
-                                                                        DateTime
-                                                                            .now();
-                                                                    _time =
-                                                                        null;
-                                                                    _time2 =
-                                                                        null;
-                                                                    duration =
-                                                                        0;
-                                                                    price = 0;
-                                                                    selectedTime = const TimeOfDay(
-                                                                        hour:
-                                                                            00,
-                                                                        minute:
-                                                                            00);
-                                                                    selectedTime2 = const TimeOfDay(
-                                                                        hour:
-                                                                            00,
-                                                                        minute:
-                                                                            00);
-                                                                    _setDate =
-                                                                        null;
-                                                                    _dow = null;
-                                                                    verified =
-                                                                        false;
-                                                                    loading1 =
-                                                                        false;
-                                                                    verifying =
-                                                                        false;
-                                                                    loading =
-                                                                        false;
-                                                                    can = true;
-                                                                    selectedDate =
-                                                                        DateTime
-                                                                            .now();
                                                                     payment_way =
                                                                         '';
                                                                   });
                                                                 } else {
                                                                   setState(() {
-                                                                    _dateController
-                                                                        .clear();
-                                                                    _timeController
-                                                                        .clear();
-                                                                    _timeController2
-                                                                        .clear();
-                                                                    selectedDate =
-                                                                        DateTime
-                                                                            .now();
-                                                                    _time =
-                                                                        null;
-                                                                    _time2 =
-                                                                        null;
-                                                                    duration =
-                                                                        0;
-                                                                    price = 0;
-                                                                    selectedTime = const TimeOfDay(
-                                                                        hour:
-                                                                            00,
-                                                                        minute:
-                                                                            00);
-                                                                    selectedTime2 = const TimeOfDay(
-                                                                        hour:
-                                                                            00,
-                                                                        minute:
-                                                                            00);
-                                                                    _setDate =
-                                                                        null;
-                                                                    _dow = null;
-                                                                    verified =
-                                                                        false;
-                                                                    loading1 =
-                                                                        false;
-                                                                    verifying =
-                                                                        false;
-                                                                    loading =
-                                                                        false;
-                                                                    can = true;
-                                                                    selectedDate =
-                                                                        DateTime
-                                                                            .now();
+                                                                    payment_way =
+                                                                        'cash';
+                                                                  });
+                                                                }
+                                                              },
+                                                              child: Container(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: payment_way ==
+                                                                          'cash'
+                                                                      ? primaryColor
+                                                                      : whiteColor,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: payment_way ==
+                                                                              'cash'
+                                                                          ? primaryColor.withOpacity(
+                                                                              0.5)
+                                                                          : darkColor
+                                                                              .withOpacity(0.5),
+                                                                      spreadRadius:
+                                                                          5,
+                                                                      blurRadius:
+                                                                          7,
+                                                                      offset: const Offset(
+                                                                          0,
+                                                                          3), // changes position of shadow
+                                                                    ),
+                                                                  ],
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  shape: BoxShape
+                                                                      .rectangle,
+                                                                ),
+                                                                width:
+                                                                    size.width *
+                                                                        0.3,
+                                                                height: 100,
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Icon(
+                                                                      CupertinoIcons
+                                                                          .money_dollar,
+                                                                      size: 40,
+                                                                      color: payment_way ==
+                                                                              'cash'
+                                                                          ? whiteColor
+                                                                          : darkPrimaryColor,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 5,
+                                                                    ),
+                                                                    Text(
+                                                                      payment_way ==
+                                                                              'cash'
+                                                                          ? 'Done'
+                                                                          : Languages.of(context)!
+                                                                              .serviceScreenCash,
+                                                                      maxLines:
+                                                                          3,
+                                                                      style: GoogleFonts
+                                                                          .montserrat(
+                                                                        textStyle:
+                                                                            TextStyle(
+                                                                          color: payment_way == 'cash'
+                                                                              ? whiteColor
+                                                                              : darkPrimaryColor,
+                                                                          fontSize:
+                                                                              15,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : Container(),
+                                                      const SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      place!
+                                                              .get(
+                                                                  'payment_methods')
+                                                              .contains('octo')
+                                                          ? CupertinoButton(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              onPressed: () {
+                                                                if (payment_way ==
+                                                                    'octo') {
+                                                                  setState(() {
                                                                     payment_way =
                                                                         '';
                                                                   });
+                                                                } else {
+                                                                  setState(() {
+                                                                    payment_way =
+                                                                        'octo';
+                                                                  });
                                                                 }
-                                                              }
-                                                            } on SocketException catch (err) {
-                                                              showDialog(
-                                                                barrierDismissible:
-                                                                    false,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return WillPopScope(
-                                                                    onWillPop:
-                                                                        () async =>
-                                                                            false,
-                                                                    child:
-                                                                        AlertDialog(
-                                                                      title: Text(
-                                                                          Languages.of(context)!
-                                                                              .serviceScreenNoInternet),
-                                                                      // content: Text(Languages.of(context).profileScreenWantToLeave),
-                                                                      actions: <
-                                                                          Widget>[
-                                                                        IconButton(
-                                                                          onPressed:
-                                                                              () async {
-                                                                            try {
-                                                                              final response = await InternetAddress.lookup('footyuz.web.app');
-                                                                              if (response.isNotEmpty) {
-                                                                                Navigator.of(context).pop(false);
-                                                                                setState(() {
-                                                                                  isConnected = true;
-                                                                                });
-                                                                              }
-                                                                            } on SocketException catch (err) {
-                                                                              setState(() {
-                                                                                isConnected = false;
-                                                                              });
-                                                                              print(err);
-                                                                            }
-                                                                          },
-                                                                          icon:
-                                                                              const Icon(CupertinoIcons.arrow_2_circlepath),
-                                                                          iconSize:
-                                                                              20,
-                                                                        ),
-                                                                      ],
+                                                              },
+                                                              child: Container(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: payment_way ==
+                                                                          'octo'
+                                                                      ? primaryColor
+                                                                      : whiteColor,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: payment_way ==
+                                                                              'octo'
+                                                                          ? primaryColor.withOpacity(
+                                                                              0.5)
+                                                                          : darkColor
+                                                                              .withOpacity(0.5),
+                                                                      spreadRadius:
+                                                                          5,
+                                                                      blurRadius:
+                                                                          7,
+                                                                      offset: const Offset(
+                                                                          0,
+                                                                          3), // changes position of shadow
                                                                     ),
+                                                                  ],
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  shape: BoxShape
+                                                                      .rectangle,
+                                                                ),
+                                                                width:
+                                                                    size.width *
+                                                                        0.3,
+                                                                height: 100,
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Icon(
+                                                                      CupertinoIcons
+                                                                          .creditcard,
+                                                                      size: 40,
+                                                                      color: payment_way ==
+                                                                              'octo'
+                                                                          ? whiteColor
+                                                                          : darkPrimaryColor,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height: 5,
+                                                                    ),
+                                                                    Text(
+                                                                      payment_way ==
+                                                                              'octo'
+                                                                          ? 'Done'
+                                                                          : Languages.of(context)!
+                                                                              .serviceScreenCreditCard,
+                                                                      maxLines:
+                                                                          3,
+                                                                      style: GoogleFonts
+                                                                          .montserrat(
+                                                                        textStyle:
+                                                                            TextStyle(
+                                                                          color: payment_way == 'octo'
+                                                                              ? whiteColor
+                                                                              : darkPrimaryColor,
+                                                                          fontSize:
+                                                                              15,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : Container(),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 35,
+                                                  ),
+                                                  payment_way.isNotEmpty
+                                                      ? Center(
+                                                          child: Builder(
+                                                            builder: (context) =>
+                                                                RoundedButton(
+                                                              ph: 40,
+                                                              pw: 100,
+                                                              text: 'Book',
+                                                              press: () async {
+                                                                setState(() {
+                                                                  loading =
+                                                                      true;
+                                                                });
+                                                                await _bookButton(
+                                                                  formatDate(
+                                                                      DateTime(
+                                                                          2019,
+                                                                          08,
+                                                                          1,
+                                                                          selectedTime
+                                                                              .hour,
+                                                                          selectedTime.minute),
+                                                                      [
+                                                                        HH,
+                                                                        ':',
+                                                                        nn
+                                                                      ]),
+                                                                  formatDate(
+                                                                      DateTime(
+                                                                          2019,
+                                                                          08,
+                                                                          1,
+                                                                          selectedTime2
+                                                                              .hour,
+                                                                          selectedTime2.minute),
+                                                                      [
+                                                                        HH,
+                                                                        ':',
+                                                                        nn
+                                                                      ]),
+                                                                );
+                                                                try {
+                                                                  final response =
+                                                                      await InternetAddress
+                                                                          .lookup(
+                                                                              'footyuz.web.app');
+                                                                  if (response
+                                                                      .isNotEmpty) {
+                                                                    setState(
+                                                                        () {
+                                                                      isConnected =
+                                                                          true;
+                                                                    });
+                                                                    if (can) {
+                                                                      String id = DateTime
+                                                                              .now()
+                                                                          .millisecondsSinceEpoch
+                                                                          .toString();
+                                                                      FirebaseFirestore
+                                                                          .instance
+                                                                          .collection(
+                                                                              'bookings')
+                                                                          .doc(
+                                                                              id)
+                                                                          .set({
+                                                                        'place_id':
+                                                                            widget.placeId,
+                                                                        'space_id':
+                                                                            widget.spaceId,
+                                                                        'client_id': FirebaseAuth
+                                                                            .instance
+                                                                            .currentUser!
+                                                                            .uid,
+                                                                        'price':
+                                                                            price.roundToDouble(),
+                                                                        'from':
+                                                                            _time,
+                                                                        'to':
+                                                                            _time2,
+                                                                        // 'date': selectedDate
+                                                                        //     .toString(),
+                                                                        'timestamp_date':
+                                                                            selectedDate,
+                                                                        'status': place!.get('needs_verification')
+                                                                            ? 'verification_needed'
+                                                                            : 'unfinished',
+                                                                        'deadline':
+                                                                            DateTime(
+                                                                          selectedDate
+                                                                              .year,
+                                                                          selectedDate
+                                                                              .month,
+                                                                          selectedDate
+                                                                              .day,
+                                                                          int.parse(_hour!) -
+                                                                              1,
+                                                                          int.parse(
+                                                                              _minute!),
+                                                                        ),
+                                                                        'seen_status':
+                                                                            'unseen',
+                                                                        'isRated':
+                                                                            false,
+                                                                        'payment_method':
+                                                                            payment_way,
+                                                                      }).catchError(
+                                                                              (error) {
+                                                                        PushNotificationMessage
+                                                                            notification =
+                                                                            PushNotificationMessage(
+                                                                          title:
+                                                                              'Fail',
+                                                                          body:
+                                                                              'Failed to make booking',
+                                                                        );
+                                                                        showSimpleNotification(
+                                                                          Text(notification
+                                                                              .body),
+                                                                          position:
+                                                                              NotificationPosition.top,
+                                                                          background:
+                                                                              Colors.red,
+                                                                        );
+                                                                        if (mounted) {
+                                                                          setState(
+                                                                              () {
+                                                                            loading =
+                                                                                false;
+                                                                          });
+                                                                        } else {
+                                                                          loading =
+                                                                              false;
+                                                                        }
+                                                                      });
+
+                                                                      // Here comes notification
+
+                                                                      setState(
+                                                                          () {
+                                                                        _dateController
+                                                                            .clear();
+                                                                        _timeController
+                                                                            .clear();
+                                                                        _timeController2
+                                                                            .clear();
+                                                                        selectedDate =
+                                                                            DateTime.now();
+                                                                        _time =
+                                                                            null;
+                                                                        _time2 =
+                                                                            null;
+                                                                        duration =
+                                                                            0;
+                                                                        price =
+                                                                            0;
+                                                                        selectedTime = const TimeOfDay(
+                                                                            hour:
+                                                                                00,
+                                                                            minute:
+                                                                                00);
+                                                                        selectedTime2 = const TimeOfDay(
+                                                                            hour:
+                                                                                00,
+                                                                            minute:
+                                                                                00);
+                                                                        _setDate =
+                                                                            null;
+                                                                        _dow =
+                                                                            null;
+                                                                        verified =
+                                                                            false;
+                                                                        loading1 =
+                                                                            false;
+                                                                        verifying =
+                                                                            false;
+                                                                        loading =
+                                                                            false;
+                                                                        can =
+                                                                            true;
+                                                                        selectedDate =
+                                                                            DateTime.now();
+                                                                        payment_way =
+                                                                            '';
+                                                                      });
+                                                                    } else {
+                                                                      setState(
+                                                                          () {
+                                                                        _dateController
+                                                                            .clear();
+                                                                        _timeController
+                                                                            .clear();
+                                                                        _timeController2
+                                                                            .clear();
+                                                                        selectedDate =
+                                                                            DateTime.now();
+                                                                        _time =
+                                                                            null;
+                                                                        _time2 =
+                                                                            null;
+                                                                        duration =
+                                                                            0;
+                                                                        price =
+                                                                            0;
+                                                                        selectedTime = const TimeOfDay(
+                                                                            hour:
+                                                                                00,
+                                                                            minute:
+                                                                                00);
+                                                                        selectedTime2 = const TimeOfDay(
+                                                                            hour:
+                                                                                00,
+                                                                            minute:
+                                                                                00);
+                                                                        _setDate =
+                                                                            null;
+                                                                        _dow =
+                                                                            null;
+                                                                        verified =
+                                                                            false;
+                                                                        loading1 =
+                                                                            false;
+                                                                        verifying =
+                                                                            false;
+                                                                        loading =
+                                                                            false;
+                                                                        can =
+                                                                            true;
+                                                                        selectedDate =
+                                                                            DateTime.now();
+                                                                        payment_way =
+                                                                            '';
+                                                                      });
+                                                                    }
+                                                                  }
+                                                                } on SocketException catch (err) {
+                                                                  showDialog(
+                                                                    barrierDismissible:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return WillPopScope(
+                                                                        onWillPop:
+                                                                            () async =>
+                                                                                false,
+                                                                        child:
+                                                                            AlertDialog(
+                                                                          title:
+                                                                              Text(Languages.of(context)!.serviceScreenNoInternet),
+                                                                          // content: Text(Languages.of(context).profileScreenWantToLeave),
+                                                                          actions: <
+                                                                              Widget>[
+                                                                            IconButton(
+                                                                              onPressed: () async {
+                                                                                try {
+                                                                                  final response = await InternetAddress.lookup('footyuz.web.app');
+                                                                                  if (response.isNotEmpty) {
+                                                                                    Navigator.of(context).pop(false);
+                                                                                    setState(() {
+                                                                                      isConnected = true;
+                                                                                    });
+                                                                                  }
+                                                                                } on SocketException catch (err) {
+                                                                                  setState(() {
+                                                                                    isConnected = false;
+                                                                                  });
+                                                                                  print(err);
+                                                                                }
+                                                                              },
+                                                                              icon: const Icon(CupertinoIcons.arrow_2_circlepath),
+                                                                              iconSize: 20,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                    },
                                                                   );
-                                                                },
-                                                              );
-                                                              setState(() {
-                                                                isConnected =
-                                                                    false;
-                                                              });
-                                                              print(err);
-                                                            }
-                                                          },
-                                                          color:
-                                                              darkPrimaryColor,
-                                                          textColor: whiteColor,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Container()
-                                              // Builder(
-                                              //   builder: (context) =>
-                                              //       RoundedButton(
-                                              //     width: 0.5,
-                                              //     height: 0.07,
-                                              //     text: 'Book',
-                                              //     press: () {
-                                              //       setState(() {
-                                              //         loading = true;
-                                              //       });
-                                              //       FirebaseFirestore
-                                              //           .instanceProfit
-                                              //           .collection(
-                                              //               'bookings')
-                                              //           .doc()
-                                              //           .set({
-                                              //         'placeId':
-                                              //             widget.placeId,
-                                              //         'serviceId': widget
-                                              //             .serviceId,
-                                              //         'userId':
-                                              //             FirebaseAuth
-                                              //                 .instance
-                                              //                 .currentUser
-                                              //                 .uid,
-                                              //         'price': price
-                                              //             .roundToDouble(),
-                                              //         'from': _time,
-                                              //         'to': _time2,
-                                              //         'date': selectedDate
-                                              //             .toString(),
-                                              //         'timestamp_date':
-                                              //             selectedDate,
-                                              //         'status': widget.data[
-                                              //                     'type'] ==
-                                              //                 'nonver'
-                                              //             ? 'unfinished'
-                                              //             : 'verification_needed',
-                                              //         'seen_status':
-                                              //             'unseen',
-                                              //         'isRated': false,
-                                              //       });
-                                              //       setState(() {
-                                              //         selectedDate =
-                                              //             DateTime.now();
-                                              //         _time = null;
-                                              //         _time2 = null;
-                                              //         duration = 0;
-                                              //         price = 0;
-                                              //         selectedTime =
-                                              //             TimeOfDay(
-                                              //                 hour: 00,
-                                              //                 minute: 00);
-                                              //         selectedTime2 =
-                                              //             TimeOfDay(
-                                              //                 hour: 00,
-                                              //                 minute: 00);
-                                              //         verified = false;
-                                              //         loading1 = false;
-                                              //         verifying = false;
-                                              //         loading = false;
-                                              //         selectedDate =
-                                              //             DateTime.now();
-                                              //         Scaffold.of(context)
-                                              //             .showSnackBar(
-                                              //           SnackBar(
-                                              //             backgroundColor:
-                                              //                 darkPrimaryColor,
-                                              //             content: Text(
-                                              //               'Booking was successful',
-                                              //               style: GoogleFonts
-                                              //                   .montserrat(
-                                              //                 textStyle:
-                                              //                     TextStyle(
-                                              //                   color:
-                                              //                       whiteColor,
-                                              //                   fontSize:
-                                              //                       30,
-                                              //                 ),
-                                              //               ),
-                                              //             ),
-                                              //           ),
-                                              //         );
-                                              //       });
-                                              //     },
-                                              //     color: darkPrimaryColor,
-                                              //     textColor: whiteColor,
-                                              //   ),
-                                              // ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            error!,
-                                            style: GoogleFonts.montserrat(
-                                              textStyle: const TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 30,
+                                                                  setState(() {
+                                                                    isConnected =
+                                                                        false;
+                                                                  });
+                                                                  print(err);
+                                                                }
+                                                              },
+                                                              color:
+                                                                  darkPrimaryColor,
+                                                              textColor:
+                                                                  whiteColor,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : Container()
+                                                  // Builder(
+                                                  //   builder: (context) =>
+                                                  //       RoundedButton(
+                                                  //     width: 0.5,
+                                                  //     height: 0.07,
+                                                  //     text: 'Book',
+                                                  //     press: () {
+                                                  //       setState(() {
+                                                  //         loading = true;
+                                                  //       });
+                                                  //       FirebaseFirestore
+                                                  //           .instanceProfit
+                                                  //           .collection(
+                                                  //               'bookings')
+                                                  //           .doc()
+                                                  //           .set({
+                                                  //         'placeId':
+                                                  //             widget.placeId,
+                                                  //         'serviceId': widget
+                                                  //             .serviceId,
+                                                  //         'userId':
+                                                  //             FirebaseAuth
+                                                  //                 .instance
+                                                  //                 .currentUser
+                                                  //                 .uid,
+                                                  //         'price': price
+                                                  //             .roundToDouble(),
+                                                  //         'from': _time,
+                                                  //         'to': _time2,
+                                                  //         'date': selectedDate
+                                                  //             .toString(),
+                                                  //         'timestamp_date':
+                                                  //             selectedDate,
+                                                  //         'status': widget.data[
+                                                  //                     'type'] ==
+                                                  //                 'nonver'
+                                                  //             ? 'unfinished'
+                                                  //             : 'verification_needed',
+                                                  //         'seen_status':
+                                                  //             'unseen',
+                                                  //         'isRated': false,
+                                                  //       });
+                                                  //       setState(() {
+                                                  //         selectedDate =
+                                                  //             DateTime.now();
+                                                  //         _time = null;
+                                                  //         _time2 = null;
+                                                  //         duration = 0;
+                                                  //         price = 0;
+                                                  //         selectedTime =
+                                                  //             TimeOfDay(
+                                                  //                 hour: 00,
+                                                  //                 minute: 00);
+                                                  //         selectedTime2 =
+                                                  //             TimeOfDay(
+                                                  //                 hour: 00,
+                                                  //                 minute: 00);
+                                                  //         verified = false;
+                                                  //         loading1 = false;
+                                                  //         verifying = false;
+                                                  //         loading = false;
+                                                  //         selectedDate =
+                                                  //             DateTime.now();
+                                                  //         Scaffold.of(context)
+                                                  //             .showSnackBar(
+                                                  //           SnackBar(
+                                                  //             backgroundColor:
+                                                  //                 darkPrimaryColor,
+                                                  //             content: Text(
+                                                  //               'Booking was successful',
+                                                  //               style: GoogleFonts
+                                                  //                   .montserrat(
+                                                  //                 textStyle:
+                                                  //                     TextStyle(
+                                                  //                   color:
+                                                  //                       whiteColor,
+                                                  //                   fontSize:
+                                                  //                       30,
+                                                  //                 ),
+                                                  //               ),
+                                                  //             ),
+                                                  //           ),
+                                                  //         );
+                                                  //       });
+                                                  //     },
+                                                  //     color: darkPrimaryColor,
+                                                  //     textColor: whiteColor,
+                                                  //   ),
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                error!,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 30,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                          ),
-                        )
+                              ),
+                            )
+                          : Container()
                       : Container(),
                   SizedBox(
                     height: size.height * 0.2,

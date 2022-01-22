@@ -21,6 +21,11 @@ abstract class Languages {
   String get loginScreenPolicy;
   String get loginScreenCodeIsNotValid;
 
+  String get homeScreenBook;
+  String get homeScreenFail;
+  String get homeScreenFailedToUpdate;
+  String get homeScreenSaved;
+
   String get mapScreenSearchHere;
   String get mapScreenLoadingMap;
 
@@ -42,4 +47,12 @@ abstract class Languages {
   String get serviceScreenPaymentMethod;
   String get serviceScreenCash;
   String get serviceScreenCreditCard;
+
+  String get historyScreenSchedule;
+  String get historyScreenHistory;
+  String get historyScreenUnpaid;
+  String get historyScreenInProcess;
+  String get historyScreenUpcoming;
+  String get historyScreenUnrated;
+  String get historyScreenVerificationNeeded;
 }
