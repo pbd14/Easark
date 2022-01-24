@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/components/edit_place.dart';
 import 'package:easark/Screens/BusinessScreen/components/space_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
@@ -12,6 +13,7 @@ import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 // ignore: must_be_immutable
 class PlaceScreen extends StatefulWidget {
@@ -25,6 +27,7 @@ class PlaceScreen extends StatefulWidget {
 class _PlaceScreenState extends State<PlaceScreen> {
   bool loading = true;
   bool infoExpansionPanel = false;
+  bool isActive = true;
   DocumentSnapshot? place;
   List spaces = [];
   List placeImages = [];
@@ -38,6 +41,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
     setState(() {
       spaces = place!.get('spaces');
       placeImages = place!.get('images');
+      isActive = place!.get('is_active');
       loading = false;
     });
   }
@@ -188,7 +192,83 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             color: Colors.red,
                             textColor: whiteColor,
                           ),
+                          const SizedBox(
+                            width: 20,
+                          ),
                         ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.8,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundedButton(
+                              pw: 120,
+                              ph: 45,
+                              text: isActive ? 'CLOSE' : 'OPEN',
+                              press: () async {
+                                setState(() {
+                                  loading = true;
+                                  isActive = !isActive;
+                                });
+                                FirebaseFirestore.instance
+                                    .collection('parking_places')
+                                    .doc(widget.placeId)
+                                    .update({
+                                  'is_active': isActive,
+                                }).catchError((error) {
+                                  PushNotificationMessage notification =
+                                      PushNotificationMessage(
+                                    title: 'Fail',
+                                    body: 'Failed to update',
+                                  );
+                                  showSimpleNotification(
+                                    Text(notification.body),
+                                    position: NotificationPosition.top,
+                                    background: Colors.red,
+                                  );
+                                  if (mounted) {
+                                    setState(() {
+                                      isActive = !isActive;
+                                      loading = false;
+                                    });
+                                  } else {
+                                    isActive = !isActive;
+                                    loading = false;
+                                  }
+                                });
+                                if (mounted) {
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                } else {
+                                  loading = false;
+                                }
+                              },
+                              color: !isActive ? greenColor : darkDarkColor,
+                              textColor: !isActive ? darkDarkColor : greenColor,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              isActive
+                                  ? ' Current state: OPEN'
+                                  : ' Current state: CLOSE',
+                              maxLines: 1000,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                    color: darkPrimaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         height: 40,

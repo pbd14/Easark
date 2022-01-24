@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Screens/BookingScreen/components/place_info_screen.dart';
-import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_map_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';

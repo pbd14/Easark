@@ -198,6 +198,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         'id': id,
                         'number_of_spaces': widget.data['number_of_spaces'],
                         'name': widget.data['name'],
+                        'is_active': true,
                         'description': widget.data['description'],
                         'country': widget.data['country'],
                         'state': widget.data['state'],

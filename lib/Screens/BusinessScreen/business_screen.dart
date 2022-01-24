@@ -98,6 +98,7 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
                         ),
+                        color: place.get('is_active') ? whiteColor : darkColor,
                         elevation: 10,
                         child: Padding(
                           padding: const EdgeInsets.all(10),
@@ -108,8 +109,10 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                                 place.get('name'),
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                      color: darkPrimaryColor,
+                                  textStyle: TextStyle(
+                                      color: place.get('is_active')
+                                          ? darkDarkColor
+                                          : whiteColor,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -122,8 +125,10 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                                     ' parking spaces',
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                      color: darkPrimaryColor,
+                                  textStyle: TextStyle(
+                                      color: place.get('is_active')
+                                          ? darkDarkColor
+                                          : whiteColor,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w400),
                                 ),
@@ -135,8 +140,10 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                                 "#" + place.id,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                      color: darkPrimaryColor,
+                                  textStyle: TextStyle(
+                                      color: place.get('is_active')
+                                          ? darkDarkColor
+                                          : whiteColor,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w400),
                                 ),
@@ -147,8 +154,10 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                               Text(
                                 place.get('city'),
                                 style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                      color: darkPrimaryColor,
+                                  textStyle: TextStyle(
+                                      color: place.get('is_active')
+                                          ? darkDarkColor
+                                          : whiteColor,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w400),
                                 ),
