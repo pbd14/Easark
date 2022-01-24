@@ -30,6 +30,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   int? numberOfSpaces;
   int? ppm;
   bool? is24hours = false;
+  String? name;
   String? description;
   String? currency = 'UZS';
   bool needsVer = false;
@@ -533,7 +534,34 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               ),
                               const Divider(),
                               const SizedBox(height: 20),
-
+                              TextFormField(
+                                validator: (val) => val!.length >= 5
+                                    ? null
+                                    : 'Minimum 5 characters',
+                                style: const TextStyle(color: darkDarkColor),
+                                keyboardType: TextInputType.name,
+                                onChanged: (val) {
+                                  name = val;
+                                },
+                                decoration: InputDecoration(
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: darkColor.withOpacity(0.7)),
+                                  hintText: 'Name',
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
                               TextFormField(
                                 validator: (val) => val!.length >= 5
                                     ? null
@@ -1988,6 +2016,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                 page: AddPlaceScreen2(
                                   data: {
                                     'number_of_spaces': numberOfSpaces,
+                                    'name': name,
                                     'description': description,
                                     'country': country,
                                     'state': state,
@@ -2026,6 +2055,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               loading = false;
                               numberOfSpaces = 0;
                               description = '';
+                              name = '';
                               needsVer = true;
                             });
                           } else {

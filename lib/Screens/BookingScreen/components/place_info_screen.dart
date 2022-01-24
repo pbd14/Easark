@@ -97,7 +97,7 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                         height: 40,
                       ),
                       Text(
-                        "#" + place!.id,
+                        place!.get('name'),
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.montserrat(
                           textStyle: const TextStyle(
@@ -111,6 +111,18 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                       ),
                       Text(
                         place!.get('city'),
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                              color: darkPrimaryColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "#" + place!.id,
                         style: GoogleFonts.montserrat(
                           textStyle: const TextStyle(
                               color: darkPrimaryColor,

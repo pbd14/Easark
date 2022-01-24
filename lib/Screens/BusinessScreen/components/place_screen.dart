@@ -332,8 +332,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                               .collection('parking_places')
                                               .doc(place!.id)
                                               .update({
-                                            'number_of_places':
-                                                place!.get('number_of_places') +
+                                            'number_of_spaces':
+                                                place!.get('number_of_spaces') +
                                                     1,
                                             'spaces': FieldValue.arrayUnion(
                                               [

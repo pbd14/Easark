@@ -105,7 +105,7 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "#" + place.id,
+                                place.get('name'),
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
@@ -120,6 +120,19 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
                               Text(
                                 place.get('number_of_spaces').toString() +
                                     ' parking spaces',
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "#" + place.id,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(

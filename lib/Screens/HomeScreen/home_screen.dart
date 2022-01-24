@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easark/Screens/BusinessScreen/business_screen.dart';
+import 'package:easark/Screens/BusinessScreen/core_screen.dart';
 import 'package:easark/Screens/HistoryScreen/history_screen.dart';
 import 'package:easark/Screens/MapScreen/map_screen.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _buildScreens() {
     return [
       MapScreen(),
-      const BusinessScreen(),
+      CoreScreen(),
       HistoryScreen(),
       ProfileScreen(),
     ];

@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/business_screen.dart';
+import 'package:easark/Screens/BusinessScreen/core_screen.dart';
 import 'package:easark/Widgets/loading_map_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
@@ -196,6 +197,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                           .set({
                         'id': id,
                         'number_of_spaces': widget.data['number_of_spaces'],
+                        'name': widget.data['name'],
                         'description': widget.data['description'],
                         'country': widget.data['country'],
                         'state': widget.data['state'],
@@ -238,7 +240,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                       );
                       Navigator.push(
                         context,
-                        SlideRightRoute(page: const BusinessScreen()),
+                        SlideRightRoute(page: CoreScreen()),
                       );
 
                       setState(() {

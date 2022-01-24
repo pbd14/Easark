@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
-import 'package:easark/Widgets/label_button.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
@@ -15,15 +14,15 @@ import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class History1 extends StatefulWidget {
-  const History1({Key? key}) : super(key: key);
+class BusinessSchedule extends StatefulWidget {
+  const BusinessSchedule({Key? key}) : super(key: key);
 
   @override
-  _History1State createState() => _History1State();
+  _BusinessScheduleState createState() => _BusinessScheduleState();
 }
 
-class _History1State extends State<History1>
-    with AutomaticKeepAliveClientMixin<History1> {
+class _BusinessScheduleState extends State<BusinessSchedule>
+    with AutomaticKeepAliveClientMixin<BusinessSchedule> {
   @override
   bool get wantKeepAlive => true;
   bool loading = true;
@@ -218,19 +217,19 @@ class _History1State extends State<History1>
         )
         .where(
           'status',
-          whereIn: ['unfinished', 'verification_needed'],
+          isEqualTo: 'unfinished',
         )
         .where(
-          'client_id',
+          'owner_id',
           isEqualTo: FirebaseAuth.instance.currentUser!.uid,
         )
         .snapshots()
         .listen((bookings) {
-          setState(() {
-            upcomingBookings = bookings.docs;
-            ordinaryBookPrep(bookings.docs);
-          });
-        });
+      setState(() {
+        upcomingBookings = bookings.docs;
+        ordinaryBookPrep(bookings.docs);
+      });
+    });
 
     inprocessBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
@@ -240,18 +239,18 @@ class _History1State extends State<History1>
         )
         .where(
           'status',
-          whereIn: ['in process'],
+          isEqualTo: 'in process',
         )
         .where(
-          'client_id',
+          'owner_id',
           isEqualTo: FirebaseAuth.instance.currentUser!.uid,
         )
         .snapshots()
         .listen((bookings) {
-          setState(() {
-            inprocessBookPrep(bookings.docs);
-          });
-        });
+      setState(() {
+        inprocessBookPrep(bookings.docs);
+      });
+    });
 
     unratedBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
@@ -261,23 +260,23 @@ class _History1State extends State<History1>
         )
         .where(
           'status',
-          whereIn: ['finished'],
+          isEqualTo: 'finished',
         )
         .where(
           'isRated',
           isEqualTo: false,
         )
         .where(
-          'client_id',
+          'owner_id',
           isEqualTo: FirebaseAuth.instance.currentUser!.uid,
         )
         .limit(10)
         .snapshots()
         .listen((bookings) {
-          setState(() {
-            unratedBookPrep(bookings.docs);
-          });
-        });
+      setState(() {
+        unratedBookPrep(bookings.docs);
+      });
+    });
     unpaidBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
         .orderBy(
@@ -289,7 +288,7 @@ class _History1State extends State<History1>
           isEqualTo: 'unpaid',
         )
         .where(
-          'client_id',
+          'owner_id',
           isEqualTo: FirebaseAuth.instance.currentUser!.uid,
         )
         .snapshots()
@@ -331,7 +330,7 @@ class _History1State extends State<History1>
         meetings.add(Meeting(
             upcomingPlaces != null
                 ? upcomingPlaces[book.id] != null
-                    ? upcomingPlaces[book.id]!.id
+                    ? upcomingPlaces[book.id]!.get('name')
                     : 'Place'
                 : 'Place',
             startTime,
@@ -403,6 +402,24 @@ class _History1State extends State<History1>
                     SliverList(
                       delegate: SliverChildListDelegate(
                         [
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          SizedBox(
+                            width: size.width * 0.9,
+                            child: Center(
+                              child: Text(
+                                'Business',
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ),
                           const SizedBox(
                             height: 15,
                           ),
@@ -1115,183 +1132,6 @@ class _History1State extends State<History1>
                                                 // crossAxisAlignment:
                                                 //     CrossAxisAlignment.end,
                                                 children: [
-                                                  upcomingPlaces[book.id] !=
-                                                          null
-                                                      ? LabelButton(
-                                                          isC: false,
-                                                          reverse: FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'users')
-                                                              .doc(FirebaseAuth
-                                                                  .instance
-                                                                  .currentUser!
-                                                                  .uid),
-                                                          containsValue:
-                                                              upcomingPlaces[
-                                                                      book.id]!
-                                                                  .id,
-                                                          color1: Colors.red,
-                                                          color2:
-                                                              lightPrimaryColor,
-                                                          size: 30,
-                                                          onTap: () {
-                                                            setState(() {
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(FirebaseAuth
-                                                                      .instance
-                                                                      .currentUser!
-                                                                      .uid)
-                                                                  .update({
-                                                                'favourites':
-                                                                    FieldValue
-                                                                        .arrayUnion([
-                                                                  upcomingPlaces[
-                                                                          book.id]!
-                                                                      .id
-                                                                ])
-                                                              }).catchError(
-                                                                      (error) {
-                                                                PushNotificationMessage
-                                                                    notification =
-                                                                    PushNotificationMessage(
-                                                                  title: Languages.of(
-                                                                          context)!
-                                                                      .homeScreenFail,
-                                                                  body: Languages.of(
-                                                                          context)!
-                                                                      .homeScreenFailedToUpdate,
-                                                                );
-                                                                showSimpleNotification(
-                                                                  Text(notification
-                                                                      .body),
-                                                                  position:
-                                                                      NotificationPosition
-                                                                          .top,
-                                                                  background:
-                                                                      Colors
-                                                                          .red,
-                                                                );
-                                                                if (mounted) {
-                                                                  setState(() {
-                                                                    loading =
-                                                                        false;
-                                                                  });
-                                                                } else {
-                                                                  loading =
-                                                                      false;
-                                                                }
-                                                              });
-                                                            });
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              SnackBar(
-                                                                duration:
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            2),
-                                                                backgroundColor:
-                                                                    darkPrimaryColor,
-                                                                content: Text(
-                                                                  Languages.of(
-                                                                          context)!
-                                                                      .homeScreenSaved,
-                                                                  style: GoogleFonts
-                                                                      .montserrat(
-                                                                    textStyle:
-                                                                        const TextStyle(
-                                                                      color:
-                                                                          whiteColor,
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                          onTap2: () {
-                                                            setState(() {
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(FirebaseAuth
-                                                                      .instance
-                                                                      .currentUser!
-                                                                      .uid)
-                                                                  .update({
-                                                                'favourites':
-                                                                    FieldValue
-                                                                        .arrayRemove([
-                                                                  upcomingPlaces[
-                                                                          book.id]!
-                                                                      .id
-                                                                ])
-                                                              }).catchError(
-                                                                      (error) {
-                                                                PushNotificationMessage
-                                                                    notification =
-                                                                    PushNotificationMessage(
-                                                                        title: Languages.of(context)!
-                                                                            .homeScreenFail,
-                                                                        body: Languages.of(context)!
-                                                                            .homeScreenFailedToUpdate);
-                                                                showSimpleNotification(
-                                                                  Text(notification
-                                                                      .body),
-                                                                  position:
-                                                                      NotificationPosition
-                                                                          .top,
-                                                                  background:
-                                                                      Colors
-                                                                          .red,
-                                                                );
-                                                                if (mounted) {
-                                                                  setState(() {
-                                                                    loading =
-                                                                        false;
-                                                                  });
-                                                                } else {
-                                                                  loading =
-                                                                      false;
-                                                                }
-                                                              });
-                                                            });
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              SnackBar(
-                                                                duration:
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            2),
-                                                                backgroundColor:
-                                                                    Colors.red,
-                                                                content: Text(
-                                                                  Languages.of(
-                                                                          context)!
-                                                                      .homeScreenSaved,
-                                                                  style: GoogleFonts
-                                                                      .montserrat(
-                                                                    textStyle:
-                                                                        const TextStyle(
-                                                                      color:
-                                                                          whiteColor,
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        )
-                                                      : Container(),
                                                   const SizedBox(height: 10),
                                                   IconButton(
                                                     iconSize: 30,

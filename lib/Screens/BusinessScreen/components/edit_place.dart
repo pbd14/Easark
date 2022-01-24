@@ -36,6 +36,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
   int? ppm;
   bool? is24hours = false;
   String? description;
+  String? name;
   String? currency = 'UZS';
   bool needsVer = false;
   bool? remoteConfigUpdated;
@@ -83,6 +84,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
       ppm = place!.get('ppm');
       is24hours = place!.get("is24");
       description = place!.get('description');
+      name = place!.get('name');
       currency = place!.get('currency');
       needsVer = place!.get('needs_verification');
       vacationDays = place!.get('vacation_days');
@@ -590,7 +592,35 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                               ),
                               const Divider(),
                               const SizedBox(height: 20),
-
+                              TextFormField(
+                                validator: (val) => val!.length >= 5
+                                    ? null
+                                    : 'Minimum 5 characters',
+                                style: const TextStyle(color: darkDarkColor),
+                                keyboardType: TextInputType.multiline,
+                                onChanged: (val) {
+                                  name = val;
+                                },
+                                initialValue: name,
+                                decoration: InputDecoration(
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: darkColor.withOpacity(0.7)),
+                                  hintText: 'Name',
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
                               TextFormField(
                                 validator: (val) => val!.length >= 5
                                     ? null
@@ -2121,6 +2151,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                 .collection('parking_places')
                                 .doc(place!.id)
                                 .update({
+                                  'name': name,
                               'description': description,
                               'country': country,
                               'state': state,
@@ -2179,6 +2210,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                             setState(() {
                               loading = false;
                               description = '';
+                              name = '';
                               needsVer = true;
                             });
                           } else {

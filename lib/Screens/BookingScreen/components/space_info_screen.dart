@@ -1508,6 +1508,8 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             .instance
                                                                             .currentUser!
                                                                             .uid,
+                                                                        'owner_id':
+                                                                            place!.get('owner_id'),
                                                                         'price':
                                                                             price.roundToDouble(),
                                                                         'from':
