@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/business_screen.dart';
 import 'package:easark/Screens/BusinessScreen/core_screen.dart';
+import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
@@ -345,7 +346,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                 Text(
                                                   DateFormat.yMMMd()
                                                       .format(booking
-                                                          .get('timestamp_date')
+                                                          .get('timestamp_from')
                                                           .toDate())
                                                       .toString(),
                                                   overflow: TextOverflow.ellipsis,
@@ -361,9 +362,44 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                   height: 10,
                                                 ),
                                                 Text(
-                                                  booking.get('from') +
-                                                      ' - ' +
-                                                      booking.get('to'),
+                                                  Languages.of(context)!
+                                                        .serviceScreenFrom +
+                                                    ' ' +
+                                                    DateFormat.yMMMd()
+                                                        .format(booking.get(
+                                                            'timestamp_from'))
+                                                        .toString() +
+                                                    ' ' +
+                                                    DateFormat.Hm()
+                                                        .format(booking.get(
+                                                            'timestamp_from'))
+                                                        .toString(),
+                                                        maxLines: 3,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: const TextStyle(
+                                                      color: darkColor,
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  Languages.of(context)!
+                                                        .serviceScreenTo +
+                                                    ' ' +
+                                                    DateFormat.yMMMd()
+                                                        .format(booking.get(
+                                                            'timestamp_to'))
+                                                        .toString() +
+                                                    ' ' +
+                                                    DateFormat.Hm()
+                                                        .format(booking.get(
+                                                            'timestamp_to'))
+                                                        .toString(),
+                                                        maxLines: 3,
                                                   overflow: TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(

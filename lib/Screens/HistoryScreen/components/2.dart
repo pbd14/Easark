@@ -58,7 +58,7 @@ class _History2State extends State<History2>
     ordinaryPlacesSubscr = FirebaseFirestore.instance
         .collection('bookings')
         .orderBy(
-          'timestamp_date',
+          'timestamp_from',
           descending: true,
         )
         .where(
@@ -140,7 +140,7 @@ class _History2State extends State<History2>
                                               Text(
                                                 DateFormat.yMMMd()
                                                     .format(book
-                                                        .get('timestamp_date')
+                                                        .get('timestamp_from')
                                                         .toDate())
                                                     .toString(),
                                                 overflow: TextOverflow.ellipsis,
@@ -156,9 +156,44 @@ class _History2State extends State<History2>
                                                 height: 10,
                                               ),
                                               Text(
-                                                book.get('from') +
-                                                    ' - ' +
-                                                    book.get('to'),
+                                                Languages.of(context)!
+                                                        .serviceScreenFrom +
+                                                    ' ' +
+                                                    DateFormat.yMMMd()
+                                                        .format(book.get(
+                                                            'timestamp_from'))
+                                                        .toString() +
+                                                    ' ' +
+                                                    DateFormat.Hm()
+                                                        .format(book.get(
+                                                            'timestamp_from'))
+                                                        .toString(),
+                                                        maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: const TextStyle(
+                                                    color: darkDarkColor,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                Languages.of(context)!
+                                                        .serviceScreenTo +
+                                                    ' ' +
+                                                    DateFormat.yMMMd()
+                                                        .format(book.get(
+                                                            'timestamp_to'))
+                                                        .toString() +
+                                                    ' ' +
+                                                    DateFormat.Hm()
+                                                        .format(book.get(
+                                                            'timestamp_to'))
+                                                        .toString(),
+                                                maxLines: 3,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(

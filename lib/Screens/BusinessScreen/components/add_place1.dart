@@ -60,7 +60,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
   final TextEditingController _dateController = TextEditingController();
 
-  List vacationDays = [];
+  List<String> vacationDays = [];
 
   TimeOfDay selectedTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedTime2 = const TimeOfDay(hour: 00, minute: 00);
@@ -588,8 +588,11 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               ),
                               const SizedBox(height: 30),
                               TextFormField(
-                                validator: (val) =>
-                                    val!.isNotEmpty ? int.parse(val) > 500 ? 'Maximum 500 spaces' :  null : 'Minimum 1 number',
+                                validator: (val) => val!.isNotEmpty
+                                    ? int.parse(val) > 500
+                                        ? 'Maximum 500 spaces'
+                                        : null
+                                    : 'Minimum 1 number',
                                 style: const TextStyle(color: darkDarkColor),
                                 keyboardType: TextInputType.number,
                                 onChanged: (val) {
@@ -1752,9 +1755,10 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                     text: 'Add',
                                     press: () {
                                       setState(() {
-                                        if (!vacationDays
-                                            .contains(selectedDate)) {
-                                          vacationDays.add(selectedDate);
+                                        if (!vacationDays.contains(
+                                            selectedDate.toString())) {
+                                          vacationDays
+                                              .add(selectedDate.toString());
                                           selectedDate = DateTime.now();
                                           _dateController.clear();
                                         }
@@ -1769,13 +1773,13 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                 height: 10,
                               ),
                               if (vacationDays.isNotEmpty)
-                                for (DateTime date in vacationDays)
+                                for (String date in vacationDays)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         DateFormat.yMMMd()
-                                            .format(date)
+                                            .format(DateTime.parse(date))
                                             .toString(),
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.montserrat(

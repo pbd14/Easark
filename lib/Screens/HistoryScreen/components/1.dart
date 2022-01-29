@@ -213,7 +213,7 @@ class _History1State extends State<History1>
     upcomingBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
         .orderBy(
-          'timestamp_date',
+          'timestamp_from',
           descending: false,
         )
         .where(
@@ -235,7 +235,7 @@ class _History1State extends State<History1>
     inprocessBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
         .orderBy(
-          'timestamp_date',
+          'timestamp_from',
           descending: false,
         )
         .where(
@@ -256,7 +256,7 @@ class _History1State extends State<History1>
     unratedBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
         .orderBy(
-          'timestamp_date',
+          'timestamp_from',
           descending: false,
         )
         .where(
@@ -281,7 +281,7 @@ class _History1State extends State<History1>
     unpaidBookSubscr = FirebaseFirestore.instance
         .collection('bookings')
         .orderBy(
-          'timestamp_date',
+          'timestamp_from',
           descending: false,
         )
         .where(
@@ -313,7 +313,7 @@ class _History1State extends State<History1>
     List<Meeting> meetings = <Meeting>[];
     if (upcomingBookings != null) {
       for (QueryDocumentSnapshot book in upcomingBookings) {
-        final DateTime today = book.get('timestamp_date').toDate();
+        final DateTime today = book.get('timestamp_from').toDate();
         final DateTime startTime = DateTime(
           today.year,
           today.month,
@@ -531,7 +531,7 @@ class _History1State extends State<History1>
                                                       DateFormat.yMMMd()
                                                           .format(book
                                                               .get(
-                                                                  'timestamp_date')
+                                                                  'timestamp_from')
                                                               .toDate())
                                                           .toString(),
                                                       overflow:
@@ -551,9 +551,47 @@ class _History1State extends State<History1>
                                                       height: 10,
                                                     ),
                                                     Text(
-                                                      book.get('from') +
-                                                          ' - ' +
-                                                          book.get('to'),
+                                                      Languages.of(context)!
+                                                              .serviceScreenFrom +
+                                                          ' ' +
+                                                          DateFormat.yMMMd()
+                                                              .format(book.get(
+                                                                  'timestamp_from'))
+                                                              .toString() +
+                                                          ' ' +
+                                                          DateFormat.Hm()
+                                                              .format(book.get(
+                                                                  'timestamp_from'))
+                                                              .toString(),
+                                                      maxLines: 3,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                          color: whiteColor,
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      Languages.of(context)!
+                                                              .serviceScreenTo +
+                                                          ' ' +
+                                                          DateFormat.yMMMd()
+                                                              .format(book.get(
+                                                                  'timestamp_to'))
+                                                              .toString() +
+                                                          ' ' +
+                                                          DateFormat.Hm()
+                                                              .format(book.get(
+                                                                  'timestamp_to'))
+                                                              .toString(),
+                                                      maxLines: 3,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: GoogleFonts
@@ -769,7 +807,7 @@ class _History1State extends State<History1>
                                                       DateFormat.yMMMd()
                                                           .format(book
                                                               .get(
-                                                                  'timestamp_date')
+                                                                  'timestamp_from')
                                                               .toDate())
                                                           .toString(),
                                                       overflow:
@@ -789,9 +827,47 @@ class _History1State extends State<History1>
                                                       height: 10,
                                                     ),
                                                     Text(
-                                                      book.get('from') +
-                                                          ' - ' +
-                                                          book.get('to'),
+                                                      Languages.of(context)!
+                                                              .serviceScreenFrom +
+                                                          ' ' +
+                                                          DateFormat.yMMMd()
+                                                              .format(book.get(
+                                                                  'timestamp_from'))
+                                                              .toString() +
+                                                          ' ' +
+                                                          DateFormat.Hm()
+                                                              .format(book.get(
+                                                                  'timestamp_from'))
+                                                              .toString(),
+                                                      maxLines: 3,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                          color: whiteColor,
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      Languages.of(context)!
+                                                              .serviceScreenTo +
+                                                          ' ' +
+                                                          DateFormat.yMMMd()
+                                                              .format(book.get(
+                                                                  'timestamp_to'))
+                                                              .toString() +
+                                                          ' ' +
+                                                          DateFormat.Hm()
+                                                              .format(book.get(
+                                                                  'timestamp_to'))
+                                                              .toString(),
+                                                      maxLines: 3,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: GoogleFonts
@@ -1011,7 +1087,7 @@ class _History1State extends State<History1>
                                                 Text(
                                                   DateFormat.yMMMd()
                                                       .format(book
-                                                          .get('timestamp_date')
+                                                          .get('timestamp_from')
                                                           .toDate())
                                                       .toString(),
                                                   overflow:
@@ -1029,9 +1105,45 @@ class _History1State extends State<History1>
                                                   height: 10,
                                                 ),
                                                 Text(
-                                                  book.get('from') +
-                                                      ' - ' +
-                                                      book.get('to'),
+                                                  Languages.of(context)!
+                                                          .serviceScreenFrom +
+                                                      ' ' +
+                                                      DateFormat.yMMMd()
+                                                          .format(book.get(
+                                                              'timestamp_from'))
+                                                          .toString() +
+                                                      ' ' +
+                                                      DateFormat.Hm()
+                                                          .format(book.get(
+                                                              'timestamp_from'))
+                                                          .toString(),
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: const TextStyle(
+                                                      color: darkDarkColor,
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  Languages.of(context)!
+                                                          .serviceScreenTo +
+                                                      ' ' +
+                                                      DateFormat.yMMMd()
+                                                          .format(book.get(
+                                                              'timestamp_to'))
+                                                          .toString() +
+                                                      ' ' +
+                                                      DateFormat.Hm()
+                                                          .format(book.get(
+                                                              'timestamp_to'))
+                                                          .toString(),
+                                                  maxLines: 3,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
@@ -1500,7 +1612,7 @@ class _History1State extends State<History1>
                                                               DateFormat.yMMMd()
                                                                   .format(book
                                                                       .get(
-                                                                          'timestamp_date')
+                                                                          'timestamp_from')
                                                                       .toDate())
                                                                   .toString(),
                                                               overflow:
@@ -1523,10 +1635,59 @@ class _History1State extends State<History1>
                                                               height: 10,
                                                             ),
                                                             Text(
-                                                              book.get('from') +
-                                                                  ' - ' +
-                                                                  book.get(
-                                                                      'to'),
+                                                              Languages.of(
+                                                                          context)!
+                                                                      .serviceScreenFrom +
+                                                                  ' ' +
+                                                                  DateFormat
+                                                                          .yMMMd()
+                                                                      .format(book
+                                                                          .get(
+                                                                              'timestamp_from'))
+                                                                      .toString() +
+                                                                  ' ' +
+                                                                  DateFormat
+                                                                          .Hm()
+                                                                      .format(book
+                                                                          .get(
+                                                                              'timestamp_from'))
+                                                                      .toString(),
+                                                              maxLines: 3,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: GoogleFonts
+                                                                  .montserrat(
+                                                                textStyle:
+                                                                    const TextStyle(
+                                                                  color:
+                                                                      whiteColor,
+                                                                  fontSize: 20,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(
+                                                              Languages.of(
+                                                                          context)!
+                                                                      .serviceScreenTo +
+                                                                  ' ' +
+                                                                  DateFormat
+                                                                          .yMMMd()
+                                                                      .format(book
+                                                                          .get(
+                                                                              'timestamp_to'))
+                                                                      .toString() +
+                                                                  ' ' +
+                                                                  DateFormat
+                                                                          .Hm()
+                                                                      .format(book
+                                                                          .get(
+                                                                              'timestamp_to'))
+                                                                      .toString(),
+                                                              maxLines: 3,
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Services/languages/languages.dart';
@@ -30,6 +29,8 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
   DocumentSnapshot? place;
   Map space = {};
 
+  List<QueryDocumentSnapshot> alreadyBookings = [];
+
   double? _height;
   double? _width;
   double duration = 0;
@@ -40,17 +41,18 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
   bool verifying = false;
   bool can = true;
   bool isConnected = false;
+  bool isDate1 = false;
+  bool isDate2 = false;
+  bool isTime1 = false;
+  bool isTime2 = false;
 
-  // ignore: unused_field
-  String? _setTime, _setTime2, _setDate, error;
-  String? _hour, _minute, _time, _dow;
-  String? _hour2, _minute2, _time2;
-  String? dateTime;
-  // ignore: non_constant_identifier_names
+  String? error;
+  String? fromTimeString;
+  String? _dow;
   String payment_way = '';
 
-  List imgList = [];
-  List<QueryDocumentSnapshot> alreadyBookings = [];
+  DateTime? timestamp_from;
+  DateTime? timestamp_to;
 
   DateTime selectedDate = DateTime.now();
 
@@ -69,12 +71,9 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     super.dispose();
   }
 
-  Future<void> _verify(time1, time2) async {
-    double dtime1 = selectedTime.minute + selectedTime.hour * 60.0;
-    double dtime2 = selectedTime2.minute + selectedTime2.hour * 60.0;
-    double dNow = DateTime.now().minute + DateTime.now().hour * 60.0;
-    if (selectedDate.isBefore(DateTime.now())) {
-      if (selectedDate.day != DateTime.now().day) {
+  Future<void> verify() async {
+    if (timestamp_from!.isBefore(DateTime.now())) {
+      if (timestamp_from!.day != DateTime.now().day) {
         setState(() {
           error = Languages.of(context)!.serviceScreenIncorrectDate;
           loading1 = false;
@@ -82,22 +81,20 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
         });
         return;
       } else {
-        if (dtime1 < dNow) {
-          setState(() {
-            error = Languages.of(context)!.serviceScreenIncorrectTime;
-            loading1 = false;
-            verified = false;
-          });
-          return;
-        }
+        setState(() {
+          error = Languages.of(context)!.serviceScreenIncorrectTime;
+          loading1 = false;
+          verified = false;
+        });
+        return;
       }
     }
 
     if (place!.get('needs_verification')) {
-      if (selectedDate.day == DateTime.now().day &&
-          selectedDate.month == DateTime.now().month &&
-          selectedDate.year == DateTime.now().year) {
-        if ((selectedTime.minute + selectedTime.hour * 60) -
+      if (timestamp_from!.day == DateTime.now().day &&
+          timestamp_from!.month == DateTime.now().month &&
+          timestamp_from!.year == DateTime.now().year) {
+        if ((timestamp_from!.minute + timestamp_from!.hour * 60) -
                 (DateTime.now().minute + DateTime.now().hour * 60) <
             120) {
           setState(() {
@@ -110,7 +107,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
       }
     }
 
-    if (dtime1 >= dtime2) {
+    if (timestamp_from!.isAfter(timestamp_to!)) {
       setState(() {
         error = Languages.of(context)!.serviceScreenIncorrectTime;
         loading1 = false;
@@ -119,9 +116,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
       return;
     } else {
       if (place!.get('vacation_days') != null &&
-          place!
-              .get('vacation_days')
-              .contains(Timestamp.fromDate(selectedDate))) {
+          place!.get('vacation_days').contains(selectedDate.toString())) {
         setState(() {
           error = 'This place is closed this day';
           loading1 = false;
@@ -141,7 +136,12 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
               DateFormat.Hm().parse(place!.get('days')[_dow]['from']));
           double dplaceTo = placeTo.minute + placeTo.hour * 60.0;
           double dplaceFrom = placeFrom.minute + placeFrom.hour * 60.0;
-          if (dtime1 < dplaceFrom || dtime2 < dplaceFrom) {
+
+          double dTimeFrom = timestamp_from!.hour.toDouble() * 60 +
+              timestamp_from!.minute.toDouble();
+          double dTimeTo = timestamp_to!.hour.toDouble() * 60 +
+              timestamp_to!.minute.toDouble();
+          if (dTimeFrom < dplaceFrom || dTimeTo < dplaceFrom) {
             setState(() {
               error = Languages.of(context)!.serviceScreenTooEarly;
               loading1 = false;
@@ -149,7 +149,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
             });
             return;
           }
-          if (dtime1 > dplaceTo || dtime2 > dplaceTo) {
+          if (dTimeFrom > dplaceTo || dTimeTo > dplaceTo) {
             setState(() {
               error = Languages.of(context)!.serviceScreenTooLate;
               loading1 = false;
@@ -157,13 +157,9 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
             });
             return;
           }
-          if (dtime1 >= dplaceFrom && dtime2 <= dplaceTo) {
-            QuerySnapshot data = await FirebaseFirestore.instance
+          if (dTimeFrom >= dplaceFrom && dTimeTo <= dplaceTo) {
+            QuerySnapshot alreadyBookings1 = await FirebaseFirestore.instance
                 .collection('bookings')
-                .where(
-                  'date',
-                  isEqualTo: selectedDate.toString(),
-                )
                 .where(
                   'place_id',
                   isEqualTo: widget.placeId,
@@ -172,44 +168,76 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                   'space_id',
                   isEqualTo: widget.spaceId,
                 )
+                .where('milliseconds_from',
+                    isGreaterThanOrEqualTo:
+                        timestamp_from!.millisecondsSinceEpoch)
+                .where('milliseconds_from',
+                    isLessThan: timestamp_to!.millisecondsSinceEpoch)
                 .get();
-            List _bookings = data.docs;
-            for (DocumentSnapshot booking in _bookings) {
-              TimeOfDay bookingTo = TimeOfDay.fromDateTime(
-                  DateFormat.Hm().parse(booking.get('to')));
-              TimeOfDay bookingFrom = TimeOfDay.fromDateTime(
-                  DateFormat.Hm().parse(booking.get('from')));
-              double dbookingTo = bookingTo.minute + bookingTo.hour * 60.0;
-              double dbookingFrom =
-                  bookingFrom.minute + bookingFrom.hour * 60.0;
-              if (dtime1 >= dbookingFrom && dtime1 < dbookingTo) {
-                setState(() {
-                  error = 'This time is already booked';
-                  loading1 = false;
-                  verified = false;
-                });
-                return;
-              }
-              if (dtime2 <= dbookingTo && dtime2 > dbookingFrom) {
-                setState(() {
-                  error = 'This time is already booked';
-                  loading1 = false;
-                  verified = false;
-                });
-                return;
-              }
-              if (dtime1 <= dbookingFrom && dtime2 >= dbookingTo) {
-                setState(() {
-                  error = 'This time is already booked';
-                  loading1 = false;
-                  verified = false;
-                });
-                return;
+            if (alreadyBookings1.docs.isNotEmpty) {
+              setState(() {
+                error = 'This time is already booked';
+                loading1 = false;
+                verified = false;
+              });
+              return;
+            }
+            QuerySnapshot alreadyBookings2 = await FirebaseFirestore.instance
+                .collection('bookings')
+                .where(
+                  'place_id',
+                  isEqualTo: widget.placeId,
+                )
+                .where(
+                  'space_id',
+                  isEqualTo: widget.spaceId,
+                )
+                .where('milliseconds_to',
+                    isGreaterThan: timestamp_from!.millisecondsSinceEpoch)
+                .where('milliseconds_to',
+                    isLessThanOrEqualTo: timestamp_to!.millisecondsSinceEpoch)
+                .get();
+            if (alreadyBookings2.docs.isNotEmpty) {
+              setState(() {
+                error = 'This time is already booked';
+                loading1 = false;
+                verified = false;
+              });
+              return;
+            }
+            QuerySnapshot alreadyBookings3 = await FirebaseFirestore.instance
+                .collection('bookings')
+                .where(
+                  'place_id',
+                  isEqualTo: widget.placeId,
+                )
+                .where(
+                  'space_id',
+                  isEqualTo: widget.spaceId,
+                )
+                .where('milliseconds_to',
+                    isGreaterThanOrEqualTo:
+                        timestamp_to!.millisecondsSinceEpoch)
+                .get();
+            if (alreadyBookings3.docs.isNotEmpty) {
+              for (QueryDocumentSnapshot book in alreadyBookings3.docs) {
+                if (book.get('milliseconds_from') <=
+                    timestamp_from!.millisecondsSinceEpoch) {
+                  setState(() {
+                    error = 'This time is already booked';
+                    loading1 = false;
+                    verified = false;
+                  });
+                  return;
+                }
               }
             }
 
             setState(() {
-              duration = dtime2 - dtime1;
+              duration = timestamp_to!
+                  .difference(timestamp_from!)
+                  .inMinutes
+                  .toDouble();
               price = duration * place!.get('ppm');
               loading1 = false;
               verified = true;
@@ -220,38 +248,25 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<void> _bookButton(time1, time2) async {
-    double dtime1 = selectedTime.minute + selectedTime.hour * 60.0;
-    double dtime2 = selectedTime2.minute + selectedTime2.hour * 60.0;
-    double dNow = DateTime.now().minute + DateTime.now().hour * 60.0;
-    // var bPlaceData = await FirebaseFirestore.instance
-    //     .collection('locations')
-    //     .doc(widget.placeId)
-    //     .get();
-    if (selectedDate.isBefore(DateTime.now())) {
-      if (selectedDate.day != DateTime.now().day) {
-        setState(() {
-          can = false;
-        });
-        return;
-      } else {
-        if (dtime1 < dNow) {
-          setState(() {
-            can = false;
-          });
-          return;
-        }
-      }
+  Future<void> bookButton() async {
+    if (timestamp_from!.isBefore(DateTime.now())) {
+      setState(() {
+        print('AHAHHA');
+        can = false;
+      });
+      return;
     }
 
-    if (dtime1 >= dtime2) {
+    if (timestamp_from!.isAfter(timestamp_to!)) {
       setState(() {
+        print('AHAHHA22');
         can = false;
       });
       return;
     } else {
       if (place!.get('days')[_dow]['status'] == 'closed') {
         setState(() {
+          print('AHAHHA33');
           can = false;
         });
         return;
@@ -262,25 +277,28 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
             DateFormat.Hm().parse(place!.get('days')[_dow]['from']));
         double dplaceTo = placeTo.minute + placeTo.hour * 60.0;
         double dplaceFrom = placeFrom.minute + placeFrom.hour * 60.0;
-        if (dtime1 < dplaceFrom || dtime2 < dplaceFrom) {
+
+        double dTimeFrom = timestamp_from!.hour.toDouble() * 60 +
+            timestamp_from!.minute.toDouble();
+        double dTimeTo = timestamp_to!.hour.toDouble() * 60 +
+            timestamp_to!.minute.toDouble();
+        if (dTimeFrom < dplaceFrom || dTimeTo < dplaceFrom) {
           setState(() {
+            print('AHAHHA44');
             can = false;
           });
           return;
         }
-        if (dtime1 > dplaceTo || dtime2 > dplaceTo) {
+        if (dTimeFrom > dplaceTo || dTimeTo > dplaceTo) {
           setState(() {
+            print('AHAHHA55');
             can = false;
           });
           return;
         }
-        if (dtime1 >= dplaceFrom && dtime2 <= dplaceTo) {
-          QuerySnapshot data = await FirebaseFirestore.instance
+        if (dTimeFrom >= dplaceFrom && dTimeTo <= dplaceTo) {
+          QuerySnapshot alreadyBookings1 = await FirebaseFirestore.instance
               .collection('bookings')
-              .where(
-                'date',
-                isEqualTo: selectedDate.toString(),
-              )
               .where(
                 'place_id',
                 isEqualTo: widget.placeId,
@@ -289,32 +307,63 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                 'space_id',
                 isEqualTo: widget.spaceId,
               )
+              .where('milliseconds_from',
+                  isGreaterThanOrEqualTo:
+                      timestamp_from!.millisecondsSinceEpoch)
+              .where('milliseconds_from',
+                  isLessThan: timestamp_to!.millisecondsSinceEpoch)
               .get();
-          List _bookings = data.docs;
-          for (DocumentSnapshot booking in _bookings) {
-            TimeOfDay bookingTo = TimeOfDay.fromDateTime(
-                DateFormat.Hm().parse(booking.get('to')));
-            TimeOfDay bookingFrom = TimeOfDay.fromDateTime(
-                DateFormat.Hm().parse(booking.get('from')));
-            double dbookingTo = bookingTo.minute + bookingTo.hour * 60.0;
-            double dbookingFrom = bookingFrom.minute + bookingFrom.hour * 60.0;
-            if (dtime1 >= dbookingFrom && dtime1 < dbookingTo) {
-              setState(() {
-                can = false;
-              });
-              return;
-            }
-            if (dtime2 <= dbookingTo && dtime2 > dbookingFrom) {
-              setState(() {
-                can = false;
-              });
-              return;
-            }
-            if (dtime1 <= dbookingFrom && dtime2 >= dbookingTo) {
-              setState(() {
-                can = false;
-              });
-              return;
+          if (alreadyBookings1.docs.isNotEmpty) {
+            setState(() {
+              print('AHAHHA77');
+              can = false;
+            });
+            return;
+          }
+          QuerySnapshot alreadyBookings2 = await FirebaseFirestore.instance
+              .collection('bookings')
+              .where(
+                'place_id',
+                isEqualTo: widget.placeId,
+              )
+              .where(
+                'space_id',
+                isEqualTo: widget.spaceId,
+              )
+              .where('milliseconds_to',
+                  isGreaterThan: timestamp_from!.millisecondsSinceEpoch)
+              .where('milliseconds_to',
+                  isLessThanOrEqualTo: timestamp_to!.millisecondsSinceEpoch)
+              .get();
+          if (alreadyBookings2.docs.isNotEmpty) {
+            setState(() {
+              print('AHAHHA66');
+              can = false;
+            });
+            return;
+          }
+          QuerySnapshot alreadyBookings3 = await FirebaseFirestore.instance
+              .collection('bookings')
+              .where(
+                'place_id',
+                isEqualTo: widget.placeId,
+              )
+              .where(
+                'space_id',
+                isEqualTo: widget.spaceId,
+              )
+              .where('milliseconds_to',
+                  isGreaterThanOrEqualTo: timestamp_to!.millisecondsSinceEpoch)
+              .get();
+          if (alreadyBookings3.docs.isNotEmpty) {
+            for (QueryDocumentSnapshot book in alreadyBookings3.docs) {
+              if (book.get('milliseconds_from') <=
+                  timestamp_from!.millisecondsSinceEpoch) {
+                setState(() {
+                  can = false;
+                });
+                return;
+              }
             }
           }
         }
@@ -322,7 +371,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
@@ -334,13 +383,14 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
         selectedDate = picked;
         _dateController.text = DateFormat.yMMMd().format(selectedDate);
         _dow = DateFormat.E().format(selectedDate);
+        isDate1 = true;
       });
       QuerySnapshot data1 = await FirebaseFirestore.instance
           .collection('bookings')
-          .orderBy('timestamp_date')
+          .orderBy('timestamp_from')
           .where(
             'date',
-            isEqualTo: selectedDate.toString(),
+            isEqualTo: selectedDate,
           )
           .where(
             'place_id',
@@ -352,19 +402,16 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
           )
           .get();
       alreadyBookings = data1.docs;
-      if (_dow != null && _time != null && _time2 != null) {
+      if (_dow != null && isDate1 && isTime1 && isTime2) {
         setState(() {
+          timestamp_from = DateTime(selectedDate.year, selectedDate.month,
+              selectedDate.day, selectedTime.hour, selectedTime.minute);
+          timestamp_to = DateTime(selectedDate.year, selectedDate.month,
+              selectedDate.day, selectedTime2.hour, selectedTime2.minute);
           loading1 = true;
           verifying = true;
         });
-        _verify(
-          formatDate(
-              DateTime(2019, 08, 1, selectedTime.hour, selectedTime.minute),
-              [HH, ':', nn]),
-          formatDate(
-              DateTime(2019, 08, 1, selectedTime2.hour, selectedTime2.minute),
-              [HH, ':', nn]),
-        );
+        verify();
       } else {
         setState(() {
           loading1 = false;
@@ -375,7 +422,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
@@ -383,59 +430,21 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     if (picked != null) {
       setState(() {
         selectedTime = picked;
-        _hour = selectedTime.hour.toString();
-        _minute = selectedTime.minute.toString();
-        if (int.parse(_minute!) < 10) {
-          _minute = '0' + _minute!;
-        }
-        _time = _hour! + ':' + _minute!;
-        _timeController.text = _time!;
         _timeController.text = formatDate(
             DateTime(2019, 08, 1, selectedTime.hour, selectedTime.minute),
             [HH, ':', nn]).toString();
-        // if (widget.data['isFixed'] != null && widget.data['isFixed']) {
-        //   int fixedHour = selectedTime.hour;
-        //   int fixedMinute = selectedTime.minute + widget.data['fixedDuration'];
-        //   while (fixedMinute >= 60) {
-        //     fixedHour = fixedHour + 1;
-        //     fixedMinute = fixedMinute - 60;
-        //   }
-        //   if (fixedHour > 23) {
-        //     error = Languages.of(context).serviceScreenTooLate;
-        //     loading1 = false;
-        //     verified = false;
-        //     String fixedMinuteString;
-        //     if (fixedMinute < 10) {
-        //       fixedMinuteString = '0' + fixedMinute.toString();
-        //     } else {
-        //       fixedMinuteString = fixedMinute.toString();
-        //     }
-        //     _time2 = fixedHour.toString() + ':' + fixedMinuteString;
-        //   } else {
-        //     String fixedMinuteString;
-        //     if (fixedMinute < 10) {
-        //       fixedMinuteString = '0' + fixedMinute.toString();
-        //     } else {
-        //       fixedMinuteString = fixedMinute.toString();
-        //     }
-        //     _time2 = fixedHour.toString() + ':' + fixedMinuteString;
-        //     selectedTime2 = TimeOfDay(hour: fixedHour, minute: fixedMinute);
-        //   }
-        // }
+        isTime1 = true;
       });
-      if (_dow != null && _time != null && _time2 != null) {
+      if (_dow != null && isDate1 && isTime1 && isTime2) {
         setState(() {
+          timestamp_from = DateTime(selectedDate.year, selectedDate.month,
+              selectedDate.day, selectedTime.hour, selectedTime.minute);
+          timestamp_to = DateTime(selectedDate.year, selectedDate.month,
+              selectedDate.day, selectedTime2.hour, selectedTime2.minute);
           loading1 = true;
           verifying = true;
         });
-        _verify(
-          formatDate(
-              DateTime(2019, 08, 1, selectedTime.hour, selectedTime.minute),
-              [HH, ':', nn]),
-          formatDate(
-              DateTime(2019, 08, 1, selectedTime2.hour, selectedTime2.minute),
-              [HH, ':', nn]),
-        );
+        verify();
       } else {
         setState(() {
           loading1 = false;
@@ -446,7 +455,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     }
   }
 
-  Future<void> _selectTime2(BuildContext context) async {
+  Future<void> selectTime2(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: selectedTime2,
@@ -454,32 +463,21 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
     if (picked != null) {
       setState(() {
         selectedTime2 = picked;
-        _hour2 = selectedTime2.hour.toString();
-        _minute2 = selectedTime2.minute.toString();
-        if (_minute2 == '0') {
-          _minute2 = '00';
-        } else if (int.parse(_minute2!) < 10) {
-          _minute2 = '0' + _minute2!;
-        }
-        _time2 = _hour2! + ':' + _minute2!;
-        _timeController2.text = _time2!;
         _timeController2.text = formatDate(
             DateTime(2019, 08, 1, selectedTime2.hour, selectedTime2.minute),
             [HH, ':', nn]).toString();
+        isTime2 = true;
       });
-      if (_dow != null && _time != null && _time2 != null) {
+      if (_dow != null && isDate1 && isTime1 && isTime2) {
         setState(() {
+          timestamp_from = DateTime(selectedDate.year, selectedDate.month,
+              selectedDate.day, selectedTime.hour, selectedTime.minute);
+          timestamp_to = DateTime(selectedDate.year, selectedDate.month,
+              selectedDate.day, selectedTime2.hour, selectedTime2.minute);
           verifying = true;
           loading1 = true;
         });
-        _verify(
-          formatDate(
-              DateTime(2019, 08, 1, selectedTime.hour, selectedTime.minute),
-              [HH, ':', nn]),
-          formatDate(
-              DateTime(2019, 08, 1, selectedTime2.hour, selectedTime2.minute),
-              [HH, ':', nn]),
-        );
+        verify();
       } else {
         setState(() {
           loading1 = false;
@@ -547,8 +545,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
         .doc(widget.placeId)
         .get()
         .then((value) {
-      // print('HERERE');
-      // print(value.data());
       setState(() {
         place = value;
         loading = false;
@@ -937,7 +933,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                _selectDate(context);
+                                selectDate(context);
                               },
                               child: Container(
                                 width: _width! * 0.5,
@@ -959,7 +955,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                   keyboardType: TextInputType.text,
                                   controller: _dateController,
                                   onSaved: (String? val) {
-                                    _setDate = val;
+                                    // _setDate = val;
                                   },
                                   decoration: const InputDecoration(
                                       disabledBorder: UnderlineInputBorder(
@@ -1037,7 +1033,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                _selectTime(context);
+                                selectTime(context);
                               },
                               child: Container(
                                 margin: const EdgeInsets.all(10),
@@ -1056,7 +1052,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                   ),
                                   textAlign: TextAlign.center,
                                   onSaved: (String? val) {
-                                    _setTime = val;
+                                    // _setTime = val;
                                   },
                                   enabled: false,
                                   keyboardType: TextInputType.text,
@@ -1093,7 +1089,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                             //     :
                             InkWell(
                               onTap: () {
-                                _selectTime2(context);
+                                selectTime2(context);
                               },
                               child: Container(
                                 margin: const EdgeInsets.all(10),
@@ -1111,9 +1107,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                     ),
                                   ),
                                   textAlign: TextAlign.center,
-                                  onSaved: (String? val) {
-                                    _setTime2 = val;
-                                  },
+                                  onSaved: (String? val) {},
                                   enabled: false,
                                   keyboardType: TextInputType.text,
                                   controller: _timeController2,
@@ -1148,26 +1142,19 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    DateFormat.yMMMd()
-                                                        .format(selectedDate)
-                                                        .toString(),
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                        color: darkColor,
-                                                        fontSize: 20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
                                                     Languages.of(context)!
                                                             .serviceScreenFrom +
                                                         ' ' +
-                                                        _time!,
+                                                        DateFormat.yMMMd()
+                                                            .format(
+                                                                timestamp_from!)
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(
+                                                                timestamp_from!)
+                                                            .toString(),
+                                                    maxLines: 3,
                                                     style:
                                                         GoogleFonts.montserrat(
                                                       textStyle:
@@ -1184,7 +1171,16 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                     Languages.of(context)!
                                                             .serviceScreenTo +
                                                         ' ' +
-                                                        _time2!,
+                                                        DateFormat.yMMMd()
+                                                            .format(
+                                                                timestamp_to!)
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(
+                                                                timestamp_to!)
+                                                            .toString(),
+                                                    maxLines: 3,
                                                     style:
                                                         GoogleFonts.montserrat(
                                                       textStyle:
@@ -1208,7 +1204,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                       ),
                                                     ),
                                                   ),
-
                                                   const SizedBox(height: 30),
                                                   Text(
                                                     Languages.of(context)!
@@ -1334,14 +1329,14 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                       place!
                                                               .get(
                                                                   'payment_methods')
-                                                              .contains('octo')
+                                                              .contains('card')
                                                           ? CupertinoButton(
                                                               padding:
                                                                   EdgeInsets
                                                                       .zero,
                                                               onPressed: () {
                                                                 if (payment_way ==
-                                                                    'octo') {
+                                                                    'card') {
                                                                   setState(() {
                                                                     payment_way =
                                                                         '';
@@ -1349,7 +1344,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                 } else {
                                                                   setState(() {
                                                                     payment_way =
-                                                                        'octo';
+                                                                        'card';
                                                                   });
                                                                 }
                                                               },
@@ -1357,13 +1352,13 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   color: payment_way ==
-                                                                          'octo'
+                                                                          'card'
                                                                       ? primaryColor
                                                                       : whiteColor,
                                                                   boxShadow: [
                                                                     BoxShadow(
                                                                       color: payment_way ==
-                                                                              'octo'
+                                                                              'card'
                                                                           ? primaryColor.withOpacity(
                                                                               0.5)
                                                                           : darkColor
@@ -1398,7 +1393,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                           .creditcard,
                                                                       size: 40,
                                                                       color: payment_way ==
-                                                                              'octo'
+                                                                              'card'
                                                                           ? whiteColor
                                                                           : darkPrimaryColor,
                                                                     ),
@@ -1407,7 +1402,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                     ),
                                                                     Text(
                                                                       payment_way ==
-                                                                              'octo'
+                                                                              'card'
                                                                           ? 'Done'
                                                                           : Languages.of(context)!
                                                                               .serviceScreenCreditCard,
@@ -1417,7 +1412,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                           .montserrat(
                                                                         textStyle:
                                                                             TextStyle(
-                                                                          color: payment_way == 'octo'
+                                                                          color: payment_way == 'card'
                                                                               ? whiteColor
                                                                               : darkPrimaryColor,
                                                                           fontSize:
@@ -1448,34 +1443,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                   loading =
                                                                       true;
                                                                 });
-                                                                await _bookButton(
-                                                                  formatDate(
-                                                                      DateTime(
-                                                                          2019,
-                                                                          08,
-                                                                          1,
-                                                                          selectedTime
-                                                                              .hour,
-                                                                          selectedTime.minute),
-                                                                      [
-                                                                        HH,
-                                                                        ':',
-                                                                        nn
-                                                                      ]),
-                                                                  formatDate(
-                                                                      DateTime(
-                                                                          2019,
-                                                                          08,
-                                                                          1,
-                                                                          selectedTime2
-                                                                              .hour,
-                                                                          selectedTime2.minute),
-                                                                      [
-                                                                        HH,
-                                                                        ':',
-                                                                        nn
-                                                                      ]),
-                                                                );
+                                                                await bookButton();
                                                                 try {
                                                                   final response =
                                                                       await InternetAddress
@@ -1508,34 +1476,37 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             .instance
                                                                             .currentUser!
                                                                             .uid,
+                                                                        'date':
+                                                                            selectedDate.toString(),
                                                                         'owner_id':
                                                                             place!.get('owner_id'),
                                                                         'price':
                                                                             price.roundToDouble(),
-                                                                        'from':
-                                                                            _time,
-                                                                        'to':
-                                                                            _time2,
-                                                                        // 'date': selectedDate
-                                                                        //     .toString(),
-                                                                        'timestamp_date':
-                                                                            selectedDate,
+                                                                        'from': formatDate(
+                                                                            timestamp_from!, [
+                                                                          HH,
+                                                                          ':',
+                                                                          nn
+                                                                        ]).toString(),
+                                                                        'to': formatDate(
+                                                                            timestamp_to!, [
+                                                                          HH,
+                                                                          ':',
+                                                                          nn
+                                                                        ]).toString(),
+                                                                        'timestamp_from':
+                                                                            timestamp_from!,
+                                                                        'timestamp_to':
+                                                                            timestamp_to!,
+                                                                        'milliseconds_from':
+                                                                            timestamp_from!.millisecondsSinceEpoch,
+                                                                        'milliseconds_to':
+                                                                            timestamp_to!.millisecondsSinceEpoch,
                                                                         'status': place!.get('needs_verification')
                                                                             ? 'verification_needed'
                                                                             : 'unfinished',
                                                                         'deadline':
-                                                                            DateTime(
-                                                                          selectedDate
-                                                                              .year,
-                                                                          selectedDate
-                                                                              .month,
-                                                                          selectedDate
-                                                                              .day,
-                                                                          int.parse(_hour!) -
-                                                                              1,
-                                                                          int.parse(
-                                                                              _minute!),
-                                                                        ),
+                                                                            timestamp_from!.subtract(const Duration(hours: 1)),
                                                                         'seen_status':
                                                                             'unseen',
                                                                         'isRated':
@@ -1584,10 +1555,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             .clear();
                                                                         selectedDate =
                                                                             DateTime.now();
-                                                                        _time =
-                                                                            null;
-                                                                        _time2 =
-                                                                            null;
                                                                         duration =
                                                                             0;
                                                                         price =
@@ -1602,8 +1569,14 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                                 00,
                                                                             minute:
                                                                                 00);
-                                                                        _setDate =
-                                                                            null;
+                                                                        isDate1 =
+                                                                            false;
+                                                                        isDate2 =
+                                                                            false;
+                                                                        isTime1 =
+                                                                            false;
+                                                                        isTime2 =
+                                                                            false;
                                                                         _dow =
                                                                             null;
                                                                         verified =
@@ -1632,10 +1605,14 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             .clear();
                                                                         selectedDate =
                                                                             DateTime.now();
-                                                                        _time =
-                                                                            null;
-                                                                        _time2 =
-                                                                            null;
+                                                                        isDate1 =
+                                                                            false;
+                                                                        isDate2 =
+                                                                            false;
+                                                                        isTime1 =
+                                                                            false;
+                                                                        isTime2 =
+                                                                            false;
                                                                         duration =
                                                                             0;
                                                                         price =
@@ -1650,8 +1627,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                                 00,
                                                                             minute:
                                                                                 00);
-                                                                        _setDate =
-                                                                            null;
                                                                         _dow =
                                                                             null;
                                                                         verified =
@@ -1731,95 +1706,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                           ),
                                                         )
                                                       : Container()
-                                                  // Builder(
-                                                  //   builder: (context) =>
-                                                  //       RoundedButton(
-                                                  //     width: 0.5,
-                                                  //     height: 0.07,
-                                                  //     text: 'Book',
-                                                  //     press: () {
-                                                  //       setState(() {
-                                                  //         loading = true;
-                                                  //       });
-                                                  //       FirebaseFirestore
-                                                  //           .instanceProfit
-                                                  //           .collection(
-                                                  //               'bookings')
-                                                  //           .doc()
-                                                  //           .set({
-                                                  //         'placeId':
-                                                  //             widget.placeId,
-                                                  //         'serviceId': widget
-                                                  //             .serviceId,
-                                                  //         'userId':
-                                                  //             FirebaseAuth
-                                                  //                 .instance
-                                                  //                 .currentUser
-                                                  //                 .uid,
-                                                  //         'price': price
-                                                  //             .roundToDouble(),
-                                                  //         'from': _time,
-                                                  //         'to': _time2,
-                                                  //         'date': selectedDate
-                                                  //             .toString(),
-                                                  //         'timestamp_date':
-                                                  //             selectedDate,
-                                                  //         'status': widget.data[
-                                                  //                     'type'] ==
-                                                  //                 'nonver'
-                                                  //             ? 'unfinished'
-                                                  //             : 'verification_needed',
-                                                  //         'seen_status':
-                                                  //             'unseen',
-                                                  //         'isRated': false,
-                                                  //       });
-                                                  //       setState(() {
-                                                  //         selectedDate =
-                                                  //             DateTime.now();
-                                                  //         _time = null;
-                                                  //         _time2 = null;
-                                                  //         duration = 0;
-                                                  //         price = 0;
-                                                  //         selectedTime =
-                                                  //             TimeOfDay(
-                                                  //                 hour: 00,
-                                                  //                 minute: 00);
-                                                  //         selectedTime2 =
-                                                  //             TimeOfDay(
-                                                  //                 hour: 00,
-                                                  //                 minute: 00);
-                                                  //         verified = false;
-                                                  //         loading1 = false;
-                                                  //         verifying = false;
-                                                  //         loading = false;
-                                                  //         selectedDate =
-                                                  //             DateTime.now();
-                                                  //         Scaffold.of(context)
-                                                  //             .showSnackBar(
-                                                  //           SnackBar(
-                                                  //             backgroundColor:
-                                                  //                 darkPrimaryColor,
-                                                  //             content: Text(
-                                                  //               'Booking was successful',
-                                                  //               style: GoogleFonts
-                                                  //                   .montserrat(
-                                                  //                 textStyle:
-                                                  //                     TextStyle(
-                                                  //                   color:
-                                                  //                       whiteColor,
-                                                  //                   fontSize:
-                                                  //                       30,
-                                                  //                 ),
-                                                  //               ),
-                                                  //             ),
-                                                  //           ),
-                                                  //         );
-                                                  //       });
-                                                  //     },
-                                                  //     color: darkPrimaryColor,
-                                                  //     textColor: whiteColor,
-                                                  //   ),
-                                                  // ),
                                                 ],
                                               ),
                                             ),
