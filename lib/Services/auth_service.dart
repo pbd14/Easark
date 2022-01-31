@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/HomeScreen/home_screen.dart';
 import 'package:easark/Screens/LoginScreen/login_screen.dart';
 import 'package:easark/Services/push_notification_service.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class AuthService {
   static final FirebaseMessaging _firebaseMessaging =
@@ -34,7 +36,8 @@ class AuthService {
           context,
           SlideRightRoute(
               page: SomethingWentWrongScreen(
-            error: "Failed to sign out: ${error.message}", key: null,
+            error: "Failed to sign out: ${error.message}",
+            key: null,
           )));
     });
     return res;
@@ -42,24 +45,41 @@ class AuthService {
 
   signIn(PhoneAuthCredential authCredential, BuildContext context) {
     try {
-      dynamic res = FirebaseAuth.instance
-          .signInWithCredential(authCredential)
-          .catchError((error) {
-        Navigator.push(
-            context,
-            SlideRightRoute(
-                page: SomethingWentWrongScreen(
-              error: "Something went wrong: ${error.message}",
-            )));
-      });
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .set({
-        'id': FirebaseAuth.instance.currentUser?.uid,
-        'status': 'default',
-        'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
-      });
+      Future<UserCredential> res =
+          FirebaseAuth.instance.signInWithCredential(authCredential);
+      //     .catchError((error) {
+      //   // Navigator.push(
+      //   //     context,
+      //   //     SlideRightRoute(
+      //   //         page: SomethingWentWrongScreen(
+      //   //       error: "Something went wrong: ${error.message}",
+      //   //     )));
+      //   PushNotificationMessage notification = PushNotificationMessage(
+      //     title: 'Fail',
+      //     body: 'Wrong code',
+      //   );
+      //   showSimpleNotification(
+      //     Text(notification.body),
+      //     position: NotificationPosition.top,
+      //     background: Colors.red,
+      //   );
+      //   // return Future.error(error);
+      // });
+
+      // DocumentSnapshot user = await FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(FirebaseAuth.instance.currentUser?.uid)
+      //     .get();
+      // if (!user.exists) {
+      //   FirebaseFirestore.instance
+      //       .collection('users')
+      //       .doc(FirebaseAuth.instance.currentUser?.uid)
+      //       .set({
+      //     'id': FirebaseAuth.instance.currentUser?.uid,
+      //     'status': 'default',
+      //     'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
+      //   });
+      // }
       final pushNotificationService =
           PushNotificationService(_firebaseMessaging);
       pushNotificationService.init();

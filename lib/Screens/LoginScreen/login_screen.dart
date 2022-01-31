@@ -1,4 +1,5 @@
 import 'package:easark/Models/LanguageData.dart';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Services/auth_service.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Services/languages/locale_constant.dart';
@@ -9,6 +10,7 @@ import 'package:easark/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class LoginScreen extends StatefulWidget {
   final String errors;
@@ -421,12 +423,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   : SizedBox(height: size.height * 0),
                               codeSent
                                   ? SizedBox(
-                                    width: size.width * 0.7,
-                                    child: TextFormField(
-                                        style:
-                                            const TextStyle(color: darkDarkColor),
-                                        validator: (val) =>
-                                            val!.isEmpty ? 'Enter a code' : null,
+                                      width: size.width * 0.7,
+                                      child: TextFormField(
+                                        style: const TextStyle(
+                                            color: darkDarkColor),
+                                        validator: (val) => val!.isEmpty
+                                            ? 'Enter a code'
+                                            : null,
                                         keyboardType: TextInputType.number,
                                         onChanged: (val) {
                                           setState(() {
@@ -434,21 +437,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                           });
                                         },
                                         decoration: InputDecoration(
-                                          focusedBorder: const OutlineInputBorder(
+                                          focusedBorder:
+                                              const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: darkColor, width: 1.0),
                                           ),
-                                          enabledBorder: const OutlineInputBorder(
+                                          enabledBorder:
+                                              const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: darkColor, width: 1.0),
                                           ),
                                           hintStyle: TextStyle(
-                                              color: darkColor.withOpacity(0.7)),
+                                              color:
+                                                  darkColor.withOpacity(0.7)),
                                           hintText: 'Code',
                                           border: InputBorder.none,
                                         ),
                                       ),
-                                  )
+                                    )
                                   : SizedBox(height: size.height * 0),
                               codeSent
                                   ? const SizedBox(height: 20)
@@ -469,15 +475,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                       loading = true;
                                     });
                                     if (codeSent) {
-                                      dynamic res = await AuthService()
-                                          .signInWithOTP(
-                                              smsCode, verificationId, context);
-                                      if (res == null) {
+                                      try {
+                                        UserCredential res = await AuthService()
+                                            .signInWithOTP(smsCode,
+                                                verificationId, context);
+                                      } catch (e) {
                                         setState(() {
                                           // error = 'Enter valid data';
                                           loading = false;
                                         });
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Fail',
+                                          body: 'Wrong code',
+                                        );
+                                        showSimpleNotification(
+                                          Text(notification.body),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
                                       }
+                                      // setState(() {
+                                      //     // error = 'Enter valid data';
+                                      //     loading = false;
+                                      //   });
                                     } else {
                                       await verifyPhone(phoneNo);
                                     }
