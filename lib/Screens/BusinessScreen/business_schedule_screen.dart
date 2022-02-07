@@ -1124,16 +1124,21 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                 Text(
                                                   Languages.of(context)!
                                                           .serviceScreenFrom +
-                                                      ' ' +
+                                                      '\n' +
                                                       DateFormat.yMMMd()
-                                                          .format(
-                                                            book.get(
-                                                              'timestamp_from'))
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(book
+                                                                  .get(
+                                                                      'timestamp_from')
+                                                                  .millisecondsSinceEpoch))
                                                           .toString() +
                                                       ' ' +
                                                       DateFormat.Hm()
-                                                          .format(book.get(
-                                                              'timestamp_from'))
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(book
+                                                                  .get(
+                                                                      'timestamp_from')
+                                                                  .millisecondsSinceEpoch))
                                                           .toString(),
                                                   maxLines: 3,
                                                   overflow:
@@ -1151,15 +1156,21 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                 Text(
                                                   Languages.of(context)!
                                                           .serviceScreenTo +
-                                                      ' ' +
+                                                      '\n' +
                                                       DateFormat.yMMMd()
-                                                          .format(book.get(
-                                                              'timestamp_to'))
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(book
+                                                                  .get(
+                                                                      'timestamp_to')
+                                                                  .millisecondsSinceEpoch))
                                                           .toString() +
                                                       ' ' +
                                                       DateFormat.Hm()
-                                                          .format(book.get(
-                                                              'timestamp_to'))
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(book
+                                                                  .get(
+                                                                      'timestamp_to')
+                                                                  .millisecondsSinceEpoch))
                                                           .toString(),
                                                   maxLines: 3,
                                                   overflow:

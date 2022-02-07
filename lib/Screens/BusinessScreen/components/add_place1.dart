@@ -28,10 +28,16 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = true;
   int? numberOfSpaces;
-  int? ppm;
+  int? price;
+  bool? isFixedPrice = false;
+  bool? isppm = false;
   bool? is24hours = false;
+  bool? isFreeTiming = false;
+  bool? isStandardTiming = false;
   String? name;
   String? description;
+  String? timing_mode;
+  String? pricing_mode;
   String? currency = 'UZS';
   bool needsVer = false;
   bool? remoteConfigUpdated;
@@ -645,17 +651,111 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                 },
                               ),
                               const SizedBox(height: 30),
-                              Text(
-                                'Price of the parking: ' +
-                                    currency! +
-                                    ' per minute',
-                                style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.info_circle,
                                     color: darkPrimaryColor,
-                                    fontSize: 20,
+                                    size: 30,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'There are two types of pricing: \n\n' +
+                                          '-\bFixed \bprice is when you set a fixed price for all orders, no matter of their duration and etc. For example if you set 100 UZS fixed price, it will be the same for every booking. \n\n' +
+                                          '-\bPrice \bper \bminute is when you set a price for using your parking for one minute. For example, is price per minute is 100 UZS, booking your paring place for 1 hour will cost 6000 UZS',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 100,
+                                      textAlign: TextAlign.start,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 30),
+                              DropdownButtonFormField<String>(
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return 'Choose pricing mode';
+                                  } else {
+                                    if (pricing_mode!.isEmpty) {
+                                      return 'Choose pricing mode';
+                                    } else {
+                                      return null;
+                                    }
+                                  }
+                                },
+                                hint: Text(
+                                  'Pricing mode',
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
+                                items: [
+                                  const DropdownMenuItem<String>(
+                                    value: 'fixedPrice',
+                                    child: Text('Fixed price'),
+                                  ),
+                                  const DropdownMenuItem<String>(
+                                    value: 'ppm',
+                                    child: Text('Price per minute'),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    pricing_mode = value;
+                                  });
+                                  switch (value) {
+                                    case 'ppm':
+                                      setState(() {
+                                        isppm = true;
+                                        isFixedPrice = false;
+                                      });
+                                      break;
+                                    case 'fixedPrice':
+                                      setState(() {
+                                        isFixedPrice = true;
+                                        isppm = false;
+                                      });
+                                      break;
+                                  }
+                                },
                               ),
+
+                              const SizedBox(height: 30),
+                              isppm!
+                                  ? Text(
+                                      'Price per minute: ' + currency!,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: const TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                              isFixedPrice!
+                                  ? Text(
+                                      'Fixed price: ' + currency!,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: const TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                               const SizedBox(height: 20),
                               TextFormField(
                                 validator: (val) =>
@@ -663,7 +763,11 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                 style: const TextStyle(color: darkDarkColor),
                                 keyboardType: TextInputType.number,
                                 onChanged: (val) {
-                                  ppm = int.parse(val);
+                                  if (isppm!) {
+                                    price = int.parse(val);
+                                  } else if (isFixedPrice!) {
+                                    price = int.parse(val);
+                                  }
                                 },
                                 decoration: InputDecoration(
                                   focusedBorder: const OutlineInputBorder(
@@ -676,9 +780,11 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                   ),
                                   hintStyle: TextStyle(
                                       color: darkColor.withOpacity(0.7)),
-                                  hintText: 'Price of the parking: ' +
-                                      currency! +
-                                      ' per minute',
+                                  hintText: isppm!
+                                      ? 'Price per minute: ' + currency!
+                                      : isFixedPrice!
+                                          ? 'Fixed price: ' + currency!
+                                          : '',
                                   border: InputBorder.none,
                                 ),
                               ),
@@ -964,722 +1070,848 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               const Divider(),
                               const SizedBox(height: 30),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Is it 24/7?',
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: const TextStyle(
-                                        color: darkColor,
-                                        fontSize: 20,
-                                      ),
-                                    ),
+                                  Icon(
+                                    CupertinoIcons.info_circle,
+                                    color: darkPrimaryColor,
+                                    size: 30,
                                   ),
-                                  const SizedBox(
+                                  SizedBox(
                                     width: 10,
                                   ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Switch(
-                                      activeColor: primaryColor,
-                                      value: is24hours!,
-                                      onChanged: (val) {
-                                        if (mounted) {
-                                          setState(() {
-                                            is24hours = val;
-                                          });
-                                        }
-                                      },
+                                  Expanded(
+                                    child: Text(
+                                      'There are three types types of timing: \n\n' +
+                                          '-\bStandard \btiming is when client books your parking place from time to another. For example, client can book your parking place from 7 am to 9 am. However, booking cannot last more than one day\n\n' +
+                                          '-\b24/7 \btiming is the same as \bStandard \btiming. However, bookings can last for more than one day. For this option your parking place should be open 24/7\n\n' +
+                                          '-\bFree \btiming is when there is no start and end times for booking. Client just uses your parking place for as long as needed. In this case price will increase as duration of parking increases.',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 100,
+                                      textAlign: TextAlign.start,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 30),
+                              DropdownButtonFormField<String>(
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return 'Choose timing mode';
+                                  } else {
+                                    if (timing_mode!.isEmpty) {
+                                      return 'Choose timing mode';
+                                    } else {
+                                      return null;
+                                    }
+                                  }
+                                },
+                                hint: Text(
+                                  'Timing mode',
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                items: [
+                                  const DropdownMenuItem<String>(
+                                    value: 'standard',
+                                    child: Text('Standard timing'),
+                                  ),
+                                  const DropdownMenuItem<String>(
+                                    value: '24hours',
+                                    child: Text('24/7 timing'),
+                                  ),
+                                  const DropdownMenuItem<String>(
+                                    value: 'free',
+                                    child: Text('Free timing'),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    timing_mode = value;
+                                  });
+                                  switch (value) {
+                                    case 'standard':
+                                      setState(() {
+                                        isStandardTiming = true;
+                                        is24hours = false;
+                                        isFreeTiming = false;
+                                      });
+                                      break;
+                                    case '24hours':
+                                      setState(() {
+                                        isStandardTiming = false;
+                                        is24hours = true;
+                                        isFreeTiming = false;
+                                      });
+                                      break;
+                                    case 'free':
+                                      setState(() {
+                                        isStandardTiming = false;
+                                        is24hours = false;
+                                        isFreeTiming = true;
+                                      });
+                                      break;
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 30),
                               !is24hours!
-                                  ? SizedBox(
-                                      width: size.width * 0.9,
-                                      height: 100,
-                                      child: GridView.count(
-                                        crossAxisCount: 7,
-                                        crossAxisSpacing: 5,
-                                        children: [
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (mon['status'] != null) {
-                                                  if (mon['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'mon';
-                                                if (mon['status'] != null) {
-                                                  _timeController.text =
-                                                      mon['from'];
-                                                  _timeController2.text =
-                                                      mon['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: mon['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Mon',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                  ? !isFreeTiming!
+                                      ? SizedBox(
+                                          width: size.width * 0.9,
+                                          height: 100,
+                                          child: GridView.count(
+                                            crossAxisCount: 7,
+                                            crossAxisSpacing: 5,
+                                            children: [
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (mon['status'] != null) {
+                                                      if (mon['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'mon';
+                                                    if (mon['status'] != null) {
+                                                      _timeController.text =
+                                                          mon['from'];
+                                                      _timeController2.text =
+                                                          mon['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: mon['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Mon',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'mon'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'mon'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (tue['status'] != null) {
-                                                  if (tue['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'tue';
-                                                if (tue['status'] != null) {
-                                                  _timeController.text =
-                                                      tue['from'];
-                                                  _timeController2.text =
-                                                      tue['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: tue['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Tue',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (tue['status'] != null) {
+                                                      if (tue['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'tue';
+                                                    if (tue['status'] != null) {
+                                                      _timeController.text =
+                                                          tue['from'];
+                                                      _timeController2.text =
+                                                          tue['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: tue['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Tue',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'tue'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'tue'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (wed['status'] != null) {
-                                                  if (wed['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'wed';
-                                                if (wed['status'] != null) {
-                                                  _timeController.text =
-                                                      wed['from'];
-                                                  _timeController2.text =
-                                                      wed['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: wed['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Wed',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (wed['status'] != null) {
+                                                      if (wed['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'wed';
+                                                    if (wed['status'] != null) {
+                                                      _timeController.text =
+                                                          wed['from'];
+                                                      _timeController2.text =
+                                                          wed['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: wed['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Wed',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'wed'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'wed'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (thu['status'] != null) {
-                                                  if (thu['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'thu';
-                                                if (thu['status'] != null) {
-                                                  _timeController.text =
-                                                      thu['from'];
-                                                  _timeController2.text =
-                                                      thu['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: thu['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Thu',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (thu['status'] != null) {
+                                                      if (thu['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'thu';
+                                                    if (thu['status'] != null) {
+                                                      _timeController.text =
+                                                          thu['from'];
+                                                      _timeController2.text =
+                                                          thu['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: thu['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Thu',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'thu'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'thu'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (fri['status'] != null) {
-                                                  if (fri['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'fri';
-                                                if (fri['status'] != null) {
-                                                  _timeController.text =
-                                                      fri['from'];
-                                                  _timeController2.text =
-                                                      fri['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: fri['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Fri',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (fri['status'] != null) {
+                                                      if (fri['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'fri';
+                                                    if (fri['status'] != null) {
+                                                      _timeController.text =
+                                                          fri['from'];
+                                                      _timeController2.text =
+                                                          fri['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: fri['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Fri',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'fri'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'fri'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (sat['status'] != null) {
-                                                  if (sat['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'sat';
-                                                if (sat['status'] != null) {
-                                                  _timeController.text =
-                                                      sat['from'];
-                                                  _timeController2.text =
-                                                      sat['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: sat['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Sat',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (sat['status'] != null) {
+                                                      if (sat['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'sat';
+                                                    if (sat['status'] != null) {
+                                                      _timeController.text =
+                                                          sat['from'];
+                                                      _timeController2.text =
+                                                          sat['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: sat['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Sat',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'sat'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'sat'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          CupertinoButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _hour = null;
-                                                _minute = null;
-                                                _time = null;
-                                                _hour2 = null;
-                                                _minute2 = null;
-                                                _time2 = null;
-                                                selectedTime = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                selectedTime2 = const TimeOfDay(
-                                                    hour: 00, minute: 00);
-                                                if (sun['status'] != null) {
-                                                  if (sun['status'] == 'open') {
-                                                    workingDay = true;
-                                                  } else {
-                                                    workingDay = false;
-                                                  }
-                                                } else {
-                                                  workingDay = true;
-                                                }
-                                                selectedDay = 'sun';
-                                                if (sun['status'] != null) {
-                                                  _timeController.text =
-                                                      sun['from'];
-                                                  _timeController2.text =
-                                                      sun['to'];
-                                                } else {
-                                                  _timeController.clear();
-                                                  _timeController2.clear();
-                                                }
-                                              });
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: sun['status'] != null
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .checkmark,
-                                                        size: 20,
-                                                        color: whiteColor,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        'Sun',
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle:
-                                                              const TextStyle(
+                                              CupertinoButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _hour = null;
+                                                    _minute = null;
+                                                    _time = null;
+                                                    _hour2 = null;
+                                                    _minute2 = null;
+                                                    _time2 = null;
+                                                    selectedTime =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    selectedTime2 =
+                                                        const TimeOfDay(
+                                                            hour: 00,
+                                                            minute: 00);
+                                                    if (sun['status'] != null) {
+                                                      if (sun['status'] ==
+                                                          'open') {
+                                                        workingDay = true;
+                                                      } else {
+                                                        workingDay = false;
+                                                      }
+                                                    } else {
+                                                      workingDay = true;
+                                                    }
+                                                    selectedDay = 'sun';
+                                                    if (sun['status'] != null) {
+                                                      _timeController.text =
+                                                          sun['from'];
+                                                      _timeController2.text =
+                                                          sun['to'];
+                                                    } else {
+                                                      _timeController.clear();
+                                                      _timeController2.clear();
+                                                    }
+                                                  });
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: sun['status'] != null
+                                                      ? const Center(
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .checkmark,
+                                                            size: 20,
                                                             color: whiteColor,
-                                                            fontSize: 10,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child: Text(
+                                                            'Sun',
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: selectedDay == 'sun'
-                                                    ? lightPrimaryColor
-                                                    : darkPrimaryColor,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: selectedDay == 'sun'
+                                                        ? lightPrimaryColor
+                                                        : darkPrimaryColor,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    )
+                                        )
+                                      : Container()
                                   : Container(),
                               const SizedBox(height: 10),
                               !is24hours!
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Working day?',
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Switch(
-                                            activeColor: primaryColor,
-                                            value: workingDay,
-                                            onChanged: (val) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  workingDay = val;
-                                                  switch (selectedDay) {
-                                                    case 'mon':
-                                                      setState(() {
-                                                        mon.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    case 'tue':
-                                                      setState(() {
-                                                        tue.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    case 'wed':
-                                                      setState(() {
-                                                        wed.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    case 'thu':
-                                                      setState(() {
-                                                        thu.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    case 'fri':
-                                                      setState(() {
-                                                        fri.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    case 'sat':
-                                                      setState(() {
-                                                        sat.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    case 'sun':
-                                                      setState(() {
-                                                        sun.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                      break;
-                                                    default:
-                                                      setState(() {
-                                                        mon.addAll({
-                                                          'status': 'closed'
-                                                        });
-                                                      });
-                                                  }
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : Container(),
-                              const SizedBox(height: 10),
-                              !is24hours!
-                                  ? workingDay
+                                  ? !isFreeTiming!
                                       ? Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                          children: <Widget>[
+                                          children: [
                                             Text(
-                                              'From',
+                                              'Working day?',
                                               style: GoogleFonts.montserrat(
                                                 textStyle: const TextStyle(
                                                   color: darkColor,
-                                                  fontSize: 15,
+                                                  fontSize: 20,
                                                 ),
                                               ),
                                             ),
-                                            InkWell(
-                                              onTap: () {
-                                                _selectTime(context);
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.all(10),
-                                                width: 70,
-                                                height: 50,
-                                                alignment: Alignment.center,
-                                                decoration: const BoxDecoration(
-                                                    color: lightPrimaryColor),
-                                                child: TextFormField(
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: const TextStyle(
-                                                      color: whiteColor,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  onSaved: (val) {},
-                                                  enabled: false,
-                                                  keyboardType:
-                                                      TextInputType.text,
-                                                  controller: _timeController,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          disabledBorder:
-                                                              UnderlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide
-                                                                          .none),
-                                                          // labelText: 'Time',
-                                                          contentPadding:
-                                                              EdgeInsets.all(
-                                                                  5)),
-                                                ),
-                                              ),
+                                            const SizedBox(
+                                              width: 10,
                                             ),
-                                            Text(
-                                              'To',
-                                              style: GoogleFonts.montserrat(
-                                                textStyle: const TextStyle(
-                                                  color: darkColor,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                _selectTime2(context);
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.all(10),
-                                                width: 70,
-                                                height: 50,
-                                                alignment: Alignment.center,
-                                                decoration: const BoxDecoration(
-                                                    color: lightPrimaryColor),
-                                                child: TextFormField(
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: const TextStyle(
-                                                      color: whiteColor,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  onSaved: (val) {},
-                                                  enabled: false,
-                                                  keyboardType:
-                                                      TextInputType.text,
-                                                  controller: _timeController2,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          disabledBorder:
-                                                              UnderlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide
-                                                                          .none),
-                                                          // labelText: 'Time',
-                                                          contentPadding:
-                                                              EdgeInsets.all(
-                                                                  5)),
-                                                ),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Switch(
+                                                activeColor: primaryColor,
+                                                value: workingDay,
+                                                onChanged: (val) {
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      workingDay = val;
+                                                      switch (selectedDay) {
+                                                        case 'mon':
+                                                          setState(() {
+                                                            mon.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        case 'tue':
+                                                          setState(() {
+                                                            tue.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        case 'wed':
+                                                          setState(() {
+                                                            wed.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        case 'thu':
+                                                          setState(() {
+                                                            thu.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        case 'fri':
+                                                          setState(() {
+                                                            fri.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        case 'sat':
+                                                          setState(() {
+                                                            sat.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        case 'sun':
+                                                          setState(() {
+                                                            sun.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                          break;
+                                                        default:
+                                                          setState(() {
+                                                            mon.addAll({
+                                                              'status': 'closed'
+                                                            });
+                                                          });
+                                                      }
+                                                    });
+                                                  }
+                                                },
                                               ),
                                             ),
                                           ],
                                         )
+                                      : Container()
+                                  : Container(),
+                              const SizedBox(height: 10),
+                              !is24hours!
+                                  ? !isFreeTiming!
+                                      ? workingDay
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  'From',
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: const TextStyle(
+                                                      color: darkColor,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    _selectTime(context);
+                                                  },
+                                                  child: Container(
+                                                    margin:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    width: 70,
+                                                    height: 50,
+                                                    alignment: Alignment.center,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            color:
+                                                                lightPrimaryColor),
+                                                    child: TextFormField(
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                          color: whiteColor,
+                                                          fontSize: 15,
+                                                        ),
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      onSaved: (val) {},
+                                                      enabled: false,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      controller:
+                                                          _timeController,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              disabledBorder:
+                                                                  UnderlineInputBorder(
+                                                                      borderSide:
+                                                                          BorderSide
+                                                                              .none),
+                                                              // labelText: 'Time',
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(5)),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'To',
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: const TextStyle(
+                                                      color: darkColor,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    _selectTime2(context);
+                                                  },
+                                                  child: Container(
+                                                    margin:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    width: 70,
+                                                    height: 50,
+                                                    alignment: Alignment.center,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            color:
+                                                                lightPrimaryColor),
+                                                    child: TextFormField(
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                          color: whiteColor,
+                                                          fontSize: 15,
+                                                        ),
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      onSaved: (val) {},
+                                                      enabled: false,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      controller:
+                                                          _timeController2,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              disabledBorder:
+                                                                  UnderlineInputBorder(
+                                                                      borderSide:
+                                                                          BorderSide
+                                                                              .none),
+                                                              // labelText: 'Time',
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(5)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Container()
                                       : Container()
                                   : Container(),
                             ],
@@ -2027,8 +2259,14 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                     'city': city,
                                     'needs_verification': needsVer,
                                     'currency': currency,
-                                    'ppm': ppm,
+                                    'pricing_mode': pricing_mode,
+                                    'price': price,
+                                    'isppm': isppm,
+                                    'isFixedPrice': isFixedPrice,
+                                    'timing_mode': timing_mode,
                                     'is24': is24hours,
+                                    'isStandardTiming': isStandardTiming,
+                                    'isFreeTiming': isFreeTiming,
                                     'payment_methods': payment_methods,
                                     'days': {
                                       'Mon': mon,
@@ -2042,12 +2280,18 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                     'vacation_days': vacationDays,
                                     'isActive': true,
                                     'images': [
-                                      await a1?.ref.getDownloadURL(),
-                                      await a2?.ref.getDownloadURL(),
-                                      await a3?.ref.getDownloadURL(),
-                                      await a4?.ref.getDownloadURL(),
-                                      await a5?.ref.getDownloadURL(),
-                                      await a6?.ref.getDownloadURL(),
+                                      if (a1 != null)
+                                        await a1.ref.getDownloadURL(),
+                                      if (a2 != null)
+                                        await a2.ref.getDownloadURL(),
+                                      if (a3 != null)
+                                        await a3.ref.getDownloadURL(),
+                                      if (a4 != null)
+                                        await a4.ref.getDownloadURL(),
+                                      if (a5 != null)
+                                        await a5.ref.getDownloadURL(),
+                                      if (a6 != null)
+                                        await a6.ref.getDownloadURL(),
                                     ],
                                     'owner_id':
                                         FirebaseAuth.instance.currentUser!.uid,
@@ -2060,6 +2304,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               numberOfSpaces = 0;
                               description = '';
                               name = '';
+
                               needsVer = true;
                             });
                           } else {
@@ -2087,6 +2332,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(height: size.height * 0.2),
                   ],
                 ),
               ),
