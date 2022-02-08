@@ -238,7 +238,11 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                   .difference(timestamp_from!)
                   .inMinutes
                   .toDouble();
-              price = duration * place!.get('ppm');
+              if (place!.get('isppm')) {
+                price = duration * place!.get('price');
+              } else if (place!.get('isFixedPrice')) {
+                price = place!.get('price');
+              }
               loading1 = false;
               verified = true;
             });
@@ -251,7 +255,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
   Future<void> bookButton() async {
     if (timestamp_from!.isBefore(DateTime.now())) {
       setState(() {
-        print('AHAHHA');
         can = false;
       });
       return;
@@ -259,14 +262,12 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
 
     if (timestamp_from!.isAfter(timestamp_to!)) {
       setState(() {
-        print('AHAHHA22');
         can = false;
       });
       return;
     } else {
       if (place!.get('days')[_dow]['status'] == 'closed') {
         setState(() {
-          print('AHAHHA33');
           can = false;
         });
         return;
@@ -284,14 +285,12 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
             timestamp_to!.minute.toDouble();
         if (dTimeFrom < dplaceFrom || dTimeTo < dplaceFrom) {
           setState(() {
-            print('AHAHHA44');
             can = false;
           });
           return;
         }
         if (dTimeFrom > dplaceTo || dTimeTo > dplaceTo) {
           setState(() {
-            print('AHAHHA55');
             can = false;
           });
           return;
@@ -315,7 +314,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
               .get();
           if (alreadyBookings1.docs.isNotEmpty) {
             setState(() {
-              print('AHAHHA77');
               can = false;
             });
             return;
@@ -337,7 +335,6 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
               .get();
           if (alreadyBookings2.docs.isNotEmpty) {
             setState(() {
-              print('AHAHHA66');
               can = false;
             });
             return;
@@ -1480,6 +1477,8 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             selectedDate.toString(),
                                                                         'owner_id':
                                                                             place!.get('owner_id'),
+                                                                        'currency':
+                                                                            place!.get('currency'),
                                                                         'price':
                                                                             price.roundToDouble(),
                                                                         'from': formatDate(
@@ -1511,6 +1510,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             'unseen',
                                                                         'isRated':
                                                                             false,
+                                                                        'isReported': false,
                                                                         'payment_method':
                                                                             payment_way,
                                                                       }).catchError(

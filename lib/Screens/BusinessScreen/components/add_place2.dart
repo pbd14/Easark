@@ -222,6 +222,7 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         'spaces': spaces,
                         'rates': {},
                         'owner_id': widget.data['owner_id'],
+                        'owner_phone': widget.data['owner_phone'],
                         'is_blocked': false,
                       }).catchError((error) {
                         PushNotificationMessage notification =

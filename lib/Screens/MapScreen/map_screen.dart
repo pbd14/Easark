@@ -201,10 +201,20 @@ class _MapScreenState extends State<MapScreen> {
                                           ),
                                         );
                                         setState(() {
-                                          currentPinInfo =
-                                              place.get('ppm').toString() +
-                                                  ' ' +
-                                                  place.get('currency') + ' per minute';
+                                          if (place.get('isppm')) {
+                                            currentPinInfo =
+                                                place.get('price').toString() +
+                                                    ' ' +
+                                                    place.get('currency') +
+                                                    ' per minute';
+                                          } else if (place.get('isFixedPrice')) {
+                                            currentPinInfo =
+                                                place.get('price').toString() +
+                                                    ' ' +
+                                                    place.get('currency') +
+                                                    ' fixed price';
+                                          }
+
                                           pinId = place.id;
                                           pinPillPosition = 100;
                                         });
@@ -307,7 +317,9 @@ class _MapScreenState extends State<MapScreen> {
                                   Navigator.push(
                                     context,
                                     SlideRightRoute(
-                                      page: PlaceInfoScreen(placeId: pinId!,),
+                                      page: PlaceInfoScreen(
+                                        placeId: pinId!,
+                                      ),
                                     ),
                                   );
                                 },

@@ -14,17 +14,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 // ignore: must_be_immutable
-class SpaceInfoScreenType2 extends StatefulWidget {
+class SpaceInfoScreenType3 extends StatefulWidget {
   String placeId;
   int spaceId;
-  SpaceInfoScreenType2({Key? key, required this.placeId, required this.spaceId})
+  SpaceInfoScreenType3({Key? key, required this.placeId, required this.spaceId})
       : super(key: key);
 
   @override
-  State<SpaceInfoScreenType2> createState() => _SpaceInfoScreenType2State();
+  State<SpaceInfoScreenType3> createState() => _SpaceInfoScreenType3State();
 }
 
-class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
+class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
   bool loading = true;
   DocumentSnapshot? place;
   Map space = {};
@@ -189,11 +189,7 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
       setState(() {
         duration =
             timestamp_to!.difference(timestamp_from!).inMinutes.toDouble();
-        if (place!.get('isppm')) {
-          price = duration * place!.get('price').toDouble();
-        } else if (place!.get('isFixedPrice')) {
-          price = place!.get('price').toDouble();
-        }
+        price = duration * place!.get('ppm');
         loading1 = false;
         verified = true;
       });
@@ -1151,8 +1147,6 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
                                                                         'seen_status':
                                                                             'unseen',
                                                                         'isRated':
-                                                                            false,
-                                                                        'isReported':
                                                                             false,
                                                                         'payment_method':
                                                                             payment_way,

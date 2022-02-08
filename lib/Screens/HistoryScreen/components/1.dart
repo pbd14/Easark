@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
-import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
+import 'package:easark/Screens/BookingScreen/booking_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/label_button.dart';
 import 'package:easark/Widgets/loading_screen.dart';
@@ -486,7 +486,9 @@ class _History1State extends State<History1>
                                     Navigator.push(
                                       context,
                                       SlideRightRoute(
-                                        page: ProfileScreen(),
+                                        page: BookingScreen(
+                                          bookingId: book.id,
+                                        ),
                                       ),
                                     );
                                     // _bookings = [];
@@ -768,14 +770,14 @@ class _History1State extends State<History1>
                                     setState(() {
                                       loading = true;
                                     });
-                                    // Navigator.push(
-                                    //   context,
-                                    //   SlideRightRoute(
-                                    //     page: OnEventScreen(
-                                    //       bookingId: book.id,
-                                    //     ),
-                                    //   ),
-                                    // );
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: BookingScreen(
+                                          bookingId: book.id,
+                                        ),
+                                      ),
+                                    );
 
                                     // _bookings = [];
                                     // _places = {};
@@ -1061,14 +1063,14 @@ class _History1State extends State<History1>
                                 setState(() {
                                   loading = true;
                                 });
-                                // Navigator.push(
-                                //   context,
-                                //   SlideRightRoute(
-                                //     page: OnEventScreen(
-                                //       bookingId: book.id,
-                                //     ),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: BookingScreen(
+                                      bookingId: book.id,
+                                    ),
+                                  ),
+                                );
 
                                 // _bookings = [];
                                 // _places = {};
@@ -1594,14 +1596,14 @@ class _History1State extends State<History1>
                                             setState(() {
                                               loading = true;
                                             });
-                                            // Navigator.push(
-                                            //   context,
-                                            //   SlideRightRoute(
-                                            //     page: OnEventScreen(
-                                            //       bookingId: book.id,
-                                            //     ),
-                                            //   ),
-                                            // );
+                                            Navigator.push(
+                                              context,
+                                              SlideRightRoute(
+                                                page: BookingScreen(
+                                                  bookingId: book.id,
+                                                ),
+                                              ),
+                                            );
 
                                             // _bookings = [];
                                             // upcomingPlaces = {};
@@ -1674,19 +1676,21 @@ class _History1State extends State<History1>
                                                               Languages.of(
                                                                           context)!
                                                                       .serviceScreenFrom +
-                                                                  ' ' +
+                                                                  '\n' +
                                                                   DateFormat
                                                                           .yMMMd()
-                                                                      .format(book
+                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                           .get(
-                                                                              'timestamp_from'))
+                                                                              'timestamp_from')
+                                                                          .millisecondsSinceEpoch))
                                                                       .toString() +
                                                                   ' ' +
                                                                   DateFormat
                                                                           .Hm()
-                                                                      .format(book
+                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                           .get(
-                                                                              'timestamp_from'))
+                                                                              'timestamp_from')
+                                                                          .millisecondsSinceEpoch))
                                                                       .toString(),
                                                               maxLines: 3,
                                                               overflow:
@@ -1709,20 +1713,22 @@ class _History1State extends State<History1>
                                                               Languages.of(
                                                                           context)!
                                                                       .serviceScreenTo +
-                                                                  ' ' +
-                                                                  DateFormat
-                                                                          .yMMMd()
-                                                                      .format(book
-                                                                          .get(
-                                                                              'timestamp_to'))
-                                                                      .toString() +
-                                                                  ' ' +
-                                                                  DateFormat
-                                                                          .Hm()
-                                                                      .format(book
-                                                                          .get(
-                                                                              'timestamp_to'))
-                                                                      .toString(),
+                                                                  '\n' +
+                                                          DateFormat.yMMMd()
+                                                              .format(DateTime
+                                                                  .fromMillisecondsSinceEpoch(book
+                                                                      .get(
+                                                                          'timestamp_to')
+                                                                      .millisecondsSinceEpoch))
+                                                              .toString() +
+                                                          ' ' +
+                                                          DateFormat.Hm()
+                                                              .format(DateTime
+                                                                  .fromMillisecondsSinceEpoch(book
+                                                                      .get(
+                                                                          'timestamp_to')
+                                                                      .millisecondsSinceEpoch))
+                                                              .toString(),
                                                               maxLines: 3,
                                                               overflow:
                                                                   TextOverflow

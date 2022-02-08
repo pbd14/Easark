@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
+import 'package:easark/Screens/BusinessScreen/booking_management_screen.dart';
 import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_screen.dart';
@@ -503,7 +504,9 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                     Navigator.push(
                                       context,
                                       SlideRightRoute(
-                                        page: ProfileScreen(),
+                                        page: BookingManagementScreen(
+                                          bookingId: book.id,
+                                        ),
                                       ),
                                     );
                                     // _bookings = [];
@@ -773,14 +776,14 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                     setState(() {
                                       loading = true;
                                     });
-                                    // Navigator.push(
-                                    //   context,
-                                    //   SlideRightRoute(
-                                    //     page: OnEventScreen(
-                                    //       bookingId: book.id,
-                                    //     ),
-                                    //   ),
-                                    // );
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: BookingManagementScreen(
+                                          bookingId: book.id,
+                                        ),
+                                      ),
+                                    );
 
                                     // _bookings = [];
                                     // _places = {};
@@ -1054,14 +1057,14 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                 setState(() {
                                   loading = true;
                                 });
-                                // Navigator.push(
-                                //   context,
-                                //   SlideRightRoute(
-                                //     page: OnEventScreen(
-                                //       bookingId: book.id,
-                                //     ),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: BookingManagementScreen(
+                                      bookingId: book.id,
+                                    ),
+                                  ),
+                                );
 
                                 // _bookings = [];
                                 // _places = {};
@@ -1410,14 +1413,12 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                             setState(() {
                                               loading = true;
                                             });
-                                            // Navigator.push(
-                                            //   context,
-                                            //   SlideRightRoute(
-                                            //     page: OnEventScreen(
-                                            //       bookingId: book.id,
-                                            //     ),
-                                            //   ),
-                                            // );
+                                            Navigator.push(
+                                              context,
+                                              SlideRightRoute(
+                                                page: BookingManagementScreen(bookingId: book.id,),
+                                              ),
+                                            );
 
                                             // _bookings = [];
                                             // upcomingPlaces = {};
@@ -1490,19 +1491,21 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                               Languages.of(
                                                                           context)!
                                                                       .serviceScreenFrom +
-                                                                  ' ' +
+                                                                  '\n' +
                                                                   DateFormat
                                                                           .yMMMd()
-                                                                      .format(book
+                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                           .get(
-                                                                              'timestamp_from'))
+                                                                              'timestamp_from')
+                                                                          .millisecondsSinceEpoch))
                                                                       .toString() +
                                                                   ' ' +
                                                                   DateFormat
                                                                           .Hm()
-                                                                      .format(book
+                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                           .get(
-                                                                              'timestamp_from'))
+                                                                              'timestamp_from')
+                                                                          .millisecondsSinceEpoch))
                                                                       .toString(),
                                                               maxLines: 3,
                                                               overflow:
@@ -1525,19 +1528,21 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                               Languages.of(
                                                                           context)!
                                                                       .serviceScreenTo +
-                                                                  ' ' +
+                                                                  '\n' +
                                                                   DateFormat
                                                                           .yMMMd()
-                                                                      .format(book
+                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                           .get(
-                                                                              'timestamp_to'))
+                                                                              'timestamp_to')
+                                                                          .millisecondsSinceEpoch))
                                                                       .toString() +
                                                                   ' ' +
                                                                   DateFormat
                                                                           .Hm()
-                                                                      .format(book
+                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                           .get(
-                                                                              'timestamp_to'))
+                                                                              'timestamp_to')
+                                                                          .millisecondsSinceEpoch))
                                                                       .toString(),
                                                               maxLines: 3,
                                                               overflow:

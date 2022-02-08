@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Screens/BookingScreen/components/space_info_screen.dart';
 import 'package:easark/Screens/BookingScreen/components/space_info_type2_screen.dart';
+import 'package:easark/Screens/BookingScreen/components/space_info_type3_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/constants.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,28 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                               color: darkPrimaryColor,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        place!.get('isppm')
+                            ? place!.get('price').toString() +
+                                ' ' +
+                                place!.get('currency') +
+                                ' per minute'
+                            : place!.get('isFixedPrice')
+                                ? place!.get('price').toString() +
+                                    ' ' +
+                                    place!.get('currency') +
+                                    ' fixed price'
+                                : 'Price',
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                              color: darkPrimaryColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400),
                         ),
                       ),
                       const SizedBox(
@@ -304,10 +327,15 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                           placeId: place!.id,
                                           spaceId: space['id'],
                                         )
-                                      : SpaceInfoScreen(
-                                          placeId: place!.id,
-                                          spaceId: space['id'],
-                                        );
+                                      : place!.get('isFreeTiming')
+                                          ? SpaceInfoScreenType3(
+                                              placeId: place!.id,
+                                              spaceId: space['id'],
+                                            )
+                                          : SpaceInfoScreen(
+                                              placeId: place!.id,
+                                              spaceId: space['id'],
+                                            );
                                 },
                               )
                           ],

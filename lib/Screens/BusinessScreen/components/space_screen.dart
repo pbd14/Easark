@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
+import 'package:easark/Screens/BusinessScreen/booking_management_screen.dart';
 import 'package:easark/Screens/BusinessScreen/business_screen.dart';
 import 'package:easark/Screens/BusinessScreen/core_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
@@ -77,7 +78,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                 error: 'DELETED',
               )
             : SingleChildScrollView(
-              child: Container(
+                child: Container(
                   color: const Color.fromRGBO(247, 247, 247, 1.0),
                   margin: const EdgeInsets.all(20),
                   child: Column(
@@ -162,7 +163,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                       );
                                       if (mounted) {
                                         setState(() {
-                                          space['isActive'] = !space['isActive'];
+                                          space['isActive'] =
+                                              !space['isActive'];
                                           loading = false;
                                         });
                                       } else {
@@ -221,7 +223,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                   isDeleted = true;
                                                 });
                                                 FirebaseFirestore.instance
-                                                    .collection('parking_places')
+                                                    .collection(
+                                                        'parking_places')
                                                     .doc(widget.placeId)
                                                     .update({
                                                   'spaces':
@@ -237,7 +240,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                   showSimpleNotification(
                                                     Text(notification.body),
                                                     position:
-                                                        NotificationPosition.top,
+                                                        NotificationPosition
+                                                            .top,
                                                     background: Colors.red,
                                                   );
                                                   if (mounted) {
@@ -257,7 +261,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                 } else {
                                                   loading = false;
                                                 }
-            
+
                                                 Navigator.of(context).pop(true);
                                               },
                                               child: const Text(
@@ -272,8 +276,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                       .pop(false),
                                               child: const Text(
                                                 'No',
-                                                style:
-                                                    TextStyle(color: Colors.red),
+                                                style: TextStyle(
+                                                    color: Colors.red),
                                               ),
                                             ),
                                           ],
@@ -315,7 +319,9 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                 Navigator.push(
                                     context,
                                     SlideRightRoute(
-                                      page: CoreScreen(),
+                                      page: BookingManagementScreen(
+                                        bookingId: booking.id,
+                                      ),
                                     ));
                                 setState(() {
                                   loading = false;
@@ -335,7 +341,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           SizedBox(
                                             width: size.width * 0.5,
@@ -349,12 +356,14 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                           .get('timestamp_from')
                                                           .toDate())
                                                       .toString(),
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(
                                                       color: darkColor,
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ),
@@ -363,19 +372,26 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                 ),
                                                 Text(
                                                   Languages.of(context)!
-                                                        .serviceScreenFrom +
-                                                    ' ' +
-                                                    DateFormat.yMMMd()
-                                                        .format(booking.get(
-                                                            'timestamp_from'))
-                                                        .toString() +
-                                                    ' ' +
-                                                    DateFormat.Hm()
-                                                        .format(booking.get(
-                                                            'timestamp_from'))
-                                                        .toString(),
-                                                        maxLines: 3,
-                                                  overflow: TextOverflow.ellipsis,
+                                                          .serviceScreenFrom +
+                                                      '\n' +
+                                                      DateFormat.yMMMd()
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(booking
+                                                                  .get(
+                                                                      'timestamp_from')
+                                                                  .millisecondsSinceEpoch))
+                                                          .toString() +
+                                                      ' ' +
+                                                      DateFormat.Hm()
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(booking
+                                                                  .get(
+                                                                      'timestamp_from')
+                                                                  .millisecondsSinceEpoch))
+                                                          .toString(),
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(
                                                       color: darkColor,
@@ -388,19 +404,26 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                 ),
                                                 Text(
                                                   Languages.of(context)!
-                                                        .serviceScreenTo +
-                                                    ' ' +
-                                                    DateFormat.yMMMd()
-                                                        .format(booking.get(
-                                                            'timestamp_to'))
-                                                        .toString() +
-                                                    ' ' +
-                                                    DateFormat.Hm()
-                                                        .format(booking.get(
-                                                            'timestamp_to'))
-                                                        .toString(),
-                                                        maxLines: 3,
-                                                  overflow: TextOverflow.ellipsis,
+                                                          .serviceScreenTo +
+                                                      '\n' +
+                                                      DateFormat.yMMMd()
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(booking
+                                                                  .get(
+                                                                      'timestamp_to')
+                                                                  .millisecondsSinceEpoch))
+                                                          .toString() +
+                                                      ' ' +
+                                                      DateFormat.Hm()
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(booking
+                                                                  .get(
+                                                                      'timestamp_to')
+                                                                  .millisecondsSinceEpoch))
+                                                          .toString(),
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(
                                                       color: darkColor,
@@ -417,7 +440,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                           .get('space_id')
                                                           .toString(),
                                                   maxLines: 2,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(
                                                         color: darkColor,
@@ -431,7 +455,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                 ),
                                                 Text(
                                                   booking.get('status'),
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(
                                                       color: darkColor,
@@ -502,6 +527,6 @@ class _SpaceScreenState extends State<SpaceScreen> {
                     ],
                   ),
                 ),
-            );
+              );
   }
 }

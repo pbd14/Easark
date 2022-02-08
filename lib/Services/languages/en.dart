@@ -59,7 +59,6 @@ class LanguageEn extends Languages {
   String get businessScreentext2 =>
       "Rent out your parking place and earn money with Easark. It is easy, comfortable and profitable.";
 
-
   @override
   String get serviceScreenNoInternet => "No Internet";
   @override
@@ -81,14 +80,14 @@ class LanguageEn extends Languages {
   @override
   String get serviceScreenTooLate => "Too late";
   @override
-  String get serviceScreen2HoursAdvance => "Booking should be made 2 hours in advance for this place";
+  String get serviceScreen2HoursAdvance =>
+      "Booking should be made 2 hours in advance for this place";
   @override
   String get serviceScreenPaymentMethod => "Choose payment method";
   @override
   String get serviceScreenCash => "Cash";
   @override
   String get serviceScreenCreditCard => "Credit card";
-
 
   @override
   String get historyScreenSchedule => "Schedule";
@@ -105,5 +104,31 @@ class LanguageEn extends Languages {
   @override
   String get historyScreenVerificationNeeded => "Verification needed";
 
-
+  @override
+  String get oeScreenNotStarted => "Event has not started yet";
+  @override
+  String get oeScreenInProcess => "Event is in process";
+  @override
+  String get oeScreenEnded => "Event has ended";
+  @override
+  String get oeScreenMakePayment =>
+      "Please make your payment and check if owner has accepted it";
+  @override
+  String get oeScreenMakePaymentWith => "Please make your payment with";
+  @override
+  String get oeScreenOverallPrice => "Overall price";
+  @override
+  String get oeScreenCancel => "Cancel";
+  @override
+  String get oeScreenStatus => "Status";
+  @override
+  String get oeScreenCanCancel =>
+      "You can cancel event 2 hours before it starts. You can cancel only 5 bookings. You canceled ";
+  @override
+  String get oeScreenQuestionCancel =>
+      "Are you sure you want to cancel the booking";
+  @override
+  String get oeScreenReason => "Reason";
+  @override
+  String get oeScreenMinCharacters => "Minimum characters";
 }

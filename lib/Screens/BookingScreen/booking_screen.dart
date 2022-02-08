@@ -6,17 +6,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
-class BookingsScreen extends StatefulWidget {
+class BookingScreen extends StatefulWidget {
   String bookingId;
-  BookingsScreen({Key? key, required this.bookingId}) : super(key: key);
+  BookingScreen({Key? key, required this.bookingId}) : super(key: key);
 
   @override
-  State<BookingsScreen> createState() => _SpaceInfoScreenType2State();
+  State<BookingScreen> createState() => _BookingScreenState();
 }
 
-class _SpaceInfoScreenType2State extends State<BookingsScreen> {
+class _BookingScreenState extends State<BookingScreen> {
   bool loading = true;
   DocumentSnapshot? place;
   DocumentSnapshot? booking;
@@ -47,226 +48,389 @@ class _SpaceInfoScreenType2State extends State<BookingsScreen> {
     Size size = MediaQuery.of(context).size;
     return loading
         ? const LoadingScreen()
-        : Container(
-            color: const Color.fromRGBO(247, 247, 247, 1.0),
-            margin: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 40,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      width: size.width * 0.5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            DateFormat.yMMMd()
-                                .format(booking!.get('timestamp_date').toDate())
-                                .toString(),
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                color: darkDarkColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            booking!.get('from') + ' - ' + booking!.get('to'),
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                color: darkDarkColor,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            place?.get('name') ?? 'Name',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                  color: darkDarkColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'Parking lot #' +
-                                booking!.get('space_id').toString(),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: const TextStyle(
-                                  color: darkDarkColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            // Booking.fromSnapshot(book)
-                            //     .status,
-
-                            booking!.get('status') == 'unfinished'
-                                ? Languages.of(context)!.historyScreenUpcoming
-                                : Languages.of(context)!
-                                    .historyScreenVerificationNeeded,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                color: booking!.get('status') == 'unfinished'
-                                    ? darkPrimaryColor
-                                    : Colors.red,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                        ],
+        : SingleChildScrollView(
+            child: Container(
+              color: const Color.fromRGBO(247, 247, 247, 1.0),
+              margin: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Container(
+                    width: size.width * 0.8,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        width: size.width * 0.3,
+                      elevation: 10,
+                      margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
                         child: Column(
-                          // crossAxisAlignment:
-                          //     CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IconButton(
-                              iconSize: 30,
-                              icon: const Icon(
-                                CupertinoIcons.map_pin_ellipse,
-                                color: darkPrimaryColor,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  loading = true;
-                                });
-                                // Navigator.push(
-                                //   context,
-                                //   SlideRightRoute(
-                                //     page: MapPage(
-                                //       isAppBar: true,
-                                //       isLoading: true,
-                                //       data: {
-                                //         'lat': upcomingPlaces[
-                                //                 Booking.fromSnapshot(
-                                //                         book)
-                                //                     .id]
-                                //             .data()['lat'],
-                                //         'lon': upcomingPlaces[
-                                //                 Booking.fromSnapshot(
-                                //                         book)
-                                //                     .id]
-                                //             .data()['lon']
-                                //       },
-                                //     ),
-                                //   ),
-                                // );
-                                setState(() {
-                                  loading = false;
-                                });
-                              },
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  place!.get('owner_phone'),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                      color: darkColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () async {
+                                    await launch(
+                                        "tel:" + place!.get('owner_phone'));
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: primaryColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              darkPrimaryColor.withOpacity(0.5),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      CupertinoIcons.phone_fill,
+                                      color: whiteColor,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            // IconButton(
-                            //   icon: Icon(
-                            //     CupertinoIcons.book,
-                            //     color: darkPrimaryColor,
-                            //   ),
-                            //   onPressed: ()  {
-                            //     setState(() {
-                            //       loading = true;
-                            //     });
-                            //     Navigator.push(
-                            //       context,
-                            //       SlideRightRoute(
-                            //         page: PlaceScreen(
-                            //           data: {
-                            //             'name':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .name, //0
-                            //             'description': Place
-                            //                     .fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                 .description, //1
-                            //             'by':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .by, //2
-                            //             'lat':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .lat, //3
-                            //             'lon':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .lon, //4
-                            //             'images':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .images, //5
-                            //             'services':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .services,
-                            //             'rates':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .rates,
-                            //             'id':
-                            //                 Place.fromSnapshot(
-                            //                         _results[
-                            //                             index])
-                            //                     .id, //7
-                            //           },
-                            //         ),
-                            //       ),
-                            //     );
-                            //     setState(() {
-                            //       loading = false;
-                            //     });
-                            //   },
-                            // ),
                           ],
                         ),
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-              ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Center(
+                    child: Text(
+                      booking!.get('price').toString() +
+                          booking!.get('currency'),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 15,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.montserrat(
+                        textStyle: TextStyle(
+                          color: darkColor,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: size.width * 0.5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              DateFormat.yMMMd()
+                                  .format(
+                                      booking!.get('timestamp_from').toDate())
+                                  .toString(),
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: whiteColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              Languages.of(context)!.serviceScreenFrom +
+                                  '\n' +
+                                  DateFormat.yMMMd()
+                                      .format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              booking!
+                                                  .get('timestamp_from')
+                                                  .millisecondsSinceEpoch))
+                                      .toString() +
+                                  ' ' +
+                                  DateFormat.Hm()
+                                      .format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              booking!
+                                                  .get('timestamp_from')
+                                                  .millisecondsSinceEpoch))
+                                      .toString(),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: whiteColor,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              Languages.of(context)!.serviceScreenTo +
+                                  '\n' +
+                                  DateFormat.yMMMd()
+                                      .format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              booking!
+                                                  .get('timestamp_to')
+                                                  .millisecondsSinceEpoch))
+                                      .toString() +
+                                  ' ' +
+                                  DateFormat.Hm()
+                                      .format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              booking!
+                                                  .get('timestamp_to')
+                                                  .millisecondsSinceEpoch))
+                                      .toString(),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: whiteColor,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              place?.get('name') ?? 'Name',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                    color: darkDarkColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Parking lot #' +
+                                  booking!.get('space_id').toString(),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                    color: darkDarkColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              booking!.get('status') == 'unfinished'
+                                  ? Languages.of(context)!.historyScreenUpcoming
+                                  : Languages.of(context)!
+                                      .historyScreenVerificationNeeded,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: booking!.get('status') == 'unfinished'
+                                      ? darkPrimaryColor
+                                      : Colors.red,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            booking!.get('status') == 'unfinished' ||
+                                    booking!.get('status') ==
+                                        'verification_needed'
+                                ? Text(
+                                    Languages.of(context)!.oeScreenNotStarted,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: darkColor,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            booking!.get('status') == 'in process'
+                                ? Text(
+                                    Languages.of(context)!.oeScreenInProcess,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: greenColor,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            booking!.get('status') == 'unpaid'
+                                ? Text(
+                                    Languages.of(context)!.oeScreenMakePayment,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 10,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            booking!.get('status') &&
+                                    booking!.get('payment_method') == 'card'
+                                ? Text(
+                                    Languages.of(context)!
+                                            .oeScreenMakePaymentWith +
+                                        " " +
+                                        Languages.of(context)!
+                                            .serviceScreenCreditCard,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 8,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height:
+                                  booking!.get('status') == 'unpaid' ? 10 : 0,
+                            ),
+                            booking!.get('status') == 'unpaid'
+                                ? Center(
+                                    child: Text(
+                                      booking!.get('price').toString() +
+                                          booking!.get('currency'),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 15,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                          color: darkColor,
+                                          fontSize: 25,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            booking!.get('status') == 'finished'
+                                ? Text(
+                                    Languages.of(context)!.oeScreenEnded,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: SizedBox(
+                          width: size.width * 0.3,
+                          child: Column(
+                            children: [
+                              IconButton(
+                                iconSize: 30,
+                                icon: const Icon(
+                                  CupertinoIcons.map_pin_ellipse,
+                                  color: darkPrimaryColor,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  // Navigator.push(
+                                  //   context,
+                                  //   SlideRightRoute(
+                                  //     page: MapPage(
+                                  //       isAppBar: true,
+                                  //       isLoading: true,
+                                  //       data: {
+                                  //         'lat': upcomingPlaces[
+                                  //                 Booking.fromSnapshot(
+                                  //                         book)
+                                  //                     .id]
+                                  //             .data()['lat'],
+                                  //         'lon': upcomingPlaces[
+                                  //                 Booking.fromSnapshot(
+                                  //                         book)
+                                  //                     .id]
+                                  //             .data()['lon']
+                                  //       },
+                                  //     ),
+                                  //   ),
+                                  // );
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                ],
+              ),
             ),
           );
   }

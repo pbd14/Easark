@@ -55,4 +55,17 @@ abstract class Languages {
   String get historyScreenUpcoming;
   String get historyScreenUnrated;
   String get historyScreenVerificationNeeded;
+
+  String get oeScreenNotStarted;
+  String get oeScreenInProcess;
+  String get oeScreenEnded;
+  String get oeScreenMakePayment;
+  String get oeScreenMakePaymentWith;
+  String get oeScreenOverallPrice;
+  String get oeScreenCancel;
+  String get oeScreenStatus;
+  String get oeScreenCanCancel;
+  String get oeScreenQuestionCancel;
+  String get oeScreenReason;
+  String get oeScreenMinCharacters;
 }

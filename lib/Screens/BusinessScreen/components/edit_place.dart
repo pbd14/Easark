@@ -41,6 +41,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
   bool? isStandardTiming = false;
   String? description;
   String? name;
+  String? owner_phone;
   String? timing_mode;
   String? pricing_mode;
   String? currency = 'UZS';
@@ -96,6 +97,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
       is24hours = place!.get("is24");
       description = place!.get('description');
       name = place!.get('name');
+      owner_phone = place!.get('owner_phone');
       timing_mode = place!.get('timing_mode');
       pricing_mode = place!.get('pricing_mode');
       currency = place!.get('currency');
@@ -656,6 +658,34 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                   hintStyle: TextStyle(
                                       color: darkColor.withOpacity(0.7)),
                                   hintText: 'Description',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              TextFormField(
+                                style: const TextStyle(color: darkDarkColor),
+                                validator: (val) => val!.isEmpty
+                                    ? 'Enter a phone number'
+                                    : null,
+                                keyboardType: TextInputType.phone,
+                                onChanged: (val) {
+                                  setState(() {
+                                    owner_phone = val;
+                                  });
+                                },
+                                initialValue: owner_phone,
+                                decoration: InputDecoration(
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: darkColor.withOpacity(0.7)),
+                                  hintText: 'Phone',
                                   border: InputBorder.none,
                                 ),
                               ),
@@ -2424,6 +2454,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                 'Sun': sun,
                               },
                               'vacation_days': vacationDays,
+                              'owner_phone': owner_phone,
                               'images': [
                                 if (a1 != null)
                                   await a1.ref.getDownloadURL()

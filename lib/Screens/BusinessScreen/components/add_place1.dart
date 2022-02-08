@@ -36,6 +36,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   bool? isStandardTiming = false;
   String? name;
   String? description;
+  String? owner_phone;
   String? timing_mode;
   String? pricing_mode;
   String? currency = 'UZS';
@@ -594,6 +595,33 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                               ),
                               const SizedBox(height: 30),
                               TextFormField(
+                                style: const TextStyle(color: darkDarkColor),
+                                validator: (val) => val!.isEmpty
+                                    ? 'Enter a phone number'
+                                    : null,
+                                keyboardType: TextInputType.phone,
+                                onChanged: (val) {
+                                  setState(() {
+                                    owner_phone = val;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkColor, width: 1.0),
+                                  ),
+                                  hintStyle: TextStyle(
+                                      color: darkColor.withOpacity(0.7)),
+                                  hintText: 'Phone',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              TextFormField(
                                 validator: (val) => val!.isNotEmpty
                                     ? int.parse(val) > 500
                                         ? 'Maximum 500 spaces'
@@ -791,6 +819,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
                               const SizedBox(height: 30),
                               CSCPicker(
+                                flagState: CountryFlag.SHOW_IN_DROP_DOWN_ONLY,
                                 defaultCountry: DefaultCountry.Uzbekistan,
                                 onCountryChanged: (value) {
                                   setState(() {
@@ -2295,6 +2324,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                     ],
                                     'owner_id':
                                         FirebaseAuth.instance.currentUser!.uid,
+                                    'owner_phone': owner_phone,
                                   },
                                 ),
                               ),
