@@ -38,7 +38,7 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
       spaces = place!.get('spaces');
       placeImages = place!.get('images');
       loading = false;
-      rating = place!.get('ratingsSum') / place!.get('ratingsNumber') ;
+      rating = place!.get('ratingsSum') / place!.get('ratingsNumber');
     });
   }
 
@@ -354,15 +354,10 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                           placeId: place!.id,
                                           spaceId: space['id'],
                                         )
-                                      : place!.get('isFreeTiming')
-                                          ? SpaceInfoScreenType3(
-                                              placeId: place!.id,
-                                              spaceId: space['id'],
-                                            )
-                                          : SpaceInfoScreen(
-                                              placeId: place!.id,
-                                              spaceId: space['id'],
-                                            );
+                                      : SpaceInfoScreen(
+                                          placeId: place!.id,
+                                          spaceId: space['id'],
+                                        );
                                 },
                               )
                           ],

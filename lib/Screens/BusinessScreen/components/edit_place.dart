@@ -1155,8 +1155,10 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                     child: Text(
                                       'There are three types types of timing: \n\n' +
                                           '-\bStandard \btiming is when client books your parking place from time to another. For example, client can book your parking place from 7 am to 9 am. However, booking cannot last more than one day\n\n' +
-                                          '-\b24/7 \btiming is the same as \bStandard \btiming. However, bookings can last for more than one day. For this option your parking place should be open 24/7\n\n' +
-                                          '-\bFree \btiming is when there is no start and end times for booking. Client just uses your parking place for as long as needed. In this case price will increase as duration of parking increases.',
+                                          '-\b24/7 \btiming is the same as \bStandard \btiming. However, bookings can last for more than one day. For this option your parking place should be open 24/7\n\n' 
+                                          // +
+                                          // '-\bFree \btiming is when there is no start and end times for booking. Client just uses your parking place for as long as needed. In this case price will increase as duration of parking increases.'
+                                          ,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 100,
                                       textAlign: TextAlign.start,
@@ -1214,10 +1216,10 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                     value: '24hours',
                                     child: Text('24/7 timing'),
                                   ),
-                                  const DropdownMenuItem<String>(
-                                    value: 'free',
-                                    child: Text('Free timing'),
-                                  ),
+                                  // const DropdownMenuItem<String>(
+                                  //   value: 'free',
+                                  //   child: Text('Free timing'),
+                                  // ),
                                 ],
                                 onChanged: (value) {
                                   setState(() {
