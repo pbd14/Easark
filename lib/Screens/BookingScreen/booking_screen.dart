@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:easark/Screens/MapScreen/components/location_screen.dart';
+import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Services/languages/languages.dart';
@@ -368,6 +370,138 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 40,
                       ),
+                      Container(
+                        width: size.width * 0.8,
+                        child: Card(
+                          elevation: 11,
+                          margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  CupertinoIcons.info_circle,
+                                  color: darkPrimaryColor,
+                                  size: 30,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      booking!.get('status') == 'unfinished' ||
+                                              booking!.get('status') ==
+                                                  'verification_needed'
+                                          ? Text(
+                                              'Event has not started yet',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 3,
+                                              textAlign: TextAlign.start,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: darkColor,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      booking!.get('status') == 'in process'
+                                          ? Text(
+                                              'Event is going on',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 3,
+                                              textAlign: TextAlign.start,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: greenColor,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      booking!.get('status') == 'unpaid'
+                                          ? Text(
+                                              'Check if the owner of parking has accepted your payment. If you see this message, the owner has not accepted your payment',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 10,
+                                              textAlign: TextAlign.start,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      SizedBox(
+                                        height:
+                                            booking!.get('status') == 'unpaid'
+                                                ? 10
+                                                : 0,
+                                      ),
+                                      booking!.get('status') == 'unpaid'
+                                          ? Center(
+                                              child: Text(
+                                                booking!
+                                                        .get('price')
+                                                        .toString() +
+                                                    ' ' +
+                                                    booking!.get('currency'),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 15,
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: darkColor,
+                                                    fontSize: 25,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      booking!.get('status') == 'finished'
+                                          ? Text(
+                                              'Event has ended',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 3,
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: darkPrimaryColor,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      booking!.get('status') == 'canceled'
+                                          ? Text(
+                                              'Event was canceled',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 3,
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: darkPrimaryColor,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
                       Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -441,18 +575,17 @@ class _BookingScreenState extends State<BookingScreen> {
                                   setState(() {
                                     loading = true;
                                   });
-                                  // Navigator.push(
-                                  //   context,
-                                  //   SlideRightRoute(
-                                  //     page: MapScreen(
-                                  //       data: {
-                                  //         'lat':
-                                  //             Place.fromSnapshot(place).lat,
-                                  //         'lon': Place.fromSnapshot(place).lon
-                                  //       },
-                                  //     ),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    SlideRightRoute(
+                                      page: LocationScreen(
+                                        data: {
+                                          'lat': place!.get('lat'),
+                                          'lon': place!.get('lon'),
+                                        },
+                                      ),
+                                    ),
+                                  );
                                   setState(() {
                                     loading = false;
                                   });

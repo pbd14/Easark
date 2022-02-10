@@ -521,212 +521,209 @@ class _History1State extends State<History1>
                                           padding: const EdgeInsets.all(10.0),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                                MainAxisAlignment.start,
                                             children: [
-                                              SizedBox(
-                                                width: size.width * 0.5,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(book
-                                                              .get(
-                                                                  'timestamp_from')
-                                                              .toDate())
-                                                          .toString(),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    DateFormat.yMMMd()
+                                                        .format(book
+                                                            .get(
+                                                                'timestamp_from')
+                                                            .toDate())
+                                                        .toString(),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      Languages.of(context)!
-                                                              .serviceScreenFrom +
-                                                          '\n' +
-                                                          DateFormat.yMMMd()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_from')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString() +
-                                                          ' ' +
-                                                          DateFormat.Hm()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_from')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString(),
-                                                      maxLines: 3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 20,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      Languages.of(context)!
-                                                              .serviceScreenTo +
-                                                          '\n' +
-                                                          DateFormat.yMMMd()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_to')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString() +
-                                                          ' ' +
-                                                          DateFormat.Hm()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_to')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString(),
-                                                      maxLines: 3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 20,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      unpaidPlacesSlivers[book]!
-                                                              .get('name') ??
-                                                          'Name',
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                color:
-                                                                    whiteColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      'Parking lot #' +
-                                                          book.get('space_id').toString(),
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                color:
-                                                                    whiteColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      // Booking.fromSnapshot(book).status,
-                                                      Languages.of(context)!
-                                                          .historyScreenUnpaid,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 15,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: SizedBox(
-                                                  width: size.width * 0.3,
-                                                  child: Column(
-                                                    children: [
-                                                      IconButton(
-                                                        iconSize: 30,
-                                                        icon: const Icon(
-                                                          CupertinoIcons
-                                                              .map_pin_ellipse,
-                                                          color: whiteColor,
-                                                        ),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            loading = true;
-                                                          });
-                                                          // Navigator.push(
-                                                          //   context,
-                                                          //   SlideRightRoute(
-                                                          //     page: MapPage(
-                                                          //       isLoading: true,
-                                                          //       isAppBar: true,
-                                                          //       data: {
-                                                          //         'lat': Place.fromSnapshot(
-                                                          //                 inprocessPlacesSlivers[
-                                                          //                     book])
-                                                          //             .lat,
-                                                          //         'lon': Place.fromSnapshot(
-                                                          //                 inprocessPlacesSlivers[
-                                                          //                     book])
-                                                          //             .lon
-                                                          //       },
-                                                          //     ),
-                                                          //   ),
-                                                          // );
-                                                          setState(() {
-                                                            loading = false;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ],
                                                   ),
-                                                ),
-                                              )
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                            .serviceScreenFrom +
+                                                        '\n' +
+                                                        DateFormat.yMMMd()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_from')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_from')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString(),
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                            .serviceScreenTo +
+                                                        '\n' +
+                                                        DateFormat.yMMMd()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_to')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_to')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString(),
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    unpaidPlacesSlivers[book]!
+                                                            .get('name') ??
+                                                        'Name',
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              color:
+                                                                  whiteColor,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    'Parking lot #' +
+                                                        book.get('space_id').toString(),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              color:
+                                                                  whiteColor,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    // Booking.fromSnapshot(book).status,
+                                                    Languages.of(context)!
+                                                        .historyScreenUnpaid,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              // Align(
+                                              //   alignment:
+                                              //       Alignment.centerRight,
+                                              //   child: SizedBox(
+                                              //     width: size.width * 0.3,
+                                              //     child: Column(
+                                              //       children: [
+                                              //         IconButton(
+                                              //           iconSize: 30,
+                                              //           icon: const Icon(
+                                              //             CupertinoIcons
+                                              //                 .map_pin_ellipse,
+                                              //             color: whiteColor,
+                                              //           ),
+                                              //           onPressed: () {
+                                              //             setState(() {
+                                              //               loading = true;
+                                              //             });
+                                              //             // Navigator.push(
+                                              //             //   context,
+                                              //             //   SlideRightRoute(
+                                              //             //     page: MapPage(
+                                              //             //       isLoading: true,
+                                              //             //       isAppBar: true,
+                                              //             //       data: {
+                                              //             //         'lat': Place.fromSnapshot(
+                                              //             //                 inprocessPlacesSlivers[
+                                              //             //                     book])
+                                              //             //             .lat,
+                                              //             //         'lon': Place.fromSnapshot(
+                                              //             //                 inprocessPlacesSlivers[
+                                              //             //                     book])
+                                              //             //             .lon
+                                              //             //       },
+                                              //             //     ),
+                                              //             //   ),
+                                              //             // );
+                                              //             setState(() {
+                                              //               loading = false;
+                                              //             });
+                                              //           },
+                                              //         ),
+                                              //       ],
+                                              //     ),
+                                              //   ),
+                                              // )
                                             ],
                                           ),
                                         ),
@@ -809,217 +806,214 @@ class _History1State extends State<History1>
                                           padding: const EdgeInsets.all(10.0),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                                MainAxisAlignment.start,
                                             children: [
-                                              SizedBox(
-                                                width: size.width * 0.5,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      DateFormat.yMMMd()
-                                                          .format(book
-                                                              .get(
-                                                                  'timestamp_from')
-                                                              .toDate())
-                                                          .toString(),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    DateFormat.yMMMd()
+                                                        .format(book
+                                                            .get(
+                                                                'timestamp_from')
+                                                            .toDate())
+                                                        .toString(),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      Languages.of(context)!
-                                                              .serviceScreenFrom +
-                                                          '\n' +
-                                                          DateFormat.yMMMd()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_from')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString() +
-                                                          ' ' +
-                                                          DateFormat.Hm()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_from')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString(),
-                                                      maxLines: 3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 20,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      Languages.of(context)!
-                                                              .serviceScreenTo +
-                                                          '\n' +
-                                                          DateFormat.yMMMd()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_to')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString() +
-                                                          ' ' +
-                                                          DateFormat.Hm()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_to')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString(),
-                                                      maxLines: 3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                          color: whiteColor,
-                                                          fontSize: 20,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      inprocessPlacesSlivers[
-                                                                  book]!
-                                                              .get('name') ??
-                                                          'Name',
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                color:
-                                                                    whiteColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      'Parking lot #' +
-                                                          book.get('space_id').toString(),
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                color:
-                                                                    whiteColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      // Booking.fromSnapshot(book)
-                                                      // .status,
-                                                      Languages.of(context)!
-                                                          .historyScreenInProcess,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: book.get(
-                                                                      'status') ==
-                                                                  'unfinished'
-                                                              ? whiteColor
-                                                              : Colors.red,
-                                                          fontSize: 15,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: SizedBox(
-                                                  width: size.width * 0.3,
-                                                  child: Column(
-                                                    children: [
-                                                      IconButton(
-                                                        iconSize: 30,
-                                                        icon: const Icon(
-                                                          CupertinoIcons
-                                                              .map_pin_ellipse,
-                                                          color: whiteColor,
-                                                        ),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            loading = true;
-                                                          });
-                                                          // Navigator.push(
-                                                          //   context,
-                                                          //   SlideRightRoute(
-                                                          //     page: MapPage(
-                                                          //       isLoading: true,
-                                                          //       isAppBar: true,
-                                                          //       data: {
-                                                          //         'lat': Place.fromSnapshot(
-                                                          //                 inprocessPlacesSlivers[
-                                                          //                     book])
-                                                          //             .lat,
-                                                          //         'lon': Place.fromSnapshot(
-                                                          //                 inprocessPlacesSlivers[
-                                                          //                     book])
-                                                          //             .lon
-                                                          //       },
-                                                          //     ),
-                                                          //   ),
-                                                          // );
-                                                          setState(() {
-                                                            loading = false;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ],
                                                   ),
-                                                ),
-                                              )
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                            .serviceScreenFrom +
+                                                        '\n' +
+                                                        DateFormat.yMMMd()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_from')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_from')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString(),
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    Languages.of(context)!
+                                                            .serviceScreenTo +
+                                                        '\n' +
+                                                        DateFormat.yMMMd()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_to')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_to')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString(),
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    inprocessPlacesSlivers[
+                                                                book]!
+                                                            .get('name') ??
+                                                        'Name',
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              color:
+                                                                  whiteColor,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    'Parking lot #' +
+                                                        book.get('space_id').toString(),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              color:
+                                                                  whiteColor,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    // Booking.fromSnapshot(book)
+                                                    // .status,
+                                                    Languages.of(context)!
+                                                        .historyScreenInProcess,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle: TextStyle(
+                                                        color: book.get(
+                                                                    'status') ==
+                                                                'unfinished'
+                                                            ? whiteColor
+                                                            : Colors.red,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              // Align(
+                                              //   alignment:
+                                              //       Alignment.centerRight,
+                                              //   child: SizedBox(
+                                              //     width: size.width * 0.3,
+                                              //     child: Column(
+                                              //       children: [
+                                              //         IconButton(
+                                              //           iconSize: 30,
+                                              //           icon: const Icon(
+                                              //             CupertinoIcons
+                                              //                 .map_pin_ellipse,
+                                              //             color: whiteColor,
+                                              //           ),
+                                              //           onPressed: () {
+                                              //             setState(() {
+                                              //               loading = true;
+                                              //             });
+                                              //             // Navigator.push(
+                                              //             //   context,
+                                              //             //   SlideRightRoute(
+                                              //             //     page: MapPage(
+                                              //             //       isLoading: true,
+                                              //             //       isAppBar: true,
+                                              //             //       data: {
+                                              //             //         'lat': Place.fromSnapshot(
+                                              //             //                 inprocessPlacesSlivers[
+                                              //             //                     book])
+                                              //             //             .lat,
+                                              //             //         'lon': Place.fromSnapshot(
+                                              //             //                 inprocessPlacesSlivers[
+                                              //             //                     book])
+                                              //             //             .lon
+                                              //             //       },
+                                              //             //     ),
+                                              //             //   ),
+                                              //             // );
+                                              //             setState(() {
+                                              //               loading = false;
+                                              //             });
+                                              //           },
+                                              //         ),
+                                              //       ],
+                                              //     ),
+                                              //   ),
+                                              // )
                                             ],
                                           ),
                                         ),
@@ -1443,111 +1437,44 @@ class _History1State extends State<History1>
                                                         )
                                                       : Container(),
                                                   const SizedBox(height: 10),
-                                                  IconButton(
-                                                    iconSize: 30,
-                                                    icon: const Icon(
-                                                      CupertinoIcons
-                                                          .map_pin_ellipse,
-                                                      color: darkPrimaryColor,
-                                                    ),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        loading = true;
-                                                      });
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   SlideRightRoute(
-                                                      //     page: MapPage(
-                                                      //       isAppBar: true,
-                                                      //       isLoading: true,
-                                                      //       data: {
-                                                      //         'lat': upcomingPlaces[
-                                                      //                 Booking.fromSnapshot(
-                                                      //                         book)
-                                                      //                     .id]
-                                                      //             .data()['lat'],
-                                                      //         'lon': upcomingPlaces[
-                                                      //                 Booking.fromSnapshot(
-                                                      //                         book)
-                                                      //                     .id]
-                                                      //             .data()['lon']
-                                                      //       },
-                                                      //     ),
-                                                      //   ),
-                                                      // );
-                                                      setState(() {
-                                                        loading = false;
-                                                      });
-                                                    },
-                                                  ),
                                                   // IconButton(
-                                                  //   icon: Icon(
-                                                  //     CupertinoIcons.book,
+                                                  //   iconSize: 30,
+                                                  //   icon: const Icon(
+                                                  //     CupertinoIcons
+                                                  //         .map_pin_ellipse,
                                                   //     color: darkPrimaryColor,
                                                   //   ),
-                                                  //   onPressed: ()  {
+                                                  //   onPressed: () {
                                                   //     setState(() {
                                                   //       loading = true;
                                                   //     });
-                                                  //     Navigator.push(
-                                                  //       context,
-                                                  //       SlideRightRoute(
-                                                  //         page: PlaceScreen(
-                                                  //           data: {
-                                                  //             'name':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .name, //0
-                                                  //             'description': Place
-                                                  //                     .fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                 .description, //1
-                                                  //             'by':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .by, //2
-                                                  //             'lat':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .lat, //3
-                                                  //             'lon':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .lon, //4
-                                                  //             'images':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .images, //5
-                                                  //             'services':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .services,
-                                                  //             'rates':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .rates,
-                                                  //             'id':
-                                                  //                 Place.fromSnapshot(
-                                                  //                         _results[
-                                                  //                             index])
-                                                  //                     .id, //7
-                                                  //           },
-                                                  //         ),
-                                                  //       ),
-                                                  //     );
+                                                  //     // Navigator.push(
+                                                  //     //   context,
+                                                  //     //   SlideRightRoute(
+                                                  //     //     page: MapPage(
+                                                  //     //       isAppBar: true,
+                                                  //     //       isLoading: true,
+                                                  //     //       data: {
+                                                  //     //         'lat': upcomingPlaces[
+                                                  //     //                 Booking.fromSnapshot(
+                                                  //     //                         book)
+                                                  //     //                     .id]
+                                                  //     //             .data()['lat'],
+                                                  //     //         'lon': upcomingPlaces[
+                                                  //     //                 Booking.fromSnapshot(
+                                                  //     //                         book)
+                                                  //     //                     .id]
+                                                  //     //             .data()['lon']
+                                                  //     //       },
+                                                  //     //     ),
+                                                  //     //   ),
+                                                  //     // );
                                                   //     setState(() {
                                                   //       loading = false;
                                                   //     });
                                                   //   },
                                                   // ),
+                                                  
                                                 ],
                                               ),
                                             ),
@@ -1637,241 +1564,238 @@ class _History1State extends State<History1>
                                                       10.0),
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.end,
+                                                        MainAxisAlignment.start,
                                                     children: [
-                                                      SizedBox(
-                                                        width: size.width * 0.5,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              DateFormat.yMMMd()
-                                                                  .format(book
-                                                                      .get(
-                                                                          'timestamp_from')
-                                                                      .toDate())
-                                                                  .toString(),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle:
-                                                                    const TextStyle(
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            DateFormat.yMMMd()
+                                                                .format(book
+                                                                    .get(
+                                                                        'timestamp_from')
+                                                                    .toDate())
+                                                                .toString(),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            Languages.of(
+                                                                        context)!
+                                                                    .serviceScreenFrom +
+                                                                '\n' +
+                                                                DateFormat
+                                                                        .yMMMd()
+                                                                    .format(DateTime.fromMillisecondsSinceEpoch(book
+                                                                        .get(
+                                                                            'timestamp_from')
+                                                                        .millisecondsSinceEpoch))
+                                                                    .toString() +
+                                                                ' ' +
+                                                                DateFormat
+                                                                        .Hm()
+                                                                    .format(DateTime.fromMillisecondsSinceEpoch(book
+                                                                        .get(
+                                                                            'timestamp_from')
+                                                                        .millisecondsSinceEpoch))
+                                                                    .toString(),
+                                                            maxLines: 3,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 20,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            Languages.of(
+                                                                        context)!
+                                                                    .serviceScreenTo +
+                                                                '\n' +
+                                                        DateFormat.yMMMd()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_to')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString() +
+                                                        ' ' +
+                                                        DateFormat.Hm()
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(book
+                                                                    .get(
+                                                                        'timestamp_to')
+                                                                    .millisecondsSinceEpoch))
+                                                            .toString(),
+                                                            maxLines: 3,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 20,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            unratedPlacesSlivers[
+                                                                        book]!
+                                                                    .get(
+                                                                        'name') ??
+                                                                'Name',
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle: const TextStyle(
                                                                   color:
                                                                       whiteColor,
-                                                                  fontSize: 20,
+                                                                  fontSize:
+                                                                      15,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
+                                                                          .w400),
                                                             ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              Languages.of(
-                                                                          context)!
-                                                                      .serviceScreenFrom +
-                                                                  '\n' +
-                                                                  DateFormat
-                                                                          .yMMMd()
-                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
-                                                                          .get(
-                                                                              'timestamp_from')
-                                                                          .millisecondsSinceEpoch))
-                                                                      .toString() +
-                                                                  ' ' +
-                                                                  DateFormat
-                                                                          .Hm()
-                                                                      .format(DateTime.fromMillisecondsSinceEpoch(book
-                                                                          .get(
-                                                                              'timestamp_from')
-                                                                          .millisecondsSinceEpoch))
-                                                                      .toString(),
-                                                              maxLines: 3,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle:
-                                                                    const TextStyle(
-                                                                  color:
-                                                                      whiteColor,
-                                                                  fontSize: 20,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              Languages.of(
-                                                                          context)!
-                                                                      .serviceScreenTo +
-                                                                  '\n' +
-                                                          DateFormat.yMMMd()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_to')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString() +
-                                                          ' ' +
-                                                          DateFormat.Hm()
-                                                              .format(DateTime
-                                                                  .fromMillisecondsSinceEpoch(book
-                                                                      .get(
-                                                                          'timestamp_to')
-                                                                      .millisecondsSinceEpoch))
-                                                              .toString(),
-                                                              maxLines: 3,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle:
-                                                                    const TextStyle(
-                                                                  color:
-                                                                      whiteColor,
-                                                                  fontSize: 20,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              unratedPlacesSlivers[
-                                                                          book]!
-                                                                      .get(
-                                                                          'name') ??
-                                                                  'Name',
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle: const TextStyle(
-                                                                    color:
-                                                                        whiteColor,
-                                                                    fontSize:
-                                                                        15,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              'Parking lot #' +
-                                                                  book.get(
-                                                                      'space_id').toString(),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle: const TextStyle(
-                                                                    color:
-                                                                        whiteColor,
-                                                                    fontSize:
-                                                                        15,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              // Booking.fromSnapshot(
-                                                              //         book)
-                                                              //     .status,
-                                                              Languages.of(
-                                                                      context)!
-                                                                  .historyScreenUnrated,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  color: book.get(
-                                                                              'status') ==
-                                                                          'unfinished'
-                                                                      ? whiteColor
-                                                                      : Colors
-                                                                          .red,
-                                                                  fontSize: 15,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Align(
-                                                        alignment: Alignment
-                                                            .centerRight,
-                                                        child: SizedBox(
-                                                          width:
-                                                              size.width * 0.3,
-                                                          child: Column(
-                                                            children: [
-                                                              IconButton(
-                                                                iconSize: 30,
-                                                                icon:
-                                                                    const Icon(
-                                                                  CupertinoIcons
-                                                                      .map_pin_ellipse,
-                                                                  color:
-                                                                      whiteColor,
-                                                                ),
-                                                                onPressed: () {
-                                                                  setState(() {
-                                                                    loading =
-                                                                        true;
-                                                                  });
-                                                                  // Navigator.push(
-                                                                  //   context,
-                                                                  //   SlideRightRoute(
-                                                                  //     page: MapPage(
-                                                                  //       isLoading:
-                                                                  //           true,
-                                                                  //       isAppBar:
-                                                                  //           true,
-                                                                  //       data: {
-                                                                  //         'lat': Place.fromSnapshot(
-                                                                  //                 unratedPlacesSlivers[book])
-                                                                  //             .lat,
-                                                                  //         'lon': Place.fromSnapshot(
-                                                                  //                 unratedPlacesSlivers[book])
-                                                                  //             .lon
-                                                                  //       },
-                                                                  //     ),
-                                                                  //   ),
-                                                                  // );
-                                                                  setState(() {
-                                                                    loading =
-                                                                        false;
-                                                                  });
-                                                                },
-                                                              ),
-                                                            ],
                                                           ),
-                                                        ),
-                                                      )
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            'Parking lot #' +
+                                                                book.get(
+                                                                    'space_id').toString(),
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle: const TextStyle(
+                                                                  color:
+                                                                      whiteColor,
+                                                                  fontSize:
+                                                                      15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            // Booking.fromSnapshot(
+                                                            //         book)
+                                                            //     .status,
+                                                            Languages.of(
+                                                                    context)!
+                                                                .historyScreenUnrated,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color: book.get(
+                                                                            'status') ==
+                                                                        'unfinished'
+                                                                    ? whiteColor
+                                                                    : Colors
+                                                                        .red,
+                                                                fontSize: 15,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      // Align(
+                                                      //   alignment: Alignment
+                                                      //       .centerRight,
+                                                      //   child: SizedBox(
+                                                      //     width:
+                                                      //         size.width * 0.3,
+                                                      //     child: Column(
+                                                      //       children: [
+                                                      //         IconButton(
+                                                      //           iconSize: 30,
+                                                      //           icon:
+                                                      //               const Icon(
+                                                      //             CupertinoIcons
+                                                      //                 .map_pin_ellipse,
+                                                      //             color:
+                                                      //                 whiteColor,
+                                                      //           ),
+                                                      //           onPressed: () {
+                                                      //             setState(() {
+                                                      //               loading =
+                                                      //                   true;
+                                                      //             });
+                                                      //             // Navigator.push(
+                                                      //             //   context,
+                                                      //             //   SlideRightRoute(
+                                                      //             //     page: MapPage(
+                                                      //             //       isLoading:
+                                                      //             //           true,
+                                                      //             //       isAppBar:
+                                                      //             //           true,
+                                                      //             //       data: {
+                                                      //             //         'lat': Place.fromSnapshot(
+                                                      //             //                 unratedPlacesSlivers[book])
+                                                      //             //             .lat,
+                                                      //             //         'lon': Place.fromSnapshot(
+                                                      //             //                 unratedPlacesSlivers[book])
+                                                      //             //             .lon
+                                                      //             //       },
+                                                      //             //     ),
+                                                      //             //   ),
+                                                      //             // );
+                                                      //             setState(() {
+                                                      //               loading =
+                                                      //                   false;
+                                                      //             });
+                                                      //           },
+                                                      //         ),
+                                                      //       ],
+                                                      //     ),
+                                                      //   ),
+                                                      // )
                                                     ],
                                                   ),
                                                 ),
