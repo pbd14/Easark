@@ -644,7 +644,7 @@ class _History1State extends State<History1>
                                                     ),
                                                     Text(
                                                       'Parking lot #' +
-                                                          book.get('space_id'),
+                                                          book.get('space_id').toString(),
                                                       maxLines: 2,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -801,7 +801,7 @@ class _History1State extends State<History1>
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                       ),
-                                      color: darkPrimaryColor,
+                                      color: greenColor,
                                       margin: const EdgeInsets.all(5),
                                       elevation: 10,
                                       child: Center(
@@ -933,7 +933,7 @@ class _History1State extends State<History1>
                                                     ),
                                                     Text(
                                                       'Parking lot #' +
-                                                          book.get('space_id'),
+                                                          book.get('space_id').toString(),
                                                       maxLines: 2,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -1774,7 +1774,7 @@ class _History1State extends State<History1>
                                                             Text(
                                                               'Parking lot #' +
                                                                   book.get(
-                                                                      'space_id'),
+                                                                      'space_id').toString(),
                                                               maxLines: 2,
                                                               overflow:
                                                                   TextOverflow

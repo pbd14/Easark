@@ -214,6 +214,8 @@ class _AddPlaceScreen2State extends State<AddPlaceScreen2> {
                         'isStandardTiming': widget.data['isStandardTiming'],
                         'isFreeTiming': widget.data['isFreeTiming'],
                         'payment_methods': widget.data['payment_methods'],
+                        'ratingsSum': 5,
+                        'ratingsNumber': 1,
                         'days': widget.data['days'],
                         'vacation_days': widget.data['vacation_days'],
                         'lat': lat,

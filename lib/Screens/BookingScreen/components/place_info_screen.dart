@@ -24,6 +24,7 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
   bool loading = true;
   bool infoExpansionPanel = false;
   DocumentSnapshot? place;
+  double rating = 0;
   List spaces = [];
   List placeImages = [];
 
@@ -37,6 +38,7 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
       spaces = place!.get('spaces');
       placeImages = place!.get('images');
       loading = false;
+      rating = place!.get('ratingsSum') / place!.get('ratingsNumber') ;
     });
   }
 
@@ -140,6 +142,31 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                               fontSize: 15,
                               fontWeight: FontWeight.w400),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: darkColor,
+                          ),
+                          SizedBox(
+                            width: 7,
+                          ),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                color: darkColor,
+                                fontSize: 15,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                       const SizedBox(
                         height: 10,

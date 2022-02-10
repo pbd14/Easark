@@ -662,7 +662,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     ),
                                                     Text(
                                                       'Parking lot #' +
-                                                          book.get('space_id'),
+                                                          book.get('space_id').toString(),
                                                       maxLines: 2,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -819,7 +819,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                       ),
-                                      color: darkPrimaryColor,
+                                      color: greenColor,
                                       margin: const EdgeInsets.all(5),
                                       elevation: 10,
                                       child: Center(
@@ -951,7 +951,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     ),
                                                     Text(
                                                       'Parking lot #' +
-                                                          book.get('space_id'),
+                                                          book.get('space_id').toString(),
                                                       maxLines: 2,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -1615,7 +1615,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                             Text(
                                                               'Parking lot #' +
                                                                   book.get(
-                                                                      'space_id'),
+                                                                      'space_id').toString(),
                                                               maxLines: 2,
                                                               overflow:
                                                                   TextOverflow

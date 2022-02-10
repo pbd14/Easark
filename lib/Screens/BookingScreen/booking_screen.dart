@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_screen.dart';
@@ -23,6 +23,7 @@ class _BookingScreenState extends State<BookingScreen> {
   bool loading = true;
   DocumentSnapshot? place;
   DocumentSnapshot? booking;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   StreamSubscription<DocumentSnapshot>? bookingSubscr;
   Map space = {};
 
@@ -45,10 +46,6 @@ class _BookingScreenState extends State<BookingScreen> {
         booking = thisBooking;
         loading = false;
       }
-    });
-
-    setState(() {
-      loading = false;
     });
   }
 
@@ -83,6 +80,7 @@ class _BookingScreenState extends State<BookingScreen> {
     return loading
         ? const LoadingScreen()
         : Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               elevation: 0,
               backgroundColor: const Color.fromRGBO(247, 247, 247, 1.0),
@@ -127,7 +125,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   SizedBox(
                                     width: size.width * 0.5,
@@ -250,23 +248,6 @@ class _BookingScreenState extends State<BookingScreen> {
                                         const SizedBox(
                                           height: 10,
                                         ),
-                                        Text(
-                                          booking!.get('status') == 'unfinished'
-                                              ? Languages.of(context)!
-                                                  .historyScreenUpcoming
-                                              : Languages.of(context)!
-                                                  .historyScreenVerificationNeeded,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: booking!.get('status') ==
-                                                      'unfinished'
-                                                  ? darkPrimaryColor
-                                                  : Colors.red,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
                                         booking!.get('status') ==
                                                     'unfinished' ||
                                                 booking!.get('status') ==
@@ -319,44 +300,22 @@ class _BookingScreenState extends State<BookingScreen> {
                                                 booking!.get(
                                                         'payment_method') ==
                                                     'card'
-                                            ? Text(
-                                                Languages.of(context)!
-                                                        .oeScreenMakePaymentWith +
-                                                    " " +
-                                                    Languages.of(context)!
-                                                        .serviceScreenCreditCard,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 8,
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 15,
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(),
-                                        SizedBox(
-                                          height:
-                                              booking!.get('status') == 'unpaid'
-                                                  ? 10
-                                                  : 0,
-                                        ),
-                                        booking!.get('status') == 'unpaid'
-                                            ? Center(
+                                            ? SizedBox(
+                                                width: size.width - 100,
                                                 child: Text(
-                                                  booking!
-                                                          .get('price')
-                                                          .toString() +
-                                                      booking!.get('currency'),
+                                                  Languages.of(context)!
+                                                          .oeScreenMakePaymentWith +
+                                                      " " +
+                                                      Languages.of(context)!
+                                                          .serviceScreenCreditCard,
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  maxLines: 15,
+                                                  maxLines: 8,
                                                   textAlign: TextAlign.center,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: TextStyle(
-                                                      color: darkColor,
-                                                      fontSize: 25,
+                                                      color: Colors.red,
+                                                      fontSize: 15,
                                                     ),
                                                   ),
                                                 ),
@@ -409,70 +368,164 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 40,
                       ),
-                      Container(
-                        width: size.width * 0.8,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          elevation: 10,
-                          margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      place!.get('owner_phone'),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                          color: darkColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    CupertinoButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () async {
-                                        await launch(
-                                            "tel:" + place!.get('owner_phone'));
-                                      },
-                                      child: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: primaryColor,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: darkPrimaryColor
-                                                  .withOpacity(0.5),
-                                              spreadRadius: 5,
-                                              blurRadius: 7,
-                                              offset: Offset(0,
-                                                  3), // changes position of shadow
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        elevation: 10,
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              booking!.get('status') != 'unfinished'
+                                  ? !booking!.get('isRated')
+                                      ? Container(
+                                          child: RatingBar.builder(
+                                            initialRating: 3.0,
+                                            minRating: 1,
+                                            direction: Axis.horizontal,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemPadding: EdgeInsets.symmetric(
+                                                horizontal: 4.0),
+                                            itemBuilder: (context, _) => Icon(
+                                              CupertinoIcons.star_fill,
+                                              color: Colors.yellow,
                                             ),
-                                          ],
-                                        ),
-                                        child: Icon(
-                                          CupertinoIcons.phone_fill,
-                                          color: whiteColor,
-                                          size: 20,
-                                        ),
+                                            onRatingUpdate: (rating) {
+                                              String dataBooking = booking!.id;
+                                              FirebaseFirestore.instance
+                                                  .collection('parking_places')
+                                                  .doc(place!.id)
+                                                  .update({
+                                                'ratingsSum': rating +
+                                                    place!.get('ratingsSum'),
+                                                'ratingsNumber': 1 +
+                                                    place!.get('ratingsNumber'),
+                                              });
+                                              FirebaseFirestore.instance
+                                                  .collection('bookings')
+                                                  .doc(booking!.id)
+                                                  .update({'isRated': true});
+                                              WidgetsBinding.instance!
+                                                  .addPostFrameCallback((_) {
+                                                _scaffoldKey.currentState!
+                                                    .showSnackBar(SnackBar(
+                                                  backgroundColor:
+                                                      darkPrimaryColor,
+                                                  content: Text(
+                                                    'Rating was saved',
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle: TextStyle(
+                                                        color: whiteColor,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ));
+                                              });
+                                            },
+                                          ),
+                                        )
+                                      : Container()
+                                  : Container(),
+                              IconButton(
+                                iconSize: 25,
+                                icon: Icon(
+                                  CupertinoIcons.map_pin_ellipse,
+                                  color: darkPrimaryColor,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  // Navigator.push(
+                                  //   context,
+                                  //   SlideRightRoute(
+                                  //     page: MapScreen(
+                                  //       data: {
+                                  //         'lat':
+                                  //             Place.fromSnapshot(place).lat,
+                                  //         'lon': Place.fromSnapshot(place).lon
+                                  //       },
+                                  //     ),
+                                  //   ),
+                                  // );
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        elevation: 10,
+                        margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    place!.get('owner_phone'),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: darkColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () async {
+                                      await launch(
+                                          "tel:" + place!.get('owner_phone'));
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: greenColor,
+                                        // boxShadow: [
+                                        //   BoxShadow(
+                                        //     color: darkPrimaryColor
+                                        //         .withOpacity(0.5),
+                                        //     spreadRadius: 5,
+                                        //     blurRadius: 7,
+                                        //     offset: Offset(0,
+                                        //         3), // changes position of shadow
+                                        //   ),
+                                        // ],
+                                      ),
+                                      child: Icon(
+                                        CupertinoIcons.phone_fill,
+                                        color: whiteColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),

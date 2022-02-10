@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -28,6 +27,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
   bool loading = true;
   bool infoExpansionPanel = false;
   bool isActive = true;
+  double rating = 0;
   DocumentSnapshot? place;
   List spaces = [];
   List placeImages = [];
@@ -43,6 +43,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
       placeImages = place!.get('images');
       isActive = place!.get('is_active');
       loading = false;
+      rating = place!.get('ratingsSum') / place!.get('ratingsNumber');
     });
   }
 
@@ -124,6 +125,31 @@ class _PlaceScreenState extends State<PlaceScreen> {
                               fontSize: 15,
                               fontWeight: FontWeight.w400),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: darkColor,
+                          ),
+                          SizedBox(
+                            width: 7,
+                          ),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                color: darkColor,
+                                fontSize: 15,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                       const SizedBox(
                         height: 20,
