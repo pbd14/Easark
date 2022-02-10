@@ -7,7 +7,9 @@ import 'package:easark/Screens/BookingScreen/components/space_info_screen.dart';
 import 'package:easark/Screens/BookingScreen/components/space_info_type2_screen.dart';
 import 'package:easark/Screens/BookingScreen/components/space_info_type3_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
+import 'package:easark/Widgets/sww_screen.dart';
 import 'package:easark/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,6 +26,7 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
   bool loading = true;
   bool infoExpansionPanel = false;
   DocumentSnapshot? place;
+  DocumentSnapshot? user;
   double rating = 0;
   List spaces = [];
   List placeImages = [];
@@ -32,6 +35,10 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
     place = await FirebaseFirestore.instance
         .collection('parking_places')
         .doc(widget.placeId)
+        .get();
+    user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     setState(() {
@@ -349,15 +356,21 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                 openBuilder: (BuildContext context,
                                     void Function({Object? returnValue})
                                         action) {
-                                  return place!.get('is24')
-                                      ? SpaceInfoScreenType2(
-                                          placeId: place!.id,
-                                          spaceId: space['id'],
-                                        )
-                                      : SpaceInfoScreen(
-                                          placeId: place!.id,
-                                          spaceId: space['id'],
-                                        );
+                                  if (user!.get('status') != 'blocked') {
+                                    return place!.get('is24')
+                                        ? SpaceInfoScreenType2(
+                                            placeId: place!.id,
+                                            spaceId: space['id'],
+                                          )
+                                        : SpaceInfoScreen(
+                                            placeId: place!.id,
+                                            spaceId: space['id'],
+                                          );
+                                  } else {
+                                    return SomethingWentWrongScreen(
+                                      error: 'You account was blocked.',
+                                    );
+                                  }
                                 },
                               )
                           ],

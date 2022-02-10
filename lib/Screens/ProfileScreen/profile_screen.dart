@@ -72,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 },
                                 child: const Text(
                                   'Yes',
-                                  style: TextStyle(color: primaryColor),
+                                  style: TextStyle(color: greenColor),
                                 ),
                               ),
                               TextButton(

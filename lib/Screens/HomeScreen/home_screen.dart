@@ -52,6 +52,36 @@ class _HomeScreenState extends State<HomeScreen> {
         'status': 'default',
         'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
       });
+    } else {
+      if (user.get('status') == 'blocked') {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              // title: Text(
+              //     Languages.of(context).profileScreenSignOut),
+              // content: Text(
+              //     Languages.of(context)!.profileScreenWantToLeave),
+              title: Text(
+                'Blocked',
+                style: TextStyle(color: Colors.red),
+              ),
+              content: Text(
+                  'Your account was blocked. Please check if you have paid for all of your bookings. Contact us for more info.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(color: darkColor),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 
