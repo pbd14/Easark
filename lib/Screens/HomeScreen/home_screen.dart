@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csc_picker/csc_picker.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/core_screen.dart';
 import 'package:easark/Screens/HistoryScreen/history_screen.dart';
@@ -24,6 +25,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? country;
+  String? state;
+  String? city;
   final PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
 
@@ -54,6 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
         'status': 'default',
         'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
         'email': FirebaseAuth.instance.currentUser?.email,
+        'country': '',
+        'state': '',
+        'city': '',
       });
     } else {
       if (user.get('status') == 'blocked') {
@@ -91,86 +98,198 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         );
       }
-      if (FirebaseAuth.instance.currentUser!.email!.isNotEmpty) {
-        if (FirebaseAuth.instance.currentUser != null &&
-            !FirebaseAuth.instance.currentUser!.emailVerified) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  // title: Text(
-                  //     Languages.of(context).profileScreenSignOut),
-                  // content: Text(
-                  //     Languages.of(context)!.profileScreenWantToLeave),
-                  title: Text(
-                    'Verify your email',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  content: Text(
-                      'Please verify your email. Check if verfication email is in the spam box.'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        bool isError = false;
-                        FirebaseAuth.instance.currentUser!
-                            .sendEmailVerification()
-                            .catchError((error) {
-                          print('ERRERF');
-                          print(error);
-                          isError = true;
-                          PushNotificationMessage notification =
-                              PushNotificationMessage(
-                            title: 'Fail',
-                            body: 'Failed to send email',
-                          );
-                          showSimpleNotification(
-                            Text(notification.body),
-                            position: NotificationPosition.top,
-                            background: Colors.red,
-                          );
-                        }).whenComplete(() {
-                          if (!isError) {
+      // if (user.get('country') == null ||
+      //     user.get('state') == null ||
+      //     user.get('city') == null ||
+      //     user.get('country').isEmpty ||
+      //     user.get('state').isEmpty ||
+      //     user.get('city').isEmpty ||
+      //     user.get('country') == '' ||
+      //     user.get('state') == '' ||
+      //     user.get('city') == '') {
+      //   print('TERRR1');
+      //   showDialog(
+      //     barrierDismissible: false,
+      //     context: context,
+      //     builder: (BuildContext context) {
+      //       return WillPopScope(
+      //         onWillPop: () async => false,
+      //         child: AlertDialog(
+      //           shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(20.0),
+      //           ),
+      //           // title: Text(
+      //           //     Languages.of(context).profileScreenSignOut),
+      //           // content: Text(
+      //           //     Languages.of(context)!.profileScreenWantToLeave),
+      //           title: Text(
+      //             'Select your location',
+      //           ),
+      //           content: SizedBox(
+      //             width: 300,
+      //             child: CSCPicker(
+      //               flagState: CountryFlag.DISABLE,
+      //               defaultCountry: DefaultCountry.Uzbekistan,
+      //               onCountryChanged: (value) {
+      //                 setState(() {
+      //                   country = value;
+      //                 });
+      //               },
+      //               onStateChanged: (value) {
+      //                 setState(() {
+      //                   state = value;
+      //                 });
+      //               },
+      //               onCityChanged: (value) {
+      //                 setState(() {
+      //                   city = value;
+      //                 });
+      //               },
+      //             ),
+      //           ),
+      //           actions: <Widget>[
+      //             TextButton(
+      //               onPressed: () {
+      //                 bool isError = false;
+      //                 if (country != null &&
+      //                     city != null &&
+      //                     state != null &&
+      //                     country!.isNotEmpty &&
+      //                     state!.isNotEmpty &&
+      //                     city!.isNotEmpty) {
+      //                   FirebaseFirestore.instance
+      //                       .collection('users')
+      //                       .doc(user.id)
+      //                       .update({
+      //                     'country': country,
+      //                     'state': state,
+      //                     'city': city,
+      //                   }).catchError((error) {
+      //                     print('ERRERF');
+      //                     print(error);
+      //                     isError = true;
+      //                     PushNotificationMessage notification =
+      //                         PushNotificationMessage(
+      //                       title: 'Fail',
+      //                       body: 'Failed',
+      //                     );
+      //                     showSimpleNotification(
+      //                       Text(notification.body),
+      //                       position: NotificationPosition.top,
+      //                       background: Colors.red,
+      //                     );
+      //                   }).whenComplete(() {
+      //                     if (!isError) {
+      //                       Navigator.of(context).pop(false);
+      //                       PushNotificationMessage notification =
+      //                           PushNotificationMessage(
+      //                         title: 'Success',
+      //                         body: 'Updated',
+      //                       );
+      //                       showSimpleNotification(
+      //                         Text(notification.body),
+      //                         position: NotificationPosition.top,
+      //                         background: greenColor,
+      //                       );
+      //                     }
+      //                   });
+      //                 }
+      //                 ;
+      //               },
+      //               child: const Text(
+      //                 'Ok',
+      //                 style: TextStyle(color: darkColor),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       );
+      //     },
+      //   );
+      // }
+      if (FirebaseAuth.instance.currentUser!.email != null) {
+        if (FirebaseAuth.instance.currentUser!.email!.isNotEmpty) {
+          if (FirebaseAuth.instance.currentUser != null &&
+              !FirebaseAuth.instance.currentUser!.emailVerified) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    // title: Text(
+                    //     Languages.of(context).profileScreenSignOut),
+                    // content: Text(
+                    //     Languages.of(context)!.profileScreenWantToLeave),
+                    title: Text(
+                      'Verify your email',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    content: Text(
+                        'Please verify your email. Check if verfication email is in the spam box.'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          bool isError = false;
+                          FirebaseAuth.instance.currentUser!
+                              .sendEmailVerification()
+                              .catchError((error) {
+                            print('ERRERF');
+                            print(error);
+                            isError = true;
                             PushNotificationMessage notification =
                                 PushNotificationMessage(
-                              title: 'Success',
-                              body: 'Email was sent',
+                              title: 'Fail',
+                              body: 'Failed to send email',
                             );
                             showSimpleNotification(
                               Text(notification.body),
                               position: NotificationPosition.top,
-                              background: greenColor,
+                              background: Colors.red,
                             );
+                          }).whenComplete(() {
+                            if (!isError) {
+                              PushNotificationMessage notification =
+                                  PushNotificationMessage(
+                                title: 'Success',
+                                body: 'Email was sent',
+                              );
+                              showSimpleNotification(
+                                Text(notification.body),
+                                position: NotificationPosition.top,
+                                background: greenColor,
+                              );
+                            }
+                          });
+                        },
+                        child: const Text(
+                          'Resend email',
+                          style: TextStyle(color: darkColor),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (FirebaseAuth.instance.currentUser != null &&
+                              FirebaseAuth
+                                  .instance.currentUser!.emailVerified) {
+                            Navigator.of(context).pop(false);
                           }
-                        });
-                      },
-                      child: const Text(
-                        'Resend email',
-                        style: TextStyle(color: darkColor),
+                        },
+                        child: const Text(
+                          'Verified',
+                          style: TextStyle(color: darkColor),
+                        ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (FirebaseAuth.instance.currentUser != null &&
-                            FirebaseAuth.instance.currentUser!.emailVerified) {
-                          Navigator.of(context).pop(false);
-                        }
-                      },
-                      child: const Text(
-                        'Verified',
-                        style: TextStyle(color: darkColor),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
+                    ],
+                  ),
+                );
+              },
+            );
+          }
         }
       }
     }

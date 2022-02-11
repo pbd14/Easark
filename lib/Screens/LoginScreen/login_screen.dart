@@ -24,9 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late String verificationId;
   String error = '';
-  String? country;
-  String? state;
-  String? city;
   bool loading = false;
 
   // Future<void> checkVersion() async {
@@ -362,30 +359,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 50),
-                              SizedBox(
-                                width: size.width * 0.7,
-                                child: CSCPicker(
-                                  flagState: CountryFlag.DISABLE,
-                                  defaultCountry: DefaultCountry.Uzbekistan,
-                                  onCountryChanged: (value) {
-                                    setState(() {
-                                      country = value;
-                                    });
-                                  },
-                                  onStateChanged: (value) {
-                                    setState(() {
-                                      state = value;
-                                    });
-                                  },
-                                  onCityChanged: (value) {
-                                    setState(() {
-                                      city = value;
-                                    });
-                                  },
-                                ),
-                              ),
-
                               const SizedBox(
                                 height: 100,
                               ),
@@ -396,30 +369,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 text: 'Enter with Phone',
                                 press: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    if (country != null &&
-                                        city != null &&
-                                        state != null &&
-                                        country!.isNotEmpty &&
-                                        state!.isNotEmpty &&
-                                        city!.isNotEmpty) {
-                                      setState(() {
-                                        loading = true;
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: const PhoneLoginScreen(),
-                                        ),
-                                      );
-                                      setState(() {
-                                        loading = false;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        error =
-                                            'Please choose your city state and country';
-                                      });
-                                    }
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: const PhoneLoginScreen(),
+                                      ),
+                                    );
+                                    setState(() {
+                                      loading = false;
+                                    });
                                   }
                                 },
                                 color: darkPrimaryColor,
@@ -435,31 +396,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 text: 'Login with Email',
                                 press: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    if (country != null &&
-                                        city != null &&
-                                        state != null &&
-                                        country!.isNotEmpty &&
-                                        state!.isNotEmpty &&
-                                        city!.isNotEmpty) {
-                                      setState(() {
-                                        loading = true;
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: const EmailLoginScreen(),
-                                        ),
-                                      );
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: const EmailLoginScreen(),
+                                      ),
+                                    );
 
-                                      setState(() {
-                                        loading = false;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        error =
-                                            'Please choose your city state and country';
-                                      });
-                                    }
+                                    setState(() {
+                                      loading = false;
+                                    });
                                   }
                                 },
                                 color: darkPrimaryColor,
@@ -475,30 +424,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 text: 'Sign Up with Email',
                                 press: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    if (country != null &&
-                                        city != null &&
-                                        state != null &&
-                                        country!.isNotEmpty &&
-                                        state!.isNotEmpty &&
-                                        city!.isNotEmpty) {
-                                      setState(() {
-                                        loading = true;
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: const EmailSignUpScreen(),
-                                        ),
-                                      );
-                                      setState(() {
-                                        loading = false;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        error =
-                                            'Please choose your city state and country';
-                                      });
-                                    }
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: const EmailSignUpScreen(),
+                                      ),
+                                    );
+                                    setState(() {
+                                      loading = false;
+                                    });
                                   }
                                 },
                                 color: darkPrimaryColor,

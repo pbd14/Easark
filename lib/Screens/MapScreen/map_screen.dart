@@ -1,18 +1,23 @@
 import 'dart:collection';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csc_picker/csc_picker.dart';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BookingScreen/components/place_info_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_map_screen.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 // ignore: must_be_immutable
 class MapScreen extends StatefulWidget {
@@ -29,8 +34,12 @@ class _MapScreenState extends State<MapScreen> {
   double mapZoom = 15;
   bool loading = false;
   bool loading1 = true;
+  String? country;
+  String? state;
+  String? city;
   Set<Marker> _markers = HashSet<Marker>();
   List<QueryDocumentSnapshot>? places;
+  DocumentSnapshot? user;
   GoogleMapController? _mapController;
   // ignore: avoid_init_to_null
   static LatLng _initialPosition =
@@ -105,9 +114,157 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void prepare() async {
-    QuerySnapshot data =
-        await FirebaseFirestore.instance.collection('parking_places').get();
-    places = data.docs;
+    user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (user!.get('country') == null ||
+        user!.get('state') == null ||
+        user!.get('city') == null ||
+        user!.get('country').isEmpty ||
+        user!.get('state').isEmpty ||
+        user!.get('city').isEmpty ||
+        user!.get('country') == '' ||
+        user!.get('state') == '' ||
+        user!.get('city') == '') {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              // title: Text(
+              //     Languages.of(context).profileScreenSignOut),
+              // content: Text(
+              //     Languages.of(context)!.profileScreenWantToLeave),
+              title: Text(
+                'Select your location',
+              ),
+              content: SizedBox(
+                width: 300,
+                height: 300,
+                child: CSCPicker(
+                  flagState: CountryFlag.DISABLE,
+                  defaultCountry: DefaultCountry.Uzbekistan,
+                  onCountryChanged: (value) {
+                    setState(() {
+                      country = value;
+                    });
+                  },
+                  onStateChanged: (value) {
+                    setState(() {
+                      state = value;
+                    });
+                  },
+                  onCityChanged: (value) {
+                    setState(() {
+                      city = value;
+                    });
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    bool isError = false;
+                    if (country != null &&
+                        city != null &&
+                        state != null &&
+                        country!.isNotEmpty &&
+                        state!.isNotEmpty &&
+                        city!.isNotEmpty) {
+                      setState(() {
+                        loading = true;
+                      });
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user!.id)
+                          .update({
+                        'country': country,
+                        'state': state,
+                        'city': city,
+                      }).catchError((error) {
+                        print('ERRERF');
+                        print(error);
+                        isError = true;
+                        PushNotificationMessage notification =
+                            PushNotificationMessage(
+                          title: 'Fail',
+                          body: 'Failed',
+                        );
+                        showSimpleNotification(
+                          Text(notification.body),
+                          position: NotificationPosition.top,
+                          background: Colors.red,
+                        );
+                      }).whenComplete(() async {
+                        if (!isError) {
+                          await FirebaseFirestore.instance
+                              .collection('parking_places')
+                              .where('country', isEqualTo: country)
+                              .where('state', isEqualTo: state)
+                              .where('city', isEqualTo: city)
+                              .get()
+                              .then((value) {
+                            setState(() {
+                              places = value.docs;
+                            });
+                            Navigator.of(context).pop(false);
+                            PushNotificationMessage notification =
+                                PushNotificationMessage(
+                              title: 'Success',
+                              body: 'Updated',
+                            );
+                            showSimpleNotification(
+                              Text(notification.body),
+                              position: NotificationPosition.top,
+                              background: greenColor,
+                            );
+                            setState(() {
+                              loading = false;
+                            });
+                          });
+                        }
+                      });
+                    }
+                    ;
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(color: darkColor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      QuerySnapshot data = await FirebaseFirestore.instance
+          .collection('parking_places')
+          .where('country', isEqualTo: user!.get('country'))
+          .where('state', isEqualTo: user!.get('state'))
+          .where('city', isEqualTo: user!.get('city'))
+          .get();
+      setState(() {
+        places = data.docs;
+      });
+      if (places!.isEmpty) {
+        PushNotificationMessage notification = PushNotificationMessage(
+          title: 'No parking',
+          body: 'There are no parking places near you',
+        );
+        showSimpleNotification(
+          Text(notification.body),
+          position: NotificationPosition.top,
+          background: Colors.red,
+        );
+      }
+    }
   }
 
   @override
@@ -207,7 +364,8 @@ class _MapScreenState extends State<MapScreen> {
                                                     ' ' +
                                                     place.get('currency') +
                                                     ' per minute';
-                                          } else if (place.get('isFixedPrice')) {
+                                          } else if (place
+                                              .get('isFixedPrice')) {
                                             currentPinInfo =
                                                 place.get('price').toString() +
                                                     ' ' +
