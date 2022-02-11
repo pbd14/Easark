@@ -1,16 +1,16 @@
+import 'package:csc_picker/csc_picker.dart';
 import 'package:easark/Models/LanguageData.dart';
-import 'package:easark/Models/PushNotificationMessage.dart';
-import 'package:easark/Services/auth_service.dart';
+import 'package:easark/Screens/LoginScreen/email_login_screen.dart';
+import 'package:easark/Screens/LoginScreen/email_signup_screen.dart';
+import 'package:easark/Screens/LoginScreen/phone_login_screen.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Services/languages/locale_constant.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:overlay_support/overlay_support.dart';
 
 class LoginScreen extends StatefulWidget {
   final String errors;
@@ -22,12 +22,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late String phoneNo;
-  late String smsCode;
   late String verificationId;
   String error = '';
-
-  bool codeSent = false;
+  String? country;
+  String? state;
+  String? city;
   bool loading = false;
 
   // Future<void> checkVersion() async {
@@ -80,11 +79,80 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 100),
                   SizedBox(
-                    height: !codeSent ? 100 : 0,
+                    width: size.width * 0.8,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      elevation: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Language',
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: darkColor,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            DropdownButton<LanguageData>(
+                              iconSize: 30,
+                              hint: Text(
+                                  Languages.of(context)!.labelSelectLanguage),
+                              onChanged: (LanguageData? language) {
+                                changeLanguage(context, language!.languageCode);
+                              },
+                              items: LanguageData.languageList()
+                                  .map<DropdownMenuItem<LanguageData>>(
+                                    (e) => DropdownMenuItem<LanguageData>(
+                                      value: e,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: <Widget>[
+                                          Text(
+                                            e.flag,
+                                            style:
+                                                const TextStyle(fontSize: 30),
+                                          ),
+                                          Text(e.name)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  !codeSent
-                      ? SizedBox(
+                  SizedBox(height: 100),
+                  Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset(
+                        'assets/images/login1.png',
+                        height: 300,
+                        width: size.width * 0.9,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Positioned(
+                        top: 200,
+                        child: SizedBox(
                           width: size.width * 0.8,
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -95,268 +163,177 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.all(20),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
+                                children: [
                                   Text(
-                                    'Language',
+                                    Languages.of(context)!.loginScreen1head,
+                                    maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.montserrat(
                                       textStyle: const TextStyle(
                                         color: darkColor,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w400,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  DropdownButton<LanguageData>(
-                                    iconSize: 30,
-                                    hint: Text(Languages.of(context)!
-                                        .labelSelectLanguage),
-                                    onChanged: (LanguageData? language) {
-                                      changeLanguage(
-                                          context, language!.languageCode);
-                                    },
-                                    items: LanguageData.languageList()
-                                        .map<DropdownMenuItem<LanguageData>>(
-                                          (e) => DropdownMenuItem<LanguageData>(
-                                            value: e,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: <Widget>[
-                                                Text(
-                                                  e.flag,
-                                                  style: const TextStyle(
-                                                      fontSize: 30),
-                                                ),
-                                                Text(e.name)
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
                                   const SizedBox(
-                                    height: 20,
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    Languages.of(context)!.loginScreen1text,
+                                    maxLines: 10,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: darkColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: !codeSent ? 100 : 0,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                    ],
                   ),
-                  !codeSent
-                      ? Stack(
-                          alignment: Alignment.center,
-                          clipBehavior: Clip.none,
-                          children: [
-                            Image.asset(
-                              'assets/images/login1.png',
-                              height: 300,
-                              width: size.width * 0.9,
-                              fit: BoxFit.fitWidth,
+                  SizedBox(
+                    height: 150,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset(
+                        'assets/images/login2.png',
+                        height: 200,
+                        width: size.width * 0.9,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Positioned(
+                        top: 170,
+                        child: SizedBox(
+                          width: size.width * 0.8,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
-                            Positioned(
-                              top: 200,
-                              child: SizedBox(
-                                width: size.width * 0.8,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  elevation: 10,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          Languages.of(context)!
-                                              .loginScreen1head,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          Languages.of(context)!
-                                              .loginScreen1text,
-                                          maxLines: 10,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                            elevation: 10,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    Languages.of(context)!.loginScreen2head,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: darkColor,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: !codeSent ? 150 : 0,
-                  ),
-                  !codeSent
-                      ? Stack(
-                          alignment: Alignment.center,
-                          clipBehavior: Clip.none,
-                          children: [
-                            Image.asset(
-                              'assets/images/login2.png',
-                              height: 200,
-                              width: size.width * 0.9,
-                              fit: BoxFit.fitWidth,
-                            ),
-                            Positioned(
-                              top: 170,
-                              child: SizedBox(
-                                width: size.width * 0.8,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
+                                  const SizedBox(
+                                    height: 10,
                                   ),
-                                  elevation: 10,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          Languages.of(context)!
-                                              .loginScreen2head,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          Languages.of(context)!
-                                              .loginScreen2text,
-                                          maxLines: 10,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  Text(
+                                    Languages.of(context)!.loginScreen2text,
+                                    maxLines: 10,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: darkColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300,
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: !codeSent ? 200 : 0,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                    ],
                   ),
-                  !codeSent
-                      ? Stack(
-                          alignment: Alignment.center,
-                          clipBehavior: Clip.none,
-                          children: [
-                            Image.asset(
-                              'assets/images/login3.png',
-                              height: 200,
-                              width: size.width * 0.9,
-                              fit: BoxFit.fitWidth,
+                  SizedBox(
+                    height: 200,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset(
+                        'assets/images/login3.png',
+                        height: 200,
+                        width: size.width * 0.9,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Positioned(
+                        top: 165,
+                        child: SizedBox(
+                          width: size.width * 0.8,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
-                            Positioned(
-                              top: 165,
-                              child: SizedBox(
-                                width: size.width * 0.8,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  elevation: 10,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          Languages.of(context)!
-                                              .loginScreen3head,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          Languages.of(context)!
-                                              .loginScreen3text,
-                                          maxLines: 10,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: darkColor,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                            elevation: 10,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    Languages.of(context)!.loginScreen3head,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: darkColor,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    Languages.of(context)!.loginScreen3text,
+                                    maxLines: 10,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: darkColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        )
-                      : Container(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                  ),
                   SizedBox(
-                    height: !codeSent ? 150 : 50,
+                    height: 150,
                   ),
                   Center(
                     child: SizedBox(
@@ -385,147 +362,149 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 30),
-                              !codeSent
-                                  ? SizedBox(
-                                      width: size.width * 0.7,
-                                      child: TextFormField(
-                                        style: const TextStyle(
-                                            color: darkDarkColor),
-                                        validator: (val) => val!.isEmpty
-                                            ? 'Enter a phone number'
-                                            : null,
-                                        keyboardType: TextInputType.phone,
-                                        onChanged: (val) {
-                                          setState(() {
-                                            phoneNo = val;
-                                          });
-                                        },
-                                        decoration: InputDecoration(
-                                          focusedBorder:
-                                              const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: darkColor, width: 1.0),
-                                          ),
-                                          enabledBorder:
-                                              const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: darkColor, width: 1.0),
-                                          ),
-                                          hintStyle: TextStyle(
-                                              color:
-                                                  darkColor.withOpacity(0.7)),
-                                          hintText: 'Phone',
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    )
-                                  : SizedBox(height: size.height * 0),
-                              codeSent
-                                  ? SizedBox(
-                                      width: size.width * 0.7,
-                                      child: TextFormField(
-                                        style: const TextStyle(
-                                            color: darkDarkColor),
-                                        validator: (val) => val!.isEmpty
-                                            ? 'Enter a code'
-                                            : null,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (val) {
-                                          setState(() {
-                                            smsCode = val;
-                                          });
-                                        },
-                                        decoration: InputDecoration(
-                                          focusedBorder:
-                                              const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: darkColor, width: 1.0),
-                                          ),
-                                          enabledBorder:
-                                              const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: darkColor, width: 1.0),
-                                          ),
-                                          hintStyle: TextStyle(
-                                              color:
-                                                  darkColor.withOpacity(0.7)),
-                                          hintText: 'Code',
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    )
-                                  : SizedBox(height: size.height * 0),
-                              codeSent
-                                  ? const SizedBox(height: 20)
-                                  : SizedBox(height: size.height * 0),
+                              const SizedBox(height: 50),
+                              SizedBox(
+                                width: size.width * 0.7,
+                                child: CSCPicker(
+                                  flagState: CountryFlag.DISABLE,
+                                  defaultCountry: DefaultCountry.Uzbekistan,
+                                  onCountryChanged: (value) {
+                                    setState(() {
+                                      country = value;
+                                    });
+                                  },
+                                  onStateChanged: (value) {
+                                    setState(() {
+                                      state = value;
+                                    });
+                                  },
+                                  onCityChanged: (value) {
+                                    setState(() {
+                                      city = value;
+                                    });
+                                  },
+                                ),
+                              ),
 
-                              // RoundedPasswordField(
-                              //   hintText: "Password",
-                              //   onChanged: (value) {},
-                              // ),
-                              const SizedBox(height: 20),
+                              const SizedBox(
+                                height: 100,
+                              ),
+
                               RoundedButton(
-                                width: 0.4,
+                                pw: 250,
                                 ph: 45,
-                                text: 'GO',
+                                text: 'Enter with Phone',
                                 press: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    if (codeSent) {
-                                      try {
-                                        UserCredential res = await AuthService()
-                                            .signInWithOTP(smsCode,
-                                                verificationId, context);
-                                      } catch (e) {
-                                        setState(() {
-                                          // error = 'Enter valid data';
-                                          loading = false;
-                                        });
-                                        PushNotificationMessage notification =
-                                            PushNotificationMessage(
-                                          title: 'Fail',
-                                          body: 'Wrong code',
-                                        );
-                                        showSimpleNotification(
-                                          Text(notification.body),
-                                          position: NotificationPosition.top,
-                                          background: Colors.red,
-                                        );
-                                      }
-                                      // setState(() {
-                                      //     // error = 'Enter valid data';
-                                      //     loading = false;
-                                      //   });
+                                    if (country != null &&
+                                        city != null &&
+                                        state != null &&
+                                        country!.isNotEmpty &&
+                                        state!.isNotEmpty &&
+                                        city!.isNotEmpty) {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                          page: const PhoneLoginScreen(),
+                                        ),
+                                      );
+                                      setState(() {
+                                        loading = false;
+                                      });
                                     } else {
-                                      await verifyPhone(phoneNo);
+                                      setState(() {
+                                        error =
+                                            'Please choose your city state and country';
+                                      });
                                     }
                                   }
                                 },
                                 color: darkPrimaryColor,
                                 textColor: whiteColor,
                               ),
-                              codeSent
-                                  ? const SizedBox(height: 55)
-                                  : SizedBox(height: size.height * 0),
-                              codeSent
-                                  ? RoundedButton(
-                                      width: 0.6,
-                                      ph: 45,
-                                      text: Languages.of(context)!
-                                          .loginScreenReenterPhone,
-                                      press: () {
-                                        Navigator.push(
-                                            context,
-                                            SlideRightRoute(
-                                                page: const LoginScreen()));
-                                      },
-                                      color: lightPrimaryColor,
-                                      textColor: whiteColor,
-                                    )
-                                  : SizedBox(height: size.height * 0),
+
+                              const SizedBox(
+                                height: 50,
+                              ),
+                              RoundedButton(
+                                pw: 250,
+                                ph: 45,
+                                text: 'Login with Email',
+                                press: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (country != null &&
+                                        city != null &&
+                                        state != null &&
+                                        country!.isNotEmpty &&
+                                        state!.isNotEmpty &&
+                                        city!.isNotEmpty) {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                          page: const EmailLoginScreen(),
+                                        ),
+                                      );
+
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        error =
+                                            'Please choose your city state and country';
+                                      });
+                                    }
+                                  }
+                                },
+                                color: darkPrimaryColor,
+                                textColor: whiteColor,
+                              ),
+
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              RoundedButton(
+                                pw: 250,
+                                ph: 45,
+                                text: 'Sign Up with Email',
+                                press: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (country != null &&
+                                        city != null &&
+                                        state != null &&
+                                        country!.isNotEmpty &&
+                                        state!.isNotEmpty &&
+                                        city!.isNotEmpty) {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                          page: const EmailSignUpScreen(),
+                                        ),
+                                      );
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        error =
+                                            'Please choose your city state and country';
+                                      });
+                                    }
+                                  }
+                                },
+                                color: darkPrimaryColor,
+                                textColor: whiteColor,
+                              ),
+
                               const SizedBox(
                                 height: 20,
                               ),
@@ -578,51 +557,5 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           );
-  }
-
-  verifyPhone(phoneNo) async {
-    final PhoneVerificationCompleted verified =
-        (PhoneAuthCredential authResult) {
-      AuthService().signIn(authResult, context);
-      setState(() {
-        loading = false;
-      });
-    };
-
-    final PhoneVerificationFailed verificationFailed =
-        (FirebaseAuthException authException) {
-      setState(() {
-        error = '${authException.message}';
-        loading = false;
-      });
-    };
-
-    final PhoneCodeSent smsSent = (String verId, int? forceResend) {
-      verificationId = verId;
-      setState(() {
-        error = '';
-        codeSent = true;
-        loading = false;
-      });
-    };
-
-    final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
-      verificationId = verId;
-      if (mounted) {
-        setState(() {
-          codeSent = false;
-          loading = false;
-          error = Languages.of(context)!.loginScreenCodeIsNotValid;
-        });
-      }
-    };
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNo,
-        timeout: const Duration(seconds: 100),
-        verificationCompleted: verified,
-        verificationFailed: verificationFailed,
-        codeSent: smsSent,
-        codeAutoRetrievalTimeout: autoTimeout);
   }
 }

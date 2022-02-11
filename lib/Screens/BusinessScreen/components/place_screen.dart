@@ -187,6 +187,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
                                     title: const Text('Delete?'),
                                     content: const Text(
                                         'Are your sure you want to delete this parking place?'),
@@ -425,6 +428,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
                                     title: const Text('Sure?'),
                                     content: const Text(
                                         'Do you want to add a parking space?'),

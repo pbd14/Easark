@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/core_screen.dart';
 import 'package:easark/Screens/HistoryScreen/history_screen.dart';
 import 'package:easark/Screens/MapScreen/map_screen.dart';
@@ -6,6 +7,7 @@ import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'id': FirebaseAuth.instance.currentUser?.uid,
         'status': 'default',
         'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
+        'email': FirebaseAuth.instance.currentUser?.email,
       });
     } else {
       if (user.get('status') == 'blocked') {
@@ -58,29 +61,117 @@ class _HomeScreenState extends State<HomeScreen> {
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
-              // title: Text(
-              //     Languages.of(context).profileScreenSignOut),
-              // content: Text(
-              //     Languages.of(context)!.profileScreenWantToLeave),
-              title: Text(
-                'Blocked',
-                style: TextStyle(color: Colors.red),
-              ),
-              content: Text(
-                  'Your account was blocked. Please check if you have paid for all of your bookings. Contact us for more info.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text(
-                    'Ok',
-                    style: TextStyle(color: darkColor),
-                  ),
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-              ],
+                // title: Text(
+                //     Languages.of(context).profileScreenSignOut),
+                // content: Text(
+                //     Languages.of(context)!.profileScreenWantToLeave),
+                title: Text(
+                  'Blocked',
+                  style: TextStyle(color: Colors.red),
+                ),
+                content: Text(
+                    'Your account was blocked. Please check if you have paid for all of your bookings. Contact us for more info.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(color: darkColor),
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         );
+      }
+      if (FirebaseAuth.instance.currentUser!.email!.isNotEmpty) {
+        if (FirebaseAuth.instance.currentUser != null &&
+            !FirebaseAuth.instance.currentUser!.emailVerified) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  // title: Text(
+                  //     Languages.of(context).profileScreenSignOut),
+                  // content: Text(
+                  //     Languages.of(context)!.profileScreenWantToLeave),
+                  title: Text(
+                    'Verify your email',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  content: Text(
+                      'Please verify your email. Check if verfication email is in the spam box.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        bool isError = false;
+                        FirebaseAuth.instance.currentUser!
+                            .sendEmailVerification()
+                            .catchError((error) {
+                          print('ERRERF');
+                          print(error);
+                          isError = true;
+                          PushNotificationMessage notification =
+                              PushNotificationMessage(
+                            title: 'Fail',
+                            body: 'Failed to send email',
+                          );
+                          showSimpleNotification(
+                            Text(notification.body),
+                            position: NotificationPosition.top,
+                            background: Colors.red,
+                          );
+                        }).whenComplete(() {
+                          if (!isError) {
+                            PushNotificationMessage notification =
+                                PushNotificationMessage(
+                              title: 'Success',
+                              body: 'Email was sent',
+                            );
+                            showSimpleNotification(
+                              Text(notification.body),
+                              position: NotificationPosition.top,
+                              background: greenColor,
+                            );
+                          }
+                        });
+                      },
+                      child: const Text(
+                        'Resend email',
+                        style: TextStyle(color: darkColor),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (FirebaseAuth.instance.currentUser != null &&
+                            FirebaseAuth.instance.currentUser!.emailVerified) {
+                          Navigator.of(context).pop(false);
+                        }
+                      },
+                      child: const Text(
+                        'Verified',
+                        style: TextStyle(color: darkColor),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }
       }
     }
   }

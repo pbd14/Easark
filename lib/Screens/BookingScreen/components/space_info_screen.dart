@@ -501,6 +501,9 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
           return WillPopScope(
               onWillPop: () async => false,
               child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
                 title: Text(Languages.of(context)!.serviceScreenNoInternet),
                 // content: Text(Languages.of(context).profileScreenWantToLeave),
                 actions: <Widget>[
@@ -1510,7 +1513,8 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                             'unseen',
                                                                         'isRated':
                                                                             false,
-                                                                        'isReported': false,
+                                                                        'isReported':
+                                                                            false,
                                                                         'payment_method':
                                                                             payment_way,
                                                                       }).catchError(
@@ -1661,6 +1665,11 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                                 false,
                                                                         child:
                                                                             AlertDialog(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(20.0),
+                                                                          ),
                                                                           title:
                                                                               Text(Languages.of(context)!.serviceScreenNoInternet),
                                                                           // content: Text(Languages.of(context).profileScreenWantToLeave),

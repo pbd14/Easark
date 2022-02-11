@@ -196,6 +196,10 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
                                           title: const Text('Delete?'),
                                           content: const Text(
                                               'Are your sure you want to delete this parking place?'),

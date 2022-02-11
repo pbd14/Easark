@@ -1155,10 +1155,10 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                     child: Text(
                                       'There are three types types of timing: \n\n' +
                                           '-\bStandard \btiming is when client books your parking place from time to another. For example, client can book your parking place from 7 am to 9 am. However, booking cannot last more than one day\n\n' +
-                                          '-\b24/7 \btiming is the same as \bStandard \btiming. However, bookings can last for more than one day. For this option your parking place should be open 24/7\n\n' 
-                                          // +
-                                          // '-\bFree \btiming is when there is no start and end times for booking. Client just uses your parking place for as long as needed. In this case price will increase as duration of parking increases.'
-                                          ,
+                                          '-\b24/7 \btiming is the same as \bStandard \btiming. However, bookings can last for more than one day. For this option your parking place should be open 24/7\n\n'
+                                      // +
+                                      // '-\bFree \btiming is when there is no start and end times for booking. Client just uses your parking place for as long as needed. In this case price will increase as duration of parking increases.'
+                                      ,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 100,
                                       textAlign: TextAlign.start,
@@ -2374,171 +2374,185 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                       text: 'CONTINUE',
                       press: () async {
                         if (_formKey.currentState!.validate()) {
-                          if (i1 != null ||
-                              i2 != null ||
-                              i3 != null ||
-                              i4 != null ||
-                              i5 != null ||
-                              i6 != null ||
-                              place!.get('images')[0] != null ||
-                              place!.get('images')[1] != null ||
-                              place!.get('images')[2] != null ||
-                              place!.get('images')[3] != null ||
-                              place!.get('images')[4] != null ||
-                              place!.get('images')[5] != null) {
-                            setState(() {
-                              loading = true;
-                            });
-                            TaskSnapshot? a1;
-                            TaskSnapshot? a2;
-                            TaskSnapshot? a3;
-                            TaskSnapshot? a4;
-                            TaskSnapshot? a5;
-                            TaskSnapshot? a6;
-                            String id = FirebaseAuth.instance.currentUser!.uid;
+                          if (country != null &&
+                              city != null &&
+                              state != null &&
+                              country!.isNotEmpty &&
+                              state!.isNotEmpty &&
+                              city!.isNotEmpty &&
+                              payment_methods.isNotEmpty) {
+                            if (i1 != null ||
+                                i2 != null ||
+                                i3 != null ||
+                                i4 != null ||
+                                i5 != null ||
+                                i6 != null ||
+                                place!.get('images')[0] != null ||
+                                place!.get('images')[1] != null ||
+                                place!.get('images')[2] != null ||
+                                place!.get('images')[3] != null ||
+                                place!.get('images')[4] != null ||
+                                place!.get('images')[5] != null) {
+                              setState(() {
+                                loading = true;
+                              });
+                              TaskSnapshot? a1;
+                              TaskSnapshot? a2;
+                              TaskSnapshot? a3;
+                              TaskSnapshot? a4;
+                              TaskSnapshot? a5;
+                              TaskSnapshot? a6;
+                              String id =
+                                  FirebaseAuth.instance.currentUser!.uid;
 
-                            if (i1 != null) {
-                              a1 = await FirebaseStorage.instance
-                                  .ref('uploads/$id/$i1/')
-                                  .putFile(i1!);
-                            }
-                            if (i2 != null) {
-                              a2 = await FirebaseStorage.instance
-                                  .ref('uploads/$id/$i2/')
-                                  .putFile(i2!);
-                            }
-                            if (i3 != null) {
-                              a3 = await FirebaseStorage.instance
-                                  .ref('uploads/$id/$i3/')
-                                  .putFile(i3!);
-                            }
-                            if (i4 != null) {
-                              a4 = await FirebaseStorage.instance
-                                  .ref('uploads/$id/$i4/')
-                                  .putFile(i4!);
-                            }
-                            if (i5 != null) {
-                              a5 = await FirebaseStorage.instance
-                                  .ref('uploads/$id/$i5/')
-                                  .putFile(i5!);
-                            }
-                            if (i6 != null) {
-                              a6 = await FirebaseStorage.instance
-                                  .ref('uploads/$id/$i5/')
-                                  .putFile(i6!);
-                            }
-                            FirebaseFirestore.instance
-                                .collection('parking_places')
-                                .doc(place!.id)
-                                .update({
-                              'name': name,
-                              'description': description,
-                              'country': country,
-                              'state': state,
-                              'city': city,
-                              'currency': currency,
-                              'pricing_mode': pricing_mode,
-                              'price': price,
-                              'isppm': isppm,
-                              'isFixedPrice': isFixedPrice,
-                              'timing_mode': timing_mode,
-                              'is24': is24hours,
-                              'isStandardTiming': isStandardTiming,
-                              'isFreeTiming': isFreeTiming,
-                              'payment_methods': payment_methods,
-                              'days': {
-                                'Mon': mon,
-                                'Tue': tue,
-                                'Wed': wed,
-                                'Thu': thu,
-                                'Fri': fri,
-                                'Sat': sat,
-                                'Sun': sun,
-                              },
-                              'vacation_days': vacationDays,
-                              'owner_phone': owner_phone,
-                              'images': [
-                                if (a1 != null)
-                                  await a1.ref.getDownloadURL()
-                                else if (place!
-                                    .get('images')
-                                    .asMap()
-                                    .containsKey(0))
-                                  place!.get('images')[0],
-                                if (a2 != null)
-                                  await a2.ref.getDownloadURL()
-                                else if (place!
-                                    .get('images')
-                                    .asMap()
-                                    .containsKey(1))
-                                  place!.get('images')[1],
-                                if (a3 != null)
-                                  await a3.ref.getDownloadURL()
-                                else if (place!
-                                    .get('images')
-                                    .asMap()
-                                    .containsKey(2))
-                                  place!.get('images')[2],
-                                if (a4 != null)
-                                  await a4.ref.getDownloadURL()
-                                else if (place!
-                                    .get('images')
-                                    .asMap()
-                                    .containsKey(3))
-                                  place!.get('images')[3],
-                                if (a5 != null)
-                                  await a5.ref.getDownloadURL()
-                                else if (place!
-                                    .get('images')
-                                    .asMap()
-                                    .containsKey(4))
-                                  place!.get('images')[4],
-                                if (a6 != null)
-                                  await a6.ref.getDownloadURL()
-                                else if (place!
-                                    .get('images')
-                                    .asMap()
-                                    .containsKey(5))
-                                  place!.get('images')[5],
-                              ],
-                            }).catchError((error) {
+                              if (i1 != null) {
+                                a1 = await FirebaseStorage.instance
+                                    .ref('uploads/$id/$i1/')
+                                    .putFile(i1!);
+                              }
+                              if (i2 != null) {
+                                a2 = await FirebaseStorage.instance
+                                    .ref('uploads/$id/$i2/')
+                                    .putFile(i2!);
+                              }
+                              if (i3 != null) {
+                                a3 = await FirebaseStorage.instance
+                                    .ref('uploads/$id/$i3/')
+                                    .putFile(i3!);
+                              }
+                              if (i4 != null) {
+                                a4 = await FirebaseStorage.instance
+                                    .ref('uploads/$id/$i4/')
+                                    .putFile(i4!);
+                              }
+                              if (i5 != null) {
+                                a5 = await FirebaseStorage.instance
+                                    .ref('uploads/$id/$i5/')
+                                    .putFile(i5!);
+                              }
+                              if (i6 != null) {
+                                a6 = await FirebaseStorage.instance
+                                    .ref('uploads/$id/$i5/')
+                                    .putFile(i6!);
+                              }
+                              FirebaseFirestore.instance
+                                  .collection('parking_places')
+                                  .doc(place!.id)
+                                  .update({
+                                'name': name,
+                                'description': description,
+                                'country': country,
+                                'state': state,
+                                'city': city,
+                                'currency': currency,
+                                'pricing_mode': pricing_mode,
+                                'price': price,
+                                'isppm': isppm,
+                                'isFixedPrice': isFixedPrice,
+                                'timing_mode': timing_mode,
+                                'is24': is24hours,
+                                'isStandardTiming': isStandardTiming,
+                                'isFreeTiming': isFreeTiming,
+                                'payment_methods': payment_methods,
+                                'days': {
+                                  'Mon': mon,
+                                  'Tue': tue,
+                                  'Wed': wed,
+                                  'Thu': thu,
+                                  'Fri': fri,
+                                  'Sat': sat,
+                                  'Sun': sun,
+                                },
+                                'vacation_days': vacationDays,
+                                'owner_phone': owner_phone,
+                                'images': [
+                                  if (a1 != null)
+                                    await a1.ref.getDownloadURL()
+                                  else if (place!
+                                      .get('images')
+                                      .asMap()
+                                      .containsKey(0))
+                                    place!.get('images')[0],
+                                  if (a2 != null)
+                                    await a2.ref.getDownloadURL()
+                                  else if (place!
+                                      .get('images')
+                                      .asMap()
+                                      .containsKey(1))
+                                    place!.get('images')[1],
+                                  if (a3 != null)
+                                    await a3.ref.getDownloadURL()
+                                  else if (place!
+                                      .get('images')
+                                      .asMap()
+                                      .containsKey(2))
+                                    place!.get('images')[2],
+                                  if (a4 != null)
+                                    await a4.ref.getDownloadURL()
+                                  else if (place!
+                                      .get('images')
+                                      .asMap()
+                                      .containsKey(3))
+                                    place!.get('images')[3],
+                                  if (a5 != null)
+                                    await a5.ref.getDownloadURL()
+                                  else if (place!
+                                      .get('images')
+                                      .asMap()
+                                      .containsKey(4))
+                                    place!.get('images')[4],
+                                  if (a6 != null)
+                                    await a6.ref.getDownloadURL()
+                                  else if (place!
+                                      .get('images')
+                                      .asMap()
+                                      .containsKey(5))
+                                    place!.get('images')[5],
+                                ],
+                              }).catchError((error) {
+                                PushNotificationMessage notification =
+                                    PushNotificationMessage(
+                                  title: 'Fail',
+                                  body: 'Failed to update',
+                                );
+                                showSimpleNotification(
+                                  Text(notification.body),
+                                  position: NotificationPosition.top,
+                                  background: Colors.red,
+                                );
+                              });
                               PushNotificationMessage notification =
                                   PushNotificationMessage(
-                                title: 'Fail',
-                                body: 'Failed to update',
+                                title: 'Success',
+                                body: 'Updated',
                               );
                               showSimpleNotification(
                                 Text(notification.body),
                                 position: NotificationPosition.top,
-                                background: Colors.red,
+                                background: greenColor,
                               );
-                            });
-                            PushNotificationMessage notification =
-                                PushNotificationMessage(
-                              title: 'Success',
-                              body: 'Updated',
-                            );
-                            showSimpleNotification(
-                              Text(notification.body),
-                              position: NotificationPosition.top,
-                              background: greenColor,
-                            );
-                            Navigator.push(
-                              context,
-                              SlideRightRoute(
-                                  page: PlaceScreen(
-                                placeId: widget.placeId,
-                              )),
-                            );
-                            setState(() {
-                              loading = false;
-                              description = '';
-                              name = '';
-                              needsVer = true;
-                            });
+                              Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                    page: PlaceScreen(
+                                  placeId: widget.placeId,
+                                )),
+                              );
+                              setState(() {
+                                loading = false;
+                                description = '';
+                                name = '';
+                                needsVer = true;
+                              });
+                            } else {
+                              setState(() {
+                                error = 'Choose at least 1 photo';
+                              });
+                            }
                           } else {
                             setState(() {
-                              error = 'Choose at least 1 photo';
+                              error =
+                                  'Please choose your city state and country';
                             });
                           }
                         }

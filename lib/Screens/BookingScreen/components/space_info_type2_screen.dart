@@ -448,6 +448,9 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
           return WillPopScope(
               onWillPop: () async => false,
               child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
                 title: Text(Languages.of(context)!.serviceScreenNoInternet),
                 // content: Text(Languages.of(context).profileScreenWantToLeave),
                 actions: <Widget>[
@@ -1309,6 +1312,11 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
                                                                                 false,
                                                                         child:
                                                                             AlertDialog(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(20.0),
+                                                                          ),
                                                                           title:
                                                                               Text(Languages.of(context)!.serviceScreenNoInternet),
                                                                           // content: Text(Languages.of(context).profileScreenWantToLeave),
