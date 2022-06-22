@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
-  void initState() {
+  void initState(){
     prepare();
     super.initState();
   }

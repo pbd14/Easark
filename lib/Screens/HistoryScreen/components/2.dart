@@ -139,9 +139,11 @@ class _History2State extends State<History2>
                                             children: [
                                               Text(
                                                 DateFormat.yMMMd()
-                                                    .format(book
-                                                        .get('timestamp_from')
-                                                        .toDate())
+                                                    .format(DateTime
+                                                        .fromMillisecondsSinceEpoch(book
+                                                            .get(
+                                                                'timestamp_from')
+                                                            .millisecondsSinceEpoch))
                                                     .toString(),
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
@@ -160,15 +162,21 @@ class _History2State extends State<History2>
                                                         .serviceScreenFrom +
                                                     ' ' +
                                                     DateFormat.yMMMd()
-                                                        .format(book.get(
-                                                            'timestamp_from'))
+                                                        .format(DateTime
+                                                            .fromMillisecondsSinceEpoch(book
+                                                                .get(
+                                                                    'timestamp_from')
+                                                                .millisecondsSinceEpoch))
                                                         .toString() +
                                                     ' ' +
-                                                    DateFormat.Hm()
-                                                        .format(book.get(
-                                                            'timestamp_from'))
+                                                    DateFormat.yMMMd()
+                                                        .format(DateTime
+                                                            .fromMillisecondsSinceEpoch(book
+                                                                .get(
+                                                                    'timestamp_from')
+                                                                .millisecondsSinceEpoch))
                                                         .toString(),
-                                                        maxLines: 3,
+                                                maxLines: 3,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(
@@ -185,13 +193,19 @@ class _History2State extends State<History2>
                                                         .serviceScreenTo +
                                                     ' ' +
                                                     DateFormat.yMMMd()
-                                                        .format(book.get(
-                                                            'timestamp_to'))
+                                                        .format(DateTime
+                                                            .fromMillisecondsSinceEpoch(book
+                                                                .get(
+                                                                    'timestamp_to')
+                                                                .millisecondsSinceEpoch))
                                                         .toString() +
                                                     ' ' +
-                                                    DateFormat.Hm()
-                                                        .format(book.get(
-                                                            'timestamp_to'))
+                                                    DateFormat.yMMMd()
+                                                        .format(DateTime
+                                                            .fromMillisecondsSinceEpoch(book
+                                                                .get(
+                                                                    'timestamp_to')
+                                                                .millisecondsSinceEpoch))
                                                         .toString(),
                                                 maxLines: 3,
                                                 overflow: TextOverflow.ellipsis,
@@ -207,7 +221,7 @@ class _History2State extends State<History2>
                                               ),
                                               Text(
                                                 'Parking lot #' +
-                                                    book.get('space_id'),
+                                                    book.get('space_id').toString(),
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
@@ -256,7 +270,7 @@ class _History2State extends State<History2>
                                                             .currentUser!
                                                             .uid),
                                                     containsValue:
-                                                        _places[book.id].id,
+                                                        _places[book.id]['id'],
                                                     color1: Colors.red,
                                                     color2: lightPrimaryColor,
                                                     size: 30,
