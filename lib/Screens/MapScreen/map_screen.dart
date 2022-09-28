@@ -52,7 +52,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _getPermission();
     _getUserLocation();
     prepare();
   }
@@ -63,7 +62,7 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
-  void _getPermission() async {
+  void _getUserLocation() async {
     Location location = Location();
 
     bool _serviceEnabled;
@@ -84,9 +83,7 @@ class _MapScreenState extends State<MapScreen> {
         return;
       }
     }
-  }
 
-  void _getUserLocation() async {
     geolocator.Position position =
         await geolocator.Geolocator.getCurrentPosition(
             desiredAccuracy: geolocator.LocationAccuracy.high);
@@ -98,6 +95,19 @@ class _MapScreenState extends State<MapScreen> {
       });
     }
   }
+
+  // void _getUserLocation() async {
+  //   geolocator.Position position =
+  //       await geolocator.Geolocator.getCurrentPosition(
+  //           desiredAccuracy: geolocator.LocationAccuracy.high);
+  //   if (mounted) {
+  //     setState(() {
+  //       _initialPosition = LatLng(position.latitude, position.longitude);
+  //       cameraPosition = _initialPosition;
+  //       loading1 = false;
+  //     });
+  //   }
+  // }
 
   void _setMapStyle() async {
     String style = await DefaultAssetBundle.of(context)
@@ -400,13 +410,41 @@ class _MapScreenState extends State<MapScreen> {
                                 searchButtonPosition = -100;
                               });
                             },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            child: Column(
                               children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      Languages.of(context)!
+                                          .mapScreenSearchHere,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.clip,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: const TextStyle(
+                                          color: darkColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Icon(
+                                      CupertinoIcons.arrow_right,
+                                      color: darkColor,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
                                 Text(
-                                  Languages.of(context)!.mapScreenSearchHere,
+                                  "City: " + user!.get("city"),
                                   maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                  overflow: TextOverflow.clip,
                                   style: GoogleFonts.montserrat(
                                     textStyle: const TextStyle(
                                       color: darkColor,
@@ -414,14 +452,6 @@ class _MapScreenState extends State<MapScreen> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Icon(
-                                  CupertinoIcons.arrow_right,
-                                  color: darkColor,
-                                  size: 20,
                                 ),
                               ],
                             ),

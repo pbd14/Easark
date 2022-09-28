@@ -186,7 +186,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                                       loading = true;
                                     });
                                     String res = await AuthService()
-                                        .signUpWithEmail(email, password);
+                                        .signInWithEmail(email, password);
                                     if (res == 'Success') {
                                       setState(() {
                                         loading = false;

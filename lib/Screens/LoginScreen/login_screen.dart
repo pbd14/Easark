@@ -1,4 +1,3 @@
-import 'package:csc_picker/csc_picker.dart';
 import 'package:easark/Models/LanguageData.dart';
 import 'package:easark/Screens/LoginScreen/email_login_screen.dart';
 import 'package:easark/Screens/LoginScreen/email_signup_screen.dart';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/MapScreen/components/location_screen.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
@@ -154,6 +156,20 @@ class _BookingScreenState extends State<BookingScreen> {
                                           height: 10,
                                         ),
                                         Text(
+                                          "ID: " + booking!.id,
+                                          overflow: TextOverflow.clip,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: const TextStyle(
+                                              color: darkColor,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
                                           Languages.of(context)!
                                                   .serviceScreenFrom +
                                               '\n' +
@@ -259,7 +275,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                     .oeScreenNotStarted,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 3,
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.start,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: darkColor,
@@ -274,7 +290,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                     .oeScreenInProcess,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 3,
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.start,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: greenColor,
@@ -289,7 +305,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                     .oeScreenMakePayment,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 10,
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.start,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: Colors.red,
@@ -313,7 +329,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 8,
-                                                  textAlign: TextAlign.center,
+                                                  textAlign: TextAlign.start,
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: TextStyle(
                                                       color: Colors.red,
@@ -329,7 +345,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                     .oeScreenEnded,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 3,
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.start,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: darkPrimaryColor,
@@ -542,24 +558,36 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   .collection('bookings')
                                                   .doc(booking!.id)
                                                   .update({'isRated': true});
-                                              WidgetsBinding.instance!
-                                                  .addPostFrameCallback((_) {
-                                                _scaffoldKey.currentState!
-                                                    .showSnackBar(SnackBar(
-                                                  backgroundColor:
-                                                      darkPrimaryColor,
-                                                  content: Text(
-                                                    'Rating was saved',
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: whiteColor,
-                                                        fontSize: 20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ));
-                                              });
+                                              PushNotificationMessage
+                                                  notification =
+                                                  PushNotificationMessage(
+                                                title: 'Saved',
+                                                body: 'Rating was saved',
+                                              );
+                                              showSimpleNotification(
+                                                Text(notification.body),
+                                                position:
+                                                    NotificationPosition.top,
+                                                background: darkColor,
+                                              );
+                                              // WidgetsBinding.instance!
+                                              //     .addPostFrameCallback((_) {
+                                              //   _scaffoldKey.currentState!
+                                              //       .showSnackBar(SnackBar(
+                                              //     backgroundColor:
+                                              //         darkPrimaryColor,
+                                              //     content: Text(
+                                              //       'Rating was saved',
+                                              //       style:
+                                              //           GoogleFonts.montserrat(
+                                              //         textStyle: TextStyle(
+                                              //           color: whiteColor,
+                                              //           fontSize: 20,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ));
+                                              // });
                                             },
                                           ),
                                         )

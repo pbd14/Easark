@@ -693,8 +693,8 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                                   Expanded(
                                     child: Text(
                                       'There are two types of pricing: \n\n' +
-                                          '-\bFixed \bprice is when you set a fixed price for all orders, no matter of their duration and etc. For example if you set 100 UZS fixed price, it will be the same for every booking. \n\n' +
-                                          '-\bPrice \bper \bminute is when you set a price for using your parking for one minute. For example, is price per minute is 100 UZS, booking your paring place for 1 hour will cost 6000 UZS',
+                                          '-Fixed price is when you set a fixed price for all orders, no matter of their duration and etc. For example if you set 100 UZS fixed price, it will be the same for every booking. \n\n' +
+                                          '-Price per minute is when you set a price for using your parking for one minute. For example, is price per minute is 100 UZS, booking your paring place for 1 hour will cost 6000 UZS',
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 100,
                                       textAlign: TextAlign.start,

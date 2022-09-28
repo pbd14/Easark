@@ -8,6 +8,7 @@ import 'package:easark/Screens/ProfileScreen/profile_screen.dart';
 import 'package:easark/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      MapScreen(),
+      if (!kIsWeb) MapScreen(),
       CoreScreen(),
       HistoryScreen(),
       ProfileScreen(),
@@ -58,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'status': 'default',
         'phone': FirebaseAuth.instance.currentUser?.phoneNumber,
         'email': FirebaseAuth.instance.currentUser?.email,
+        'favourites': [],
         'country': '',
         'state': '',
         'city': '',
@@ -273,6 +275,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       TextButton(
                         onPressed: () {
+                          print("UYT");
+                          print(FirebaseAuth.instance.currentUser!.emailVerified);
                           if (FirebaseAuth.instance.currentUser != null &&
                               FirebaseAuth
                                   .instance.currentUser!.emailVerified) {
@@ -297,13 +301,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
-      PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.map),
-        title: ("Home"),
-        activeColorPrimary: whiteColor,
-        activeColorSecondary: whiteColor,
-        inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),
-      ),
+      if (!kIsWeb)
+        PersistentBottomNavBarItem(
+          icon: const Icon(CupertinoIcons.map),
+          title: ("Home"),
+          activeColorPrimary: whiteColor,
+          activeColorSecondary: whiteColor,
+          inactiveColorPrimary: const Color.fromRGBO(200, 200, 200, 1.0),
+        ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.money_dollar_circle),
         title: ("Business"),

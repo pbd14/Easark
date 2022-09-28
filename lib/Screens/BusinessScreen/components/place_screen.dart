@@ -283,17 +283,19 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Text(
-                              isActive
-                                  ? ' Current state: OPEN'
-                                  : ' Current state: CLOSE',
-                              maxLines: 1000,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: const TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400),
+                            Flexible(
+                              child: Text(
+                                isActive
+                                    ? ' Current state: OPEN'
+                                    : ' Current state: CLOSE',
+                                maxLines: 1000,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
                               ),
                             ),
                           ],

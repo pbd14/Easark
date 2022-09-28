@@ -37,6 +37,13 @@
             {
               "client_id": "264308689519-4nup6v32acjvac9osjsg2g0knivnc1q8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "264308689519-fpvj1t9t9ghvmtn9su944la13t9likbt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.easark.easark"
+              }
             }
           ]
         }

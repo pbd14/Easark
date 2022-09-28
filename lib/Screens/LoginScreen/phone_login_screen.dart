@@ -1,5 +1,6 @@
 import 'package:easark/Models/LanguageData.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
+import 'package:easark/Screens/HomeScreen/home_screen.dart';
 import 'package:easark/Services/auth_service.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Services/languages/locale_constant.dart';
@@ -8,10 +9,10 @@ import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
-
 import 'login_screen.dart';
 
 class PhoneLoginScreen extends StatefulWidget {
@@ -31,6 +32,10 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
   bool codeSent = false;
   bool loading = false;
+
+  // WEB
+  late UserCredential userCredential;
+  late ConfirmationResult confirmationResult;
 
   // Future<void> checkVersion() async {
   //   RemoteConfig remoteConfig = RemoteConfig.instance;
@@ -203,13 +208,33 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                     });
                                     if (codeSent) {
                                       try {
-                                        UserCredential res = await AuthService()
-                                            .signInWithOTP(smsCode,
-                                                verificationId, context);
-                                        if(res != null){
-                                          Navigator.of(context).pop();
+                                        if (kIsWeb) {
+                                          userCredential =
+                                              await confirmationResult
+                                                  .confirm(smsCode)
+                                                  .whenComplete(
+                                                    () => Navigator.push(
+                                                        context,
+                                                        SlideRightRoute(
+                                                          page: HomeScreen(),
+                                                        )),
+                                                  );
+                                          if (userCredential.user == null) {
+                                            setState(() {
+                                              error = 'Неверные данные';
+                                              loading = false;
+                                            });
+                                          }
+                                        } else {
+                                          UserCredential res =
+                                              await AuthService().signInWithOTP(
+                                                  smsCode,
+                                                  verificationId,
+                                                  context);
+                                          if (res != null) {
+                                            Navigator.of(context).pop();
+                                          }
                                         }
-                                        
                                       } catch (e) {
                                         setState(() {
                                           // error = 'Enter valid data';
@@ -231,7 +256,35 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                       //     loading = false;
                                       //   });
                                     } else {
+                                      if(kIsWeb){
+                                        confirmationResult =
+                                              await FirebaseAuth.instance
+                                                  .signInWithPhoneNumber(
+                                            phoneNo,
+                                            RecaptchaVerifier(
+                                              onSuccess: () => setState(() {
+                                                loading = false;
+                                                codeSent = true;
+                                              }),
+                                              onError: (FirebaseAuthException
+                                                      error) =>
+                                                  setState(() {
+                                                loading = false;
+                                                codeSent = false;
+                                                error = error;
+                                              }),
+                                              onExpired: () =>
+                                                  print('reCAPTCHA Expired!'),
+                                            ),
+                                          );
+                                          setState(() {
+                                            loading = false;
+                                            codeSent = true;
+                                          });
+                                      }
+                                      else{
                                       await verifyPhone(phoneNo);
+                                      }
                                     }
                                   }
                                 },

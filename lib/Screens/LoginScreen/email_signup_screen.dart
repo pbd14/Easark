@@ -1,4 +1,5 @@
 import 'package:easark/Models/PushNotificationMessage.dart';
+import 'package:easark/Screens/LoginScreen/login_screen.dart';
 import 'package:easark/Services/auth_service.dart';
 import 'package:easark/Services/languages/languages.dart';
 import 'package:easark/Widgets/loading_screen.dart';
@@ -224,9 +225,26 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                                       if (res == 'Success') {
                                         await FirebaseAuth.instance.currentUser!
                                             .sendEmailVerification();
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Success',
+                                          body:
+                                              'Account has been created. Now sign in',
+                                        );
+                                        showSimpleNotification(
+                                          Text(notification.body),
+                                          position: NotificationPosition.top,
+                                          background: darkColor,
+                                        );
+                                        AuthService().signOut(context);
+                                        Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: LoginScreen()
+                                          ),
+                                        );
                                         setState(() {
                                           loading = false;
-                                          Navigator.of(context).pop();
                                         });
                                       } else {
                                         setState(() {

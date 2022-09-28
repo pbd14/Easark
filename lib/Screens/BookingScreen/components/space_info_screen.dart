@@ -1548,6 +1548,22 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                       });
 
                                                                       // Here comes notification
+                                                                      PushNotificationMessage
+                                                                            notification =
+                                                                            PushNotificationMessage(
+                                                                          title:
+                                                                              'Success',
+                                                                          body:
+                                                                              'Booking was successful',
+                                                                        );
+                                                                        showSimpleNotification(
+                                                                          Text(notification
+                                                                              .body),
+                                                                          position:
+                                                                              NotificationPosition.top,
+                                                                          background:
+                                                                              darkColor,
+                                                                        );
 
                                                                       setState(
                                                                           () {

@@ -554,11 +554,29 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .toString(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    "ID: " + book.id,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
                                                         fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -590,8 +608,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -624,8 +642,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -643,12 +661,11 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -660,16 +677,17 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                   ),
                                                   Text(
                                                     'Parking lot #' +
-                                                        book.get('space_id').toString(),
+                                                        book
+                                                            .get('space_id')
+                                                            .toString(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -685,8 +703,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .historyScreenUnpaid,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -839,11 +857,29 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .toString(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    "ID: " + book.id,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
                                                         fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -875,8 +911,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -909,8 +945,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -929,12 +965,11 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -946,16 +981,17 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                   ),
                                                   Text(
                                                     'Parking lot #' +
-                                                        book.get('space_id').toString(),
+                                                        book
+                                                            .get('space_id')
+                                                            .toString(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -972,8 +1008,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .historyScreenInProcess,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                         color: book.get(
                                                                     'status') ==
@@ -1126,14 +1162,26 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .get('timestamp_from')
                                                         .toDate())
                                                     .toString(),
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(
                                                     color: darkDarkColor,
                                                     fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "ID: " + book.id,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: const TextStyle(
+                                                    color: darkColor,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
@@ -1160,8 +1208,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                                 .millisecondsSinceEpoch))
                                                         .toString(),
                                                 maxLines: 3,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(
                                                     color: darkDarkColor,
@@ -1192,8 +1239,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                                 .millisecondsSinceEpoch))
                                                         .toString(),
                                                 maxLines: 3,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(
                                                     color: darkDarkColor,
@@ -1209,8 +1255,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         ?.get('name') ??
                                                     'Name',
                                                 maxLines: 2,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(
                                                       color: darkDarkColor,
@@ -1228,8 +1273,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .get('space_id')
                                                         .toString(),
                                                 maxLines: 2,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: const TextStyle(
                                                       color: darkDarkColor,
@@ -1251,15 +1295,13 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                         .historyScreenUpcoming
                                                     : Languages.of(context)!
                                                         .historyScreenVerificationNeeded,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
-                                                    color:
-                                                        book.get('status') ==
-                                                                'unfinished'
-                                                            ? darkPrimaryColor
-                                                            : Colors.red,
+                                                    color: book.get('status') ==
+                                                            'unfinished'
+                                                        ? darkPrimaryColor
+                                                        : Colors.red,
                                                     fontSize: 15,
                                                   ),
                                                 ),
@@ -1503,6 +1545,27 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                             height: 10,
                                                           ),
                                                           Text(
+                                                            "ID: " + book.id,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    darkColor,
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
                                                             Languages.of(
                                                                         context)!
                                                                     .serviceScreenFrom +
@@ -1515,8 +1578,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                                         .millisecondsSinceEpoch))
                                                                     .toString() +
                                                                 ' ' +
-                                                                DateFormat
-                                                                        .Hm()
+                                                                DateFormat.Hm()
                                                                     .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                         .get(
                                                                             'timestamp_from')
@@ -1552,8 +1614,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                                         .millisecondsSinceEpoch))
                                                                     .toString() +
                                                                 ' ' +
-                                                                DateFormat
-                                                                        .Hm()
+                                                                DateFormat.Hm()
                                                                     .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                         .get(
                                                                             'timestamp_to')
@@ -1591,8 +1652,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                               textStyle: const TextStyle(
                                                                   color:
                                                                       whiteColor,
-                                                                  fontSize:
-                                                                      15,
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400),
@@ -1603,8 +1663,10 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                           ),
                                                           Text(
                                                             'Parking lot #' +
-                                                                book.get(
-                                                                    'space_id').toString(),
+                                                                book
+                                                                    .get(
+                                                                        'space_id')
+                                                                    .toString(),
                                                             maxLines: 2,
                                                             overflow:
                                                                 TextOverflow
@@ -1614,8 +1676,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
                                                               textStyle: const TextStyle(
                                                                   color:
                                                                       whiteColor,
-                                                                  fontSize:
-                                                                      15,
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400),

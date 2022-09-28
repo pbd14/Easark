@@ -1185,6 +1185,23 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
 
                                                                       // Here comes notification
 
+                                                                      PushNotificationMessage
+                                                                            notification =
+                                                                            PushNotificationMessage(
+                                                                          title:
+                                                                              'Success',
+                                                                          body:
+                                                                              'Booking was successful',
+                                                                        );
+                                                                        showSimpleNotification(
+                                                                          Text(notification
+                                                                              .body),
+                                                                          position:
+                                                                              NotificationPosition.top,
+                                                                          background:
+                                                                              darkColor,
+                                                                        );
+
                                                                       setState(
                                                                           () {
                                                                         _dateController

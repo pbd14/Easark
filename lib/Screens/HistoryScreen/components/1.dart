@@ -536,11 +536,28 @@ class _History1State extends State<History1>
                                                         .toString(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    "ID: " + book.id,
+                                                    overflow: TextOverflow.clip,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
                                                         fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -572,8 +589,8 @@ class _History1State extends State<History1>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -606,8 +623,8 @@ class _History1State extends State<History1>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -625,12 +642,11 @@ class _History1State extends State<History1>
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -642,16 +658,17 @@ class _History1State extends State<History1>
                                                   ),
                                                   Text(
                                                     'Parking lot #' +
-                                                        book.get('space_id').toString(),
+                                                        book
+                                                            .get('space_id')
+                                                            .toString(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -667,8 +684,8 @@ class _History1State extends State<History1>
                                                         .historyScreenUnpaid,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -821,11 +838,28 @@ class _History1State extends State<History1>
                                                         .toString(),
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    "ID: " + book.id,
+                                                    overflow: TextOverflow.clip,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                        color: darkColor,
                                                         fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -857,8 +891,8 @@ class _History1State extends State<History1>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -891,8 +925,8 @@ class _History1State extends State<History1>
                                                     maxLines: 3,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
                                                         color: whiteColor,
@@ -911,12 +945,11 @@ class _History1State extends State<History1>
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -928,16 +961,17 @@ class _History1State extends State<History1>
                                                   ),
                                                   Text(
                                                     'Parking lot #' +
-                                                        book.get('space_id').toString(),
+                                                        book
+                                                            .get('space_id')
+                                                            .toString(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle:
                                                           const TextStyle(
-                                                              color:
-                                                                  whiteColor,
+                                                              color: whiteColor,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -954,8 +988,8 @@ class _History1State extends State<History1>
                                                         .historyScreenInProcess,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                         color: book.get(
                                                                     'status') ==
@@ -1115,6 +1149,21 @@ class _History1State extends State<History1>
                                                   style: GoogleFonts.montserrat(
                                                     textStyle: const TextStyle(
                                                       color: darkDarkColor,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "ID: " + book.id,
+                                                  overflow: TextOverflow.clip,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: const TextStyle(
+                                                      color: darkColor,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -1330,32 +1379,24 @@ class _History1State extends State<History1>
                                                                 }
                                                               });
                                                             });
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              SnackBar(
-                                                                duration:
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            2),
-                                                                backgroundColor:
-                                                                    darkPrimaryColor,
-                                                                content: Text(
-                                                                  Languages.of(
-                                                                          context)!
-                                                                      .homeScreenSaved,
-                                                                  style: GoogleFonts
-                                                                      .montserrat(
-                                                                    textStyle:
-                                                                        const TextStyle(
-                                                                      color:
-                                                                          whiteColor,
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
+                                                            PushNotificationMessage
+                                                                notification =
+                                                                PushNotificationMessage(
+                                                              title: Languages.of(
+                                                                      context)!
+                                                                  .homeScreenSaved,
+                                                              body: Languages.of(
+                                                                      context)!
+                                                                  .homeScreenSaved,
+                                                            );
+                                                            showSimpleNotification(
+                                                              Text(notification
+                                                                  .body),
+                                                              position:
+                                                                  NotificationPosition
+                                                                      .top,
+                                                              background:
+                                                                  darkColor,
                                                             );
                                                           },
                                                           onTap2: () {
@@ -1406,32 +1447,24 @@ class _History1State extends State<History1>
                                                                 }
                                                               });
                                                             });
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              SnackBar(
-                                                                duration:
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            2),
-                                                                backgroundColor:
-                                                                    Colors.red,
-                                                                content: Text(
-                                                                  Languages.of(
-                                                                          context)!
-                                                                      .homeScreenSaved,
-                                                                  style: GoogleFonts
-                                                                      .montserrat(
-                                                                    textStyle:
-                                                                        const TextStyle(
-                                                                      color:
-                                                                          whiteColor,
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
+                                                            PushNotificationMessage
+                                                                notification =
+                                                                PushNotificationMessage(
+                                                              title: Languages.of(
+                                                                      context)!
+                                                                  .homeScreenSaved,
+                                                              body: Languages.of(
+                                                                      context)!
+                                                                  .homeScreenSaved,
+                                                            );
+                                                            showSimpleNotification(
+                                                              Text(notification
+                                                                  .body),
+                                                              position:
+                                                                  NotificationPosition
+                                                                      .top,
+                                                              background:
+                                                                  Colors.red,
                                                             );
                                                           },
                                                         )
@@ -1474,7 +1507,6 @@ class _History1State extends State<History1>
                                                   //     });
                                                   //   },
                                                   // ),
-                                                  
                                                 ],
                                               ),
                                             ),
@@ -1598,6 +1630,27 @@ class _History1State extends State<History1>
                                                             height: 10,
                                                           ),
                                                           Text(
+                                                            "ID: " + book.id,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .clip,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    darkColor,
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
                                                             Languages.of(
                                                                         context)!
                                                                     .serviceScreenFrom +
@@ -1610,8 +1663,7 @@ class _History1State extends State<History1>
                                                                         .millisecondsSinceEpoch))
                                                                     .toString() +
                                                                 ' ' +
-                                                                DateFormat
-                                                                        .Hm()
+                                                                DateFormat.Hm()
                                                                     .format(DateTime.fromMillisecondsSinceEpoch(book
                                                                         .get(
                                                                             'timestamp_from')
@@ -1639,21 +1691,20 @@ class _History1State extends State<History1>
                                                                         context)!
                                                                     .serviceScreenTo +
                                                                 '\n' +
-                                                        DateFormat.yMMMd()
-                                                            .format(DateTime
-                                                                .fromMillisecondsSinceEpoch(book
-                                                                    .get(
-                                                                        'timestamp_to')
-                                                                    .millisecondsSinceEpoch))
-                                                            .toString() +
-                                                        ' ' +
-                                                        DateFormat.Hm()
-                                                            .format(DateTime
-                                                                .fromMillisecondsSinceEpoch(book
-                                                                    .get(
-                                                                        'timestamp_to')
-                                                                    .millisecondsSinceEpoch))
-                                                            .toString(),
+                                                                DateFormat
+                                                                        .yMMMd()
+                                                                    .format(DateTime.fromMillisecondsSinceEpoch(book
+                                                                        .get(
+                                                                            'timestamp_to')
+                                                                        .millisecondsSinceEpoch))
+                                                                    .toString() +
+                                                                ' ' +
+                                                                DateFormat.Hm()
+                                                                    .format(DateTime.fromMillisecondsSinceEpoch(book
+                                                                        .get(
+                                                                            'timestamp_to')
+                                                                        .millisecondsSinceEpoch))
+                                                                    .toString(),
                                                             maxLines: 3,
                                                             overflow:
                                                                 TextOverflow
@@ -1686,8 +1737,7 @@ class _History1State extends State<History1>
                                                               textStyle: const TextStyle(
                                                                   color:
                                                                       whiteColor,
-                                                                  fontSize:
-                                                                      15,
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400),
@@ -1698,8 +1748,10 @@ class _History1State extends State<History1>
                                                           ),
                                                           Text(
                                                             'Parking lot #' +
-                                                                book.get(
-                                                                    'space_id').toString(),
+                                                                book
+                                                                    .get(
+                                                                        'space_id')
+                                                                    .toString(),
                                                             maxLines: 2,
                                                             overflow:
                                                                 TextOverflow
@@ -1709,8 +1761,7 @@ class _History1State extends State<History1>
                                                               textStyle: const TextStyle(
                                                                   color:
                                                                       whiteColor,
-                                                                  fontSize:
-                                                                      15,
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400),

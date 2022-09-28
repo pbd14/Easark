@@ -1,4 +1,3 @@
-
 class PushNotificationMessage {
   final String title;
   final String body;

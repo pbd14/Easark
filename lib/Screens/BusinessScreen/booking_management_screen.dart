@@ -150,6 +150,20 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                         height: 10,
                                       ),
                                       Text(
+                                        "ID: " + booking!.id,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: const TextStyle(
+                                            color: darkColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
                                         Languages.of(context)!
                                                 .serviceScreenFrom +
                                             '\n' +
@@ -249,7 +263,7 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                                   .oeScreenNotStarted,
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 3,
-                                              textAlign: TextAlign.center,
+                                              textAlign: TextAlign.start,
                                               style: GoogleFonts.montserrat(
                                                 textStyle: TextStyle(
                                                   color: darkColor,
@@ -264,7 +278,7 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                                   .oeScreenInProcess,
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 3,
-                                              textAlign: TextAlign.center,
+                                              textAlign: TextAlign.start,
                                               style: GoogleFonts.montserrat(
                                                 textStyle: TextStyle(
                                                   color: greenColor,
@@ -273,24 +287,24 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                               ),
                                             )
                                           : Container(),
-                                      booking!.get('status') == 'unpaid'
-                                          ? SizedBox(
-                                              width: size.width - 100,
-                                              child: Text(
-                                                Languages.of(context)!
-                                                    .oeScreenMakePayment,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 10,
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 15,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : Container(),
+                                      // booking!.get('status') == 'unpaid'
+                                      //     ? SizedBox(
+                                      //         width: size.width - 100,
+                                      //         child: Text(
+                                      //           Languages.of(context)!
+                                      //               .oeScreenMakePayment,
+                                      //           overflow: TextOverflow.ellipsis,
+                                      //           maxLines: 10,
+                                      //           textAlign: TextAlign.start,
+                                      //           style: GoogleFonts.montserrat(
+                                      //             textStyle: TextStyle(
+                                      //               color: Colors.red,
+                                      //               fontSize: 15,
+                                      //             ),
+                                      //           ),
+                                      //         ),
+                                      //       )
+                                      //     : Container(),
                                       booking!.get('status') == 'unpaid' &&
                                               booking!.get('payment_method') ==
                                                   'card'
@@ -304,7 +318,7 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                                         .serviceScreenCreditCard,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 8,
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.start,
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: Colors.red,
@@ -320,7 +334,7 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                                   .oeScreenEnded,
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 3,
-                                              textAlign: TextAlign.center,
+                                              textAlign: TextAlign.start,
                                               style: GoogleFonts.montserrat(
                                                 textStyle: TextStyle(
                                                   color: darkPrimaryColor,
