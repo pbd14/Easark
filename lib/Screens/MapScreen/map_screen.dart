@@ -128,151 +128,49 @@ class _MapScreenState extends State<MapScreen> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
-    if (user!.get('country') == null ||
-        user!.get('state') == null ||
-        user!.get('city') == null ||
-        user!.get('country').isEmpty ||
-        user!.get('state').isEmpty ||
-        user!.get('city').isEmpty ||
-        user!.get('country') == '' ||
-        user!.get('state') == '' ||
-        user!.get('city') == '') {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              // title: Text(
-              //     Languages.of(context).profileScreenSignOut),
-              // content: Text(
-              //     Languages.of(context)!.profileScreenWantToLeave),
-              title: Text(
-                'Select your location',
-              ),
-              content: SizedBox(
-                width: 300,
-                height: 300,
-                child: CSCPicker(
-                  flagState: CountryFlag.DISABLE,
-                  defaultCountry: DefaultCountry.Uzbekistan,
-                  onCountryChanged: (value) {
-                    setState(() {
-                      country = value;
-                    });
-                  },
-                  onStateChanged: (value) {
-                    setState(() {
-                      state = value;
-                    });
-                  },
-                  onCityChanged: (value) {
-                    setState(() {
-                      city = value;
-                    });
-                  },
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    bool isError = false;
-                    if (country != null &&
-                        city != null &&
-                        state != null &&
-                        country!.isNotEmpty &&
-                        state!.isNotEmpty &&
-                        city!.isNotEmpty) {
-                      setState(() {
-                        loading = true;
-                      });
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user!.id)
-                          .update({
-                        'country': country,
-                        'state': state,
-                        'city': city,
-                      }).catchError((error) {
-                        print('ERRERF');
-                        print(error);
-                        isError = true;
-                        PushNotificationMessage notification =
-                            PushNotificationMessage(
-                          title: 'Fail',
-                          body: 'Failed',
-                        );
-                        showSimpleNotification(
-                          Text(notification.body),
-                          position: NotificationPosition.top,
-                          background: Colors.red,
-                        );
-                      }).whenComplete(() async {
-                        if (!isError) {
-                          await FirebaseFirestore.instance
-                              .collection('parking_places')
-                              .where('country', isEqualTo: country)
-                              .where('state', isEqualTo: state)
-                              .where('city', isEqualTo: city)
-                              .get()
-                              .then((value) {
-                            setState(() {
-                              places = value.docs;
-                            });
-                            Navigator.of(context).pop(false);
-                            PushNotificationMessage notification =
-                                PushNotificationMessage(
-                              title: 'Success',
-                              body: 'Updated',
-                            );
-                            showSimpleNotification(
-                              Text(notification.body),
-                              position: NotificationPosition.top,
-                              background: greenColor,
-                            );
-                            setState(() {
-                              loading = false;
-                            });
-                          });
-                        }
-                      });
-                    }
-                    ;
-                  },
-                  child: const Text(
-                    'Ok',
-                    style: TextStyle(color: darkColor),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    } else {
-      QuerySnapshot data = await FirebaseFirestore.instance
-          .collection('parking_places')
-          .where('country', isEqualTo: user!.get('country'))
-          .where('state', isEqualTo: user!.get('state'))
-          .where('city', isEqualTo: user!.get('city'))
-          .get();
-      setState(() {
-        places = data.docs;
-      });
-      if (places!.isEmpty) {
+    if (user!.exists) {
+      if (user!.get('country') == null ||
+          user!.get('state') == null ||
+          user!.get('city') == null ||
+          user!.get('country').isEmpty ||
+          user!.get('state').isEmpty ||
+          user!.get('city').isEmpty ||
+          user!.get('country') == '' ||
+          user!.get('state') == '' ||
+          user!.get('city') == '') {
         PushNotificationMessage notification = PushNotificationMessage(
-          title: 'No parking',
-          body: 'There are no parking places near you',
+          title: 'Fail',
+          body: 'Set your location for profile',
         );
         showSimpleNotification(
           Text(notification.body),
           position: NotificationPosition.top,
           background: Colors.red,
         );
+      } else {
+        country = user!.get('country');
+        state = user!.get('state');
+        city = user!.get('city');
+        QuerySnapshot data = await FirebaseFirestore.instance
+            .collection('parking_places')
+            .where('country', isEqualTo: user!.get('country'))
+            .where('state', isEqualTo: user!.get('state'))
+            .where('city', isEqualTo: user!.get('city'))
+            .get();
+        setState(() {
+          places = data.docs;
+        });
+        if (places!.isEmpty) {
+          PushNotificationMessage notification = PushNotificationMessage(
+            title: 'No parking',
+            body: 'There are no parking places near you',
+          );
+          showSimpleNotification(
+            Text(notification.body),
+            position: NotificationPosition.top,
+            background: Colors.red,
+          );
+        }
       }
     }
   }
@@ -442,8 +340,9 @@ class _MapScreenState extends State<MapScreen> {
                                   height: 10,
                                 ),
                                 Text(
-                                  user != null && user!.get("city") != null ?
-                                  "City: " + user!.get("city") : "City: Unknown",
+                                  city != null
+                                      ? "City: " + city!
+                                      : "City: Unknown",
                                   maxLines: 2,
                                   overflow: TextOverflow.clip,
                                   style: GoogleFonts.montserrat(

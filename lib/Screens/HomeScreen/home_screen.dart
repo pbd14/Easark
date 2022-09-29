@@ -45,6 +45,237 @@ class _HomeScreenState extends State<HomeScreen> {
     _controller.jumpToTab(number);
   }
 
+  void checkUserValidity() async {
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (user.get('country') == null ||
+        user.get('state') == null ||
+        user.get('city') == null ||
+        user.get('country').isEmpty ||
+        user.get('state').isEmpty ||
+        user.get('city').isEmpty ||
+        user.get('country') == '' ||
+        user.get('state') == '' ||
+        user.get('city') == '') {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              // title: Text(
+              //     Languages.of(context).profileScreenSignOut),
+              // content: Text(
+              //     Languages.of(context)!.profileScreenWantToLeave),
+              title: Text(
+                'Select your location',
+              ),
+              content: SizedBox(
+                width: 300,
+                height: 300,
+                child: CSCPicker(
+                  flagState: CountryFlag.DISABLE,
+                  defaultCountry: DefaultCountry.Uzbekistan,
+                  onCountryChanged: (value) {
+                    if (mounted) {
+                      setState(() {
+                        country = value;
+                      });
+                    }
+                  },
+                  onStateChanged: (value) {
+                    if (mounted) {
+                      setState(() {
+                        state = value;
+                      });
+                    }
+                  },
+                  onCityChanged: (value) {
+                    if (mounted) {
+                      setState(() {
+                        city = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    bool isError = false;
+                    if (country != null &&
+                        city != null &&
+                        state != null &&
+                        country!.isNotEmpty &&
+                        state!.isNotEmpty &&
+                        city!.isNotEmpty) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.id)
+                          .update({
+                        'country': country,
+                        'state': state,
+                        'city': city,
+                      }).catchError((error) {
+                        print('ERRERF');
+                        print(error);
+                        isError = true;
+                        PushNotificationMessage notification =
+                            PushNotificationMessage(
+                          title: 'Fail',
+                          body: 'Failed',
+                        );
+                        showSimpleNotification(
+                          Text(notification.body),
+                          position: NotificationPosition.top,
+                          background: Colors.red,
+                        );
+                      }).whenComplete(() {
+                        Navigator.of(context).pop(false);
+                      });
+                    }
+                    ;
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(color: darkColor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
+    if (user.get('status') == 'blocked') {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              // title: Text(
+              //     Languages.of(context).profileScreenSignOut),
+              // content: Text(
+              //     Languages.of(context)!.profileScreenWantToLeave),
+              title: Text(
+                'Blocked',
+                style: TextStyle(color: Colors.red),
+              ),
+              content: Text(
+                  'Your account was blocked. Please check if you have paid for all of your bookings. Contact us for more info.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(color: darkColor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+    if (FirebaseAuth.instance.currentUser!.email != null) {
+      if (FirebaseAuth.instance.currentUser!.email!.isNotEmpty) {
+        if (FirebaseAuth.instance.currentUser != null &&
+            !FirebaseAuth.instance.currentUser!.emailVerified) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  // title: Text(
+                  //     Languages.of(context).profileScreenSignOut),
+                  // content: Text(
+                  //     Languages.of(context)!.profileScreenWantToLeave),
+                  title: Text(
+                    'Verify your email',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  content: Text(
+                      'Please verify your email. Check if verfication email is in the spam box.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        bool isError = false;
+                        FirebaseAuth.instance.currentUser!
+                            .sendEmailVerification()
+                            .catchError((error) {
+                          print('ERRERF');
+                          print(error);
+                          isError = true;
+                          PushNotificationMessage notification =
+                              PushNotificationMessage(
+                            title: 'Fail',
+                            body: 'Failed to send email',
+                          );
+                          showSimpleNotification(
+                            Text(notification.body),
+                            position: NotificationPosition.top,
+                            background: Colors.red,
+                          );
+                        }).whenComplete(() {
+                          if (!isError) {
+                            PushNotificationMessage notification =
+                                PushNotificationMessage(
+                              title: 'Success',
+                              body: 'Email was sent',
+                            );
+                            showSimpleNotification(
+                              Text(notification.body),
+                              position: NotificationPosition.top,
+                              background: greenColor,
+                            );
+                          }
+                        });
+                      },
+                      child: const Text(
+                        'Resend email',
+                        style: TextStyle(color: darkColor),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.currentUser?.reload();
+                        if (FirebaseAuth.instance.currentUser != null &&
+                            FirebaseAuth.instance.currentUser!.emailVerified) {
+                          Navigator.of(context).pop(false);
+                        }
+                      },
+                      child: const Text(
+                        'Check if Verified',
+                        style: TextStyle(color: darkColor),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }
+      }
+    }
+  }
+
   Future<void> checkUserProfile() async {
     DocumentSnapshot user = await FirebaseFirestore.instance
         .collection('users')
@@ -63,239 +294,11 @@ class _HomeScreenState extends State<HomeScreen> {
         'country': '',
         'state': '',
         'city': '',
+      }).whenComplete(() {
+        checkUserValidity();
       });
     } else {
-      if (user.get('status') == 'blocked') {
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return WillPopScope(
-              onWillPop: () async => false,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                // title: Text(
-                //     Languages.of(context).profileScreenSignOut),
-                // content: Text(
-                //     Languages.of(context)!.profileScreenWantToLeave),
-                title: Text(
-                  'Blocked',
-                  style: TextStyle(color: Colors.red),
-                ),
-                content: Text(
-                    'Your account was blocked. Please check if you have paid for all of your bookings. Contact us for more info.'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text(
-                      'Ok',
-                      style: TextStyle(color: darkColor),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      }
-      // if (user.get('country') == null ||
-      //     user.get('state') == null ||
-      //     user.get('city') == null ||
-      //     user.get('country').isEmpty ||
-      //     user.get('state').isEmpty ||
-      //     user.get('city').isEmpty ||
-      //     user.get('country') == '' ||
-      //     user.get('state') == '' ||
-      //     user.get('city') == '') {
-      //   print('TERRR1');
-      //   showDialog(
-      //     barrierDismissible: false,
-      //     context: context,
-      //     builder: (BuildContext context) {
-      //       return WillPopScope(
-      //         onWillPop: () async => false,
-      //         child: AlertDialog(
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(20.0),
-      //           ),
-      //           // title: Text(
-      //           //     Languages.of(context).profileScreenSignOut),
-      //           // content: Text(
-      //           //     Languages.of(context)!.profileScreenWantToLeave),
-      //           title: Text(
-      //             'Select your location',
-      //           ),
-      //           content: SizedBox(
-      //             width: 300,
-      //             child: CSCPicker(
-      //               flagState: CountryFlag.DISABLE,
-      //               defaultCountry: DefaultCountry.Uzbekistan,
-      //               onCountryChanged: (value) {
-      //                 setState(() {
-      //                   country = value;
-      //                 });
-      //               },
-      //               onStateChanged: (value) {
-      //                 setState(() {
-      //                   state = value;
-      //                 });
-      //               },
-      //               onCityChanged: (value) {
-      //                 setState(() {
-      //                   city = value;
-      //                 });
-      //               },
-      //             ),
-      //           ),
-      //           actions: <Widget>[
-      //             TextButton(
-      //               onPressed: () {
-      //                 bool isError = false;
-      //                 if (country != null &&
-      //                     city != null &&
-      //                     state != null &&
-      //                     country!.isNotEmpty &&
-      //                     state!.isNotEmpty &&
-      //                     city!.isNotEmpty) {
-      //                   FirebaseFirestore.instance
-      //                       .collection('users')
-      //                       .doc(user.id)
-      //                       .update({
-      //                     'country': country,
-      //                     'state': state,
-      //                     'city': city,
-      //                   }).catchError((error) {
-      //                     print('ERRERF');
-      //                     print(error);
-      //                     isError = true;
-      //                     PushNotificationMessage notification =
-      //                         PushNotificationMessage(
-      //                       title: 'Fail',
-      //                       body: 'Failed',
-      //                     );
-      //                     showSimpleNotification(
-      //                       Text(notification.body),
-      //                       position: NotificationPosition.top,
-      //                       background: Colors.red,
-      //                     );
-      //                   }).whenComplete(() {
-      //                     if (!isError) {
-      //                       Navigator.of(context).pop(false);
-      //                       PushNotificationMessage notification =
-      //                           PushNotificationMessage(
-      //                         title: 'Success',
-      //                         body: 'Updated',
-      //                       );
-      //                       showSimpleNotification(
-      //                         Text(notification.body),
-      //                         position: NotificationPosition.top,
-      //                         background: greenColor,
-      //                       );
-      //                     }
-      //                   });
-      //                 }
-      //                 ;
-      //               },
-      //               child: const Text(
-      //                 'Ok',
-      //                 style: TextStyle(color: darkColor),
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       );
-      //     },
-      //   );
-      // }
-      if (FirebaseAuth.instance.currentUser!.email != null) {
-        if (FirebaseAuth.instance.currentUser!.email!.isNotEmpty) {
-          if (FirebaseAuth.instance.currentUser != null &&
-              !FirebaseAuth.instance.currentUser!.emailVerified) {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return WillPopScope(
-                  onWillPop: () async => false,
-                  child: AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    // title: Text(
-                    //     Languages.of(context).profileScreenSignOut),
-                    // content: Text(
-                    //     Languages.of(context)!.profileScreenWantToLeave),
-                    title: Text(
-                      'Verify your email',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    content: Text(
-                        'Please verify your email. Check if verfication email is in the spam box.'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          bool isError = false;
-                          FirebaseAuth.instance.currentUser!
-                              .sendEmailVerification()
-                              .catchError((error) {
-                            print('ERRERF');
-                            print(error);
-                            isError = true;
-                            PushNotificationMessage notification =
-                                PushNotificationMessage(
-                              title: 'Fail',
-                              body: 'Failed to send email',
-                            );
-                            showSimpleNotification(
-                              Text(notification.body),
-                              position: NotificationPosition.top,
-                              background: Colors.red,
-                            );
-                          }).whenComplete(() {
-                            if (!isError) {
-                              PushNotificationMessage notification =
-                                  PushNotificationMessage(
-                                title: 'Success',
-                                body: 'Email was sent',
-                              );
-                              showSimpleNotification(
-                                Text(notification.body),
-                                position: NotificationPosition.top,
-                                background: greenColor,
-                              );
-                            }
-                          });
-                        },
-                        child: const Text(
-                          'Resend email',
-                          style: TextStyle(color: darkColor),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          print("UYT");
-                          print(FirebaseAuth.instance.currentUser!.emailVerified);
-                          if (FirebaseAuth.instance.currentUser != null &&
-                              FirebaseAuth
-                                  .instance.currentUser!.emailVerified) {
-                            Navigator.of(context).pop(false);
-                          }
-                        },
-                        child: const Text(
-                          'Verified',
-                          style: TextStyle(color: darkColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          }
-        }
-      }
+      checkUserValidity();
     }
   }
 
@@ -335,10 +338,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    checkUserProfile();
     if (widget.tabNum != 0) {
       _controller.jumpToTab(widget.tabNum);
     }
-    checkUserProfile();
     super.initState();
   }
 

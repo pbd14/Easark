@@ -2,6 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -12,11 +13,13 @@ class MessagingService {
   String? get token => _token;
 
   Future init() async {
-    final settings = await _requestPermission();
+    if (!kIsWeb) {
+      final settings = await _requestPermission();
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      await _getToken();
-      _registerForegroundMessageHandler();
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        await _getToken();
+        _registerForegroundMessageHandler();
+      }
     }
   }
 
@@ -56,14 +59,13 @@ class MessagingService {
   }
 }
 
-
 Future sendMessage(tokens, String title, String body) async {
-    var func = FirebaseFunctions.instance.httpsCallable("notifySubscribers");
-    var res = await func.call(<String, dynamic>{
-      "targetDevices": tokens,
-      "messageTitle": title,
-      "messageBody": body
-    });
+  var func = FirebaseFunctions.instance.httpsCallable("notifySubscribers");
+  var res = await func.call(<String, dynamic>{
+    "targetDevices": tokens,
+    "messageTitle": title,
+    "messageBody": body
+  });
 
-    print("message was ${res.data as bool ? "sent!" : "not sent!"}");
-  }
+  print("message was ${res.data as bool ? "sent!" : "not sent!"}");
+}

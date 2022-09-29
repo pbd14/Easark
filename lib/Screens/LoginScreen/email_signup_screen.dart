@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/LoginScreen/login_screen.dart';
 import 'package:easark/Services/auth_service.dart';
@@ -225,24 +226,45 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                                       if (res == 'Success') {
                                         await FirebaseAuth.instance.currentUser!
                                             .sendEmailVerification();
+
+                                        DocumentSnapshot user = await FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                            .get();
+                                        if (!user.exists) {
+                                          FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(FirebaseAuth
+                                                  .instance.currentUser?.uid)
+                                              .set({
+                                            'id': FirebaseAuth
+                                                .instance.currentUser?.uid,
+                                            'status': 'default',
+                                            'phone': FirebaseAuth.instance
+                                                .currentUser?.phoneNumber,
+                                            'email': FirebaseAuth
+                                                .instance.currentUser?.email,
+                                            'favourites': [],
+                                            'country': '',
+                                            'state': '',
+                                            'city': '',
+                                          });
+                                        }
+
                                         PushNotificationMessage notification =
                                             PushNotificationMessage(
                                           title: 'Success',
                                           body:
-                                              'Account has been created. Now sign in',
+                                              'Account has been created',
                                         );
                                         showSimpleNotification(
                                           Text(notification.body),
                                           position: NotificationPosition.top,
                                           background: darkColor,
                                         );
-                                        AuthService().signOut(context);
-                                        Navigator.push(
-                                          context,
-                                          SlideRightRoute(
-                                            page: LoginScreen()
-                                          ),
-                                        );
+                                        // AuthService().signOut(context);
+                                        Navigator.of(context).pop();
                                         setState(() {
                                           loading = false;
                                         });

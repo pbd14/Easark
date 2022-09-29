@@ -7,6 +7,7 @@ import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/Widgets/sww_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -23,7 +24,9 @@ class AuthService {
             final pushNotificationService =
                 PushNotificationService(_firebaseMessaging);
             pushNotificationService.init();
-            return HomeScreen();
+            return HomeScreen(
+              // tabNum: kIsWeb ? 2 : 3,
+            );
           } else {
             return const LoginScreen();
           }
