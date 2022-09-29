@@ -605,6 +605,7 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                                   setState(() {
                                                     loading = true;
                                                   });
+
                                                   FirebaseFirestore.instance
                                                       .collection('bookings')
                                                       .doc(booking!.id)
@@ -631,6 +632,28 @@ class _BookingManagementScreenState extends State<BookingManagementScreen> {
                                                               .top,
                                                       background: Colors.red,
                                                     );
+                                                  });
+
+                                                  List spaces =
+                                                      place!.get('spaces');
+                                                  for (space in spaces) {
+                                                    if (space['id'] ==
+                                                        booking!
+                                                            .get('space_id')) {
+                                                      int spaceIndex =
+                                                          spaces.indexOf(space);
+                                                      spaces.remove(space);
+                                                      space['isFree'] = false;
+                                                      spaces.insert(
+                                                          spaceIndex, space);
+                                                    }
+                                                  }
+                                                  FirebaseFirestore.instance
+                                                      .collection(
+                                                          'parking_places')
+                                                      .doc(place!.id)
+                                                      .update({
+                                                    'spaces': spaces,
                                                   });
 
                                                   PushNotificationMessage

@@ -261,21 +261,21 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                               await FirebaseAuth.instance
                                                   .signInWithPhoneNumber(
                                             phoneNo,
-                                            RecaptchaVerifier(
-                                              onSuccess: () => setState(() {
-                                                loading = false;
-                                                codeSent = true;
-                                              }),
-                                              onError: (FirebaseAuthException
-                                                      error) =>
-                                                  setState(() {
-                                                loading = false;
-                                                codeSent = false;
-                                                error = error;
-                                              }),
-                                              onExpired: () =>
-                                                  print('reCAPTCHA Expired!'),
-                                            ),
+                                            // RecaptchaVerifier(
+                                            //   onSuccess: () => setState(() {
+                                            //     loading = false;
+                                            //     codeSent = true;
+                                            //   }),
+                                            //   onError: (FirebaseAuthException
+                                            //           error) =>
+                                            //       setState(() {
+                                            //     loading = false;
+                                            //     codeSent = false;
+                                            //     error = error;
+                                            //   }),
+                                            //   onExpired: () =>
+                                            //       print('reCAPTCHA Expired!'),
+                                            // ),
                                           );
                                           setState(() {
                                             loading = false;

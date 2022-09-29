@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Services/languages/languages.dart';
+import 'package:easark/Services/messaging_service.dart';
 import 'package:easark/Widgets/loading_screen.dart';
 import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/constants.dart';
@@ -1189,6 +1190,8 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
                                                                         }
                                                                       });
 
+                                                                      DocumentSnapshot owner = await FirebaseFirestore.instance.collection('users').doc(place!.get('owner_id')).get();
+                                                                      sendMessage(owner.get("fcm_tokens"), "New booking", "You have new booking at " + place!.get("name"));
                                                                       // Here comes notification
 
                                                                       PushNotificationMessage

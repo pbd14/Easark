@@ -27,14 +27,6 @@ class _BusinessScreenScreenState extends State<BusinessScreen> {
         .where('owner_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         // .orderBy('id', descending: true)
         .get();
-    if (places!.docs.isEmpty) {
-      Navigator.push(
-        context,
-        SlideRightRoute(
-          page: const IntroductionScreen(),
-        ),
-      );
-    }
     setState(() {
       loading = false;
     });

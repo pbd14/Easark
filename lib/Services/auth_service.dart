@@ -88,7 +88,9 @@ class AuthService {
       FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .set({'status': 'not logged in'});
+          .set({
+        'status': 'not logged in',
+      });
       return null;
     }
   }

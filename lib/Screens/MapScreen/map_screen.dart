@@ -442,7 +442,8 @@ class _MapScreenState extends State<MapScreen> {
                                   height: 10,
                                 ),
                                 Text(
-                                  "City: " + user!.get("city"),
+                                  user != null && user!.get("city") != null ?
+                                  "City: " + user!.get("city") : "City: Unknown",
                                   maxLines: 2,
                                   overflow: TextOverflow.clip,
                                   style: GoogleFonts.montserrat(

@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:date_format/date_format.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:easark/Services/messaging_service.dart';
 
 // ignore: must_be_immutable
 class SpaceInfoScreen extends StatefulWidget {
@@ -1546,6 +1547,9 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                               false;
                                                                         }
                                                                       });
+
+                                                                      DocumentSnapshot owner = await FirebaseFirestore.instance.collection('users').doc(place!.get('owner_id')).get();
+                                                                      sendMessage(owner.get("fcm_tokens"), "New booking", "You have new booking at " + place!.get("name"));
 
                                                                       // Here comes notification
                                                                       PushNotificationMessage
