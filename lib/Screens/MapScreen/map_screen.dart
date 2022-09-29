@@ -173,6 +173,7 @@ class _MapScreenState extends State<MapScreen> {
             .where('country', isEqualTo: user!.get('country'))
             .where('state', isEqualTo: user!.get('state'))
             .where('city', isEqualTo: user!.get('city'))
+            .where('is_active', isEqualTo: true)
             .get();
         setState(() {
           places = data.docs;
@@ -239,7 +240,7 @@ class _MapScreenState extends State<MapScreen> {
                         },
                         onCameraIdle: () {
                           setState(() {
-                        searchButtonPosition = 50;
+                            searchButtonPosition = 50;
                           });
                         },
                       ),
@@ -263,20 +264,30 @@ class _MapScreenState extends State<MapScreen> {
                               padding: const EdgeInsets.all(0),
                               child: CupertinoButton(
                                 onPressed: () async {
-                                  Set<Marker> middleMarkers =
-                                      HashSet<Marker>();
-                                  for (QueryDocumentSnapshot place
-                                      in places!) {
-                                    if (geolocator.Geolocator
-                                            .distanceBetween(
-                                                cameraPosition!.latitude,
-                                                cameraPosition!.longitude,
-                                                place.get('lat'),
-                                                place.get('lon')) <=
+                                  Set<Marker> middleMarkers = HashSet<Marker>();
+                                  QuerySnapshot updatePlaces =
+                                      await FirebaseFirestore.instance
+                                          .collection('parking_places')
+                                          .where('country',
+                                              isEqualTo: user!.get('country'))
+                                          .where('state',
+                                              isEqualTo: user!.get('state'))
+                                          .where('city',
+                                              isEqualTo: user!.get('city'))
+                                          .where('is_active', isEqualTo: true)
+                                          .get();
+                                  setState(() {
+                                    places = updatePlaces.docs;
+                                  });
+                                  for (QueryDocumentSnapshot place in places!) {
+                                    if (geolocator.Geolocator.distanceBetween(
+                                            cameraPosition!.latitude,
+                                            cameraPosition!.longitude,
+                                            place.get('lat'),
+                                            place.get('lon')) <=
                                         2000) {
                                       pinLocationIcon =
-                                          await BitmapDescriptor
-                                              .fromAssetImage(
+                                          await BitmapDescriptor.fromAssetImage(
                                         const ImageConfiguration(
                                             devicePixelRatio: 3),
                                         'assets/icons/marker.png',
@@ -287,14 +298,11 @@ class _MapScreenState extends State<MapScreen> {
                                           position: LatLng(place.get('lat'),
                                               place.get('lon')),
                                           onTap: () async {
-                                            await _mapController
-                                                ?.animateCamera(
-                                              CameraUpdate
-                                                  .newCameraPosition(
+                                            await _mapController?.animateCamera(
+                                              CameraUpdate.newCameraPosition(
                                                 CameraPosition(
                                                   target: LatLng(
-                                                    place.get('lat') -
-                                                        0.0001,
+                                                    place.get('lat') - 0.0001,
                                                     place.get('lon'),
                                                   ),
                                                   zoom: 15,
@@ -465,15 +473,34 @@ class _MapScreenState extends State<MapScreen> {
                                   color: darkColor,
                                   size: 40,
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    SlideRightRoute(
-                                      page: PlaceInfoScreen(
-                                        placeId: pinId!,
+                                onPressed: () async {
+                                  DocumentSnapshot updatedChosenPlace =
+                                      await FirebaseFirestore.instance
+                                          .collection("parking_places")
+                                          .doc(pinId)
+                                          .get();
+                                  if (updatedChosenPlace.get('is_active')) {
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: PlaceInfoScreen(
+                                          placeId: pinId!,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  } else {
+                                    PushNotificationMessage notification =
+                                        PushNotificationMessage(
+                                      title: 'Closed',
+                                      body:
+                                          'This parking place is closed for now',
+                                    );
+                                    showSimpleNotification(
+                                      Text(notification.body),
+                                      position: NotificationPosition.top,
+                                      background: Colors.red,
+                                    );
+                                  }
                                 },
                               ),
                             ],

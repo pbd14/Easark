@@ -18,7 +18,7 @@ class CoreScreen extends StatefulWidget {
 
 class _CoreScreenState extends State<CoreScreen> {
   String? stext;
-  bool loading = false;
+  bool loading = true;
   QuerySnapshot? places;
 
   Future<void> prepare() async {
@@ -41,10 +41,10 @@ class _CoreScreenState extends State<CoreScreen> {
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
-    return places!.docs.isEmpty
-        ? IntroductionScreen()
-        : loading
-            ? const LoadingScreen()
+    return loading
+        ? const LoadingScreen()
+        : places!.docs.isEmpty
+            ? IntroductionScreen()
             : DefaultTabController(
                 length: 2,
                 child: Scaffold(
