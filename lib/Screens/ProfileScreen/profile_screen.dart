@@ -486,10 +486,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
-                                          width: size.width * 0.45,
+                                          margin: EdgeInsets.only(left: 5),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -526,7 +526,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         Align(
                                           alignment: Alignment.centerRight,
                                           child: Container(
-                                            width: size.width * 0.35,
+                                            margin: EdgeInsets.only(right: 20),
                                             child: Row(
                                               children: [
                                                 favouritePlaces != null
@@ -649,6 +649,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
+                          const SizedBox(
+                            height: 100,
+                          ),
                         ],
                       ),
                     ),

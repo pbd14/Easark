@@ -98,7 +98,7 @@ class _MapScreenState extends State<MapScreen> {
 
     geolocator.Position position =
         await geolocator.Geolocator.getCurrentPosition(
-            desiredAccuracy: geolocator.LocationAccuracy.high);
+            desiredAccuracy: geolocator.LocationAccuracy.best);
     if (mounted) {
       setState(() {
         _initialPosition = LatLng(position.latitude, position.longitude);

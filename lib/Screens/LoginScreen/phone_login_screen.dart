@@ -232,6 +232,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                                   verificationId,
                                                   context);
                                           if (res != null) {
+                                            print("HAVE ReS");
                                             Navigator.of(context).pop();
                                           }
                                         }
@@ -256,34 +257,33 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                       //     loading = false;
                                       //   });
                                     } else {
-                                      if(kIsWeb){
-                                        confirmationResult =
-                                              await FirebaseAuth.instance
-                                                  .signInWithPhoneNumber(
-                                            phoneNo,
-                                            // RecaptchaVerifier(
-                                            //   onSuccess: () => setState(() {
-                                            //     loading = false;
-                                            //     codeSent = true;
-                                            //   }),
-                                            //   onError: (FirebaseAuthException
-                                            //           error) =>
-                                            //       setState(() {
-                                            //     loading = false;
-                                            //     codeSent = false;
-                                            //     error = error;
-                                            //   }),
-                                            //   onExpired: () =>
-                                            //       print('reCAPTCHA Expired!'),
-                                            // ),
-                                          );
-                                          setState(() {
-                                            loading = false;
-                                            codeSent = true;
-                                          });
-                                      }
-                                      else{
-                                      await verifyPhone(phoneNo);
+                                      if (kIsWeb) {
+                                        confirmationResult = await FirebaseAuth
+                                            .instance
+                                            .signInWithPhoneNumber(
+                                          phoneNo,
+                                          // RecaptchaVerifier(
+                                          //   onSuccess: () => setState(() {
+                                          //     loading = false;
+                                          //     codeSent = true;
+                                          //   }),
+                                          //   onError: (FirebaseAuthException
+                                          //           error) =>
+                                          //       setState(() {
+                                          //     loading = false;
+                                          //     codeSent = false;
+                                          //     error = error;
+                                          //   }),
+                                          //   onExpired: () =>
+                                          //       print('reCAPTCHA Expired!'),
+                                          // ),
+                                        );
+                                        setState(() {
+                                          loading = false;
+                                          codeSent = true;
+                                        });
+                                      } else {
+                                        await verifyPhone(phoneNo);
                                       }
                                     }
                                   }
@@ -372,6 +372,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
       setState(() {
         loading = false;
       });
+      Navigator.of(context).pop();
     };
 
     final PhoneVerificationFailed verificationFailed =
@@ -401,7 +402,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         });
       }
     };
-
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNo,
         timeout: const Duration(seconds: 100),
