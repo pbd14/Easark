@@ -50,7 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
-    if (user.get('country') == null ||
+    if (
+      user.get('country') == null ||
         user.get('state') == null ||
         user.get('city') == null ||
         user.get('country').isEmpty ||

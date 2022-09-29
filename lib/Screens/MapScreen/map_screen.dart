@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,7 +31,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   double pinPillPosition = -100;
-  double searchButtonPosition = -100;
+  double searchButtonPosition = -200;
   double mapZoom = 15;
   bool loading = false;
   bool loading1 = true;
@@ -48,6 +49,17 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor? pinLocationIcon;
   String currentPinInfo = 'Loading ...';
   String? pinId;
+
+  Future<void> _refresh() {
+    setState(() {
+      loading = true;
+    });
+    _getUserLocation();
+    prepare();
+    Completer<Null> completer = new Completer<Null>();
+    completer.complete();
+    return completer.future;
+  }
 
   @override
   void initState() {
@@ -147,6 +159,11 @@ class _MapScreenState extends State<MapScreen> {
           position: NotificationPosition.top,
           background: Colors.red,
         );
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
+        }
       } else {
         country = user!.get('country');
         state = user!.get('state');
@@ -170,6 +187,16 @@ class _MapScreenState extends State<MapScreen> {
             position: NotificationPosition.top,
             background: Colors.red,
           );
+          if (mounted) {
+            setState(() {
+              loading = false;
+            });
+          }
+        }
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
         }
       }
     }
@@ -206,13 +233,13 @@ class _MapScreenState extends State<MapScreen> {
                         },
                         onCameraMove: (position) {
                           setState(() {
-                            searchButtonPosition = -100;
+                            searchButtonPosition = -200;
                             cameraPosition = position.target;
                           });
                         },
                         onCameraIdle: () {
                           setState(() {
-                            searchButtonPosition = 50;
+                        searchButtonPosition = 50;
                           });
                         },
                       ),
@@ -225,97 +252,136 @@ class _MapScreenState extends State<MapScreen> {
                     alignment: Alignment.topCenter,
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        elevation: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: CupertinoButton(
-                            onPressed: () async {
-                              Set<Marker> middleMarkers = HashSet<Marker>();
-                              for (QueryDocumentSnapshot place in places!) {
-                                if (geolocator.Geolocator.distanceBetween(
-                                        cameraPosition!.latitude,
-                                        cameraPosition!.longitude,
-                                        place.get('lat'),
-                                        place.get('lon')) <=
-                                    2000) {
-                                  pinLocationIcon =
-                                      await BitmapDescriptor.fromAssetImage(
-                                    const ImageConfiguration(
-                                        devicePixelRatio: 3),
-                                    'assets/icons/marker.png',
-                                  );
-                                  middleMarkers.add(
-                                    Marker(
-                                      markerId: MarkerId(place.id),
-                                      position: LatLng(
-                                          place.get('lat'), place.get('lon')),
-                                      onTap: () async {
-                                        await _mapController?.animateCamera(
-                                          CameraUpdate.newCameraPosition(
-                                            CameraPosition(
-                                              target: LatLng(
-                                                place.get('lat') - 0.0001,
-                                                place.get('lon'),
+                      child: Column(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            elevation: 10,
+                            child: Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: CupertinoButton(
+                                onPressed: () async {
+                                  Set<Marker> middleMarkers =
+                                      HashSet<Marker>();
+                                  for (QueryDocumentSnapshot place
+                                      in places!) {
+                                    if (geolocator.Geolocator
+                                            .distanceBetween(
+                                                cameraPosition!.latitude,
+                                                cameraPosition!.longitude,
+                                                place.get('lat'),
+                                                place.get('lon')) <=
+                                        2000) {
+                                      pinLocationIcon =
+                                          await BitmapDescriptor
+                                              .fromAssetImage(
+                                        const ImageConfiguration(
+                                            devicePixelRatio: 3),
+                                        'assets/icons/marker.png',
+                                      );
+                                      middleMarkers.add(
+                                        Marker(
+                                          markerId: MarkerId(place.id),
+                                          position: LatLng(place.get('lat'),
+                                              place.get('lon')),
+                                          onTap: () async {
+                                            await _mapController
+                                                ?.animateCamera(
+                                              CameraUpdate
+                                                  .newCameraPosition(
+                                                CameraPosition(
+                                                  target: LatLng(
+                                                    place.get('lat') -
+                                                        0.0001,
+                                                    place.get('lon'),
+                                                  ),
+                                                  zoom: 15,
+                                                ),
                                               ),
-                                              zoom: 15,
-                                            ),
-                                          ),
-                                        );
-                                        setState(() {
-                                          if (place.get('isppm')) {
-                                            currentPinInfo =
-                                                place.get('price').toString() +
+                                            );
+                                            setState(() {
+                                              if (place.get('isppm')) {
+                                                currentPinInfo = place
+                                                        .get('price')
+                                                        .toString() +
                                                     ' ' +
                                                     place.get('currency') +
                                                     ' per minute';
-                                          } else if (place
-                                              .get('isFixedPrice')) {
-                                            currentPinInfo =
-                                                place.get('price').toString() +
+                                              } else if (place
+                                                  .get('isFixedPrice')) {
+                                                currentPinInfo = place
+                                                        .get('price')
+                                                        .toString() +
                                                     ' ' +
                                                     place.get('currency') +
                                                     ' fixed price';
-                                          }
+                                              }
 
-                                          pinId = place.id;
-                                          pinPillPosition = 100;
-                                        });
-                                      },
-                                      icon: pinLocationIcon!,
-                                    ),
-                                  );
-                                }
-                              }
-                              setState(() {
-                                _markers = {};
-                                _markers = middleMarkers;
-                                middleMarkers = {};
-                                _mapController?.animateCamera(
-                                  CameraUpdate.newCameraPosition(
-                                    CameraPosition(
-                                      target: LatLng(
-                                        cameraPosition!.latitude,
-                                        cameraPosition!.longitude,
+                                              pinId = place.id;
+                                              pinPillPosition = 100;
+                                            });
+                                          },
+                                          icon: pinLocationIcon!,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  setState(() {
+                                    _markers = {};
+                                    _markers = middleMarkers;
+                                    middleMarkers = {};
+                                    _mapController?.animateCamera(
+                                      CameraUpdate.newCameraPosition(
+                                        CameraPosition(
+                                          target: LatLng(
+                                            cameraPosition!.latitude,
+                                            cameraPosition!.longitude,
+                                          ),
+                                          zoom: 13.5,
+                                        ),
                                       ),
-                                      zoom: 13.5,
-                                    ),
-                                  ),
-                                );
-                                searchButtonPosition = -100;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                    );
+                                    searchButtonPosition = -100;
+                                  });
+                                },
+                                child: Column(
                                   children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          Languages.of(context)!
+                                              .mapScreenSearchHere,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.clip,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: const TextStyle(
+                                              color: darkColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        const Icon(
+                                          CupertinoIcons.arrow_right,
+                                          color: darkColor,
+                                          size: 20,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
                                     Text(
-                                      Languages.of(context)!
-                                          .mapScreenSearchHere,
+                                      city != null
+                                          ? "City: " + city!
+                                          : "City: Unknown",
                                       maxLines: 2,
                                       overflow: TextOverflow.clip,
                                       style: GoogleFonts.montserrat(
@@ -326,23 +392,22 @@ class _MapScreenState extends State<MapScreen> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    const Icon(
-                                      CupertinoIcons.arrow_right,
-                                      color: darkColor,
-                                      size: 20,
-                                    ),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  city != null
-                                      ? "City: " + city!
-                                      : "City: Unknown",
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            child: CupertinoButton(
+                                child: Text(
+                                  'Refresh',
                                   maxLines: 2,
                                   overflow: TextOverflow.clip,
                                   style: GoogleFonts.montserrat(
@@ -353,10 +418,9 @@ class _MapScreenState extends State<MapScreen> {
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
+                                onPressed: _refresh),
+                          )
+                        ],
                       ),
                     ),
                   ),

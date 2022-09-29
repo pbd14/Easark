@@ -657,8 +657,12 @@ class _BookingScreenState extends State<BookingScreen> {
                                   CupertinoButton(
                                     padding: EdgeInsets.zero,
                                     onPressed: () async {
-                                      await launch(
-                                          "tel:" + place!.get('owner_phone'));
+                                      await launchUrl(
+                                        Uri(
+                                          scheme: "tel",
+                                          path: place!.get('owner_phone')
+                                        ),
+                                      );
                                     },
                                     child: Container(
                                       height: 40,
