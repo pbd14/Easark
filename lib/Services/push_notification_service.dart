@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 
 class PushNotificationService {
   final FirebaseMessaging _fcm;
@@ -26,12 +27,30 @@ class PushNotificationService {
 
     String? token = await _fcm.getToken();
     if (FirebaseAuth.instance.currentUser != null) {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({
-        'fcm_tokens': FieldValue.arrayUnion([token]),
-      });
+      if (kIsWeb) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .update({
+          'fcm_token_web': token,
+        });
+      }
+      if (Platform.isAndroid) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .update({
+          'fcm_token_android': token,
+        });
+      }
+      if (Platform.isIOS) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .update({
+          'fcm_token_ios': token,
+        });
+      }
     }
 
     // print("FirebaseMessaging token: $token");

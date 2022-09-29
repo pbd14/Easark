@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easark/Models/PushNotificationMessage.dart';
 import 'package:easark/Screens/BusinessScreen/booking_management_screen.dart';
@@ -9,6 +11,7 @@ import 'package:easark/Widgets/rounded_button.dart';
 import 'package:easark/Widgets/slide_right_route_animation.dart';
 import 'package:easark/Widgets/sww_screen.dart';
 import 'package:easark/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -209,55 +212,86 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                 setState(() {
                                                   loading = true;
                                                 });
-                                                // List spaces = [];
-                                                // DocumentSnapshot middlePlace =
-                                                //     await FirebaseFirestore
-                                                //         .instance
-                                                //         .collection(
-                                                //             'parking_places')
-                                                //         .doc(widget.placeId)
-                                                //         .get();
-                                                // spaces =
-                                                //     middlePlace.get('spaces');
-                                                // spaces.remove(space);
-                                                // print("ERERTET");
-                                                // print(spaces);
-                                                // print(space);
-                                                setState(() {
-                                                  isDeleted = true;
-                                                });
-                                                FirebaseFirestore.instance
-                                                    .collection(
-                                                        'parking_places')
-                                                    .doc(widget.placeId)
-                                                    .update({
-                                                  'spaces':
-                                                      FieldValue.arrayRemove(
-                                                          [space]),
-                                                }).catchError((error) {
-                                                  PushNotificationMessage
-                                                      notification =
-                                                      PushNotificationMessage(
-                                                    title: 'Fail',
-                                                    body: 'Failed to delete',
-                                                  );
-                                                  showSimpleNotification(
-                                                    Text(notification.body),
-                                                    position:
-                                                        NotificationPosition
-                                                            .top,
-                                                    background: Colors.red,
-                                                  );
-                                                  if (mounted) {
-                                                    setState(() {
+
+                                                QuerySnapshot
+                                                    upcomingBookSubscr =
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('bookings')
+                                                        .orderBy(
+                                                          'timestamp_from',
+                                                          descending: false,
+                                                        )
+                                                        .where(
+                                                          'status',
+                                                          whereIn: [
+                                                            'unfinished',
+                                                            'verification_needed'
+                                                          ],
+                                                        )
+                                                        .where(
+                                                          'place_id',
+                                                          isEqualTo: place!.id,
+                                                        )
+                                                        .where(
+                                                          'space_id',
+                                                          isEqualTo:
+                                                              space['id'],
+                                                        )
+                                                        .get();
+                                                if (upcomingBookSubscr
+                                                    .docs.isEmpty) {
+                                                  setState(() {
+                                                    isDeleted = true;
+                                                  });
+                                                  FirebaseFirestore.instance
+                                                      .collection(
+                                                          'parking_places')
+                                                      .doc(widget.placeId)
+                                                      .update({
+                                                    'spaces':
+                                                        FieldValue.arrayRemove(
+                                                            [space]),
+                                                  }).catchError((error) {
+                                                    PushNotificationMessage
+                                                        notification =
+                                                        PushNotificationMessage(
+                                                      title: 'Fail',
+                                                      body: 'Failed to delete',
+                                                    );
+                                                    showSimpleNotification(
+                                                      Text(notification.body),
+                                                      position:
+                                                          NotificationPosition
+                                                              .top,
+                                                      background: Colors.red,
+                                                    );
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isDeleted = false;
+                                                        loading = false;
+                                                      });
+                                                    } else {
                                                       isDeleted = false;
                                                       loading = false;
-                                                    });
-                                                  } else {
-                                                    isDeleted = false;
-                                                    loading = false;
-                                                  }
-                                                });
+                                                    }
+                                                  });
+                                                }
+                                                else{
+                                                  PushNotificationMessage
+                                                        notification =
+                                                        PushNotificationMessage(
+                                                      title: 'Failed',
+                                                      body: 'There are upcoming bookings to this space',
+                                                    );
+                                                    showSimpleNotification(
+                                                      Text(notification.body),
+                                                      position:
+                                                          NotificationPosition
+                                                              .top,
+                                                      background: Colors.red,
+                                                    );
+                                                }
                                                 if (mounted) {
                                                   setState(() {
                                                     loading = false;

@@ -1190,8 +1190,19 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
                                                                         }
                                                                       });
 
+                                                                      List tokens = [];
                                                                       DocumentSnapshot owner = await FirebaseFirestore.instance.collection('users').doc(place!.get('owner_id')).get();
-                                                                      sendMessage(owner.get("fcm_tokens"), "New booking", "You have new booking at " + place!.get("name"));
+                                                                      if(owner.get("fcm_token_web") != null){
+                                                                        tokens.add(owner.get("fcm_token_web"));
+                                                                      }
+                                                                      if(owner.get("fcm_token_android") != null){
+                                                                        tokens.add(owner.get("fcm_token_andoid"));
+                                                                      }
+                                                                      if(owner.get("fcm_token_ios") != null){
+                                                                        tokens.add(owner.get("fcm_token_ios"));
+                                                                      }
+                                                                      
+                                                                      sendMessage(tokens, "New booking", "You have new booking at " + place!.get("name"));
                                                                       // Here comes notification
 
                                                                       PushNotificationMessage

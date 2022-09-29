@@ -1183,7 +1183,9 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
                                                                               false;
                                                                         }
                                                                       });
-
+                                                                      List
+                                                                          tokens =
+                                                                          [];
                                                                       DocumentSnapshot owner = await FirebaseFirestore
                                                                           .instance
                                                                           .collection(
@@ -1191,13 +1193,30 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
                                                                           .doc(place!
                                                                               .get('owner_id'))
                                                                           .get();
+                                                                      if (owner.get(
+                                                                              "fcm_token_web") !=
+                                                                          null) {
+                                                                        tokens.add(
+                                                                            owner.get("fcm_token_web"));
+                                                                      }
+                                                                      if (owner.get(
+                                                                              "fcm_token_android") !=
+                                                                          null) {
+                                                                        tokens.add(
+                                                                            owner.get("fcm_token_andoid"));
+                                                                      }
+                                                                      if (owner.get(
+                                                                              "fcm_token_ios") !=
+                                                                          null) {
+                                                                        tokens.add(
+                                                                            owner.get("fcm_token_ios"));
+                                                                      }
+
                                                                       sendMessage(
-                                                                          owner.get(
-                                                                              "fcm_tokens"),
+                                                                          tokens,
                                                                           "New booking",
                                                                           "You have new booking at " +
                                                                               place!.get("name"));
-
                                                                       // Here comes notification
 
                                                                       PushNotificationMessage
