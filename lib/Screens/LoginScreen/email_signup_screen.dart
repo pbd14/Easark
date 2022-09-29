@@ -227,11 +227,12 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                                         await FirebaseAuth.instance.currentUser!
                                             .sendEmailVerification();
 
-                                        DocumentSnapshot user = await FirebaseFirestore.instance
-                                            .collection('users')
-                                            .doc(FirebaseAuth
-                                                .instance.currentUser!.uid)
-                                            .get();
+                                        DocumentSnapshot user =
+                                            await FirebaseFirestore.instance
+                                                .collection('users')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .get();
                                         if (!user.exists) {
                                           FirebaseFirestore.instance
                                               .collection('users')
@@ -249,14 +250,16 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                                             'country': '',
                                             'state': '',
                                             'city': '',
+                                            'fcm_token_android': "",
+                                            'fcm_token_ios': "",
+                                            'fcm_token_web': "",
                                           });
                                         }
 
                                         PushNotificationMessage notification =
                                             PushNotificationMessage(
                                           title: 'Success',
-                                          body:
-                                              'Account has been created',
+                                          body: 'Account has been created',
                                         );
                                         showSimpleNotification(
                                           Text(notification.body),

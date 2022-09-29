@@ -2090,13 +2090,13 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                                 height: 10,
                               ),
                               if (vacationDays.isNotEmpty)
-                                for (DateTime date in vacationDays)
+                                for (String date in vacationDays)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         DateFormat.yMMMd()
-                                            .format(date)
+                                            .format(DateTime.parse(date))
                                             .toString(),
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.montserrat(

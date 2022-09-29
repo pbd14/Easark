@@ -50,8 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
-    if (
-      user.get('country') == null ||
+    if (user.get('country') == null ||
         user.get('state') == null ||
         user.get('city') == null ||
         user.get('country').isEmpty ||
@@ -295,6 +294,9 @@ class _HomeScreenState extends State<HomeScreen> {
         'country': '',
         'state': '',
         'city': '',
+        'fcm_token_android': "",
+        'fcm_token_ios': "",
+        'fcm_token_web': "",
       }).whenComplete(() {
         checkUserValidity();
       });

@@ -1085,7 +1085,7 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
                                                                   final response =
                                                                       await InternetAddress
                                                                           .lookup(
-                                                                              'footyuz.web.app');
+                                                                              'easarkuz.web.app');
                                                                   if (response
                                                                       .isNotEmpty) {
                                                                     setState(
@@ -1093,6 +1093,46 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
                                                                       isConnected =
                                                                           true;
                                                                     });
+
+                                                                    DocumentSnapshot checkPlace = await FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            "parking_places")
+                                                                        .doc(widget
+                                                                            .placeId)
+                                                                        .get();
+                                                                    for (Map space
+                                                                        in checkPlace
+                                                                            .get('spaces')) {
+                                                                      if (space[
+                                                                              'id'] ==
+                                                                          widget
+                                                                              .spaceId) {
+                                                                        if (!space[
+                                                                            'isActive']) {
+                                                                          setState(
+                                                                              () {
+                                                                            can =
+                                                                                false;
+                                                                          });
+                                                                          PushNotificationMessage
+                                                                              notification =
+                                                                              PushNotificationMessage(
+                                                                            title:
+                                                                                'Failed',
+                                                                            body:
+                                                                                'Owner deactivated parking lot',
+                                                                          );
+                                                                          showSimpleNotification(
+                                                                            Text(notification.body),
+                                                                            position:
+                                                                                NotificationPosition.top,
+                                                                            background:
+                                                                                Colors.red,
+                                                                          );
+                                                                        }
+                                                                      }
+                                                                    }
                                                                     if (can) {
                                                                       // DateTime dateFrom = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, )
 
@@ -1193,21 +1233,24 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
                                                                           .doc(place!
                                                                               .get('owner_id'))
                                                                           .get();
-                                                                      if (owner.get(
-                                                                              "fcm_token_web") !=
-                                                                          null) {
+                                                                      if (owner.get("fcm_token_web") !=
+                                                                              null &&
+                                                                          owner.get("fcm_token_web") !=
+                                                                              "") {
                                                                         tokens.add(
                                                                             owner.get("fcm_token_web"));
                                                                       }
-                                                                      if (owner.get(
-                                                                              "fcm_token_android") !=
-                                                                          null) {
+                                                                      if (owner.get("fcm_token_android") !=
+                                                                              null &&
+                                                                          owner.get("fcm_token_android") !=
+                                                                              "") {
                                                                         tokens.add(
-                                                                            owner.get("fcm_token_andoid"));
+                                                                            owner.get("fcm_token_android"));
                                                                       }
-                                                                      if (owner.get(
-                                                                              "fcm_token_ios") !=
-                                                                          null) {
+                                                                      if (owner.get("fcm_token_ios") !=
+                                                                              null &&
+                                                                          owner.get("fcm_token_ios") !=
+                                                                              "") {
                                                                         tokens.add(
                                                                             owner.get("fcm_token_ios"));
                                                                       }
@@ -1233,7 +1276,7 @@ class _SpaceInfoScreenType3State extends State<SpaceInfoScreenType3> {
                                                                         position:
                                                                             NotificationPosition.top,
                                                                         background:
-                                                                            darkColor,
+                                                                            greenColor,
                                                                       );
 
                                                                       setState(

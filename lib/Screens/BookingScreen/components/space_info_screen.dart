@@ -1449,7 +1449,7 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                   final response =
                                                                       await InternetAddress
                                                                           .lookup(
-                                                                              'footyuz.web.app');
+                                                                              'easarkuz.web.app');
                                                                   if (response
                                                                       .isNotEmpty) {
                                                                     setState(
@@ -1457,6 +1457,46 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                       isConnected =
                                                                           true;
                                                                     });
+
+                                                                    DocumentSnapshot checkPlace = await FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            "parking_places")
+                                                                        .doc(widget
+                                                                            .placeId)
+                                                                        .get();
+                                                                    for (Map space
+                                                                        in checkPlace
+                                                                            .get('spaces')) {
+                                                                      if (space[
+                                                                              'id'] ==
+                                                                          widget
+                                                                              .spaceId) {
+                                                                        if (!space[
+                                                                            'isActive']) {
+                                                                          setState(
+                                                                              () {
+                                                                            can =
+                                                                                false;
+                                                                          });
+                                                                          PushNotificationMessage
+                                                                              notification =
+                                                                              PushNotificationMessage(
+                                                                            title:
+                                                                                'Failed',
+                                                                            body:
+                                                                                'Owner deactivated parking lot',
+                                                                          );
+                                                                          showSimpleNotification(
+                                                                            Text(notification.body),
+                                                                            position:
+                                                                                NotificationPosition.top,
+                                                                            background:
+                                                                                Colors.red,
+                                                                          );
+                                                                        }
+                                                                      }
+                                                                    }
                                                                     if (can) {
                                                                       String id = DateTime
                                                                               .now()
@@ -1547,37 +1587,61 @@ class _SpaceInfoScreenState extends State<SpaceInfoScreen> {
                                                                               false;
                                                                         }
                                                                       });
-                                                                      List tokens = [];
-                                                                      DocumentSnapshot owner = await FirebaseFirestore.instance.collection('users').doc(place!.get('owner_id')).get();
-                                                                      if(owner.get("fcm_token_web") != null){
-                                                                        tokens.add(owner.get("fcm_token_web"));
+                                                                      List
+                                                                          tokens =
+                                                                          [];
+                                                                      DocumentSnapshot owner = await FirebaseFirestore
+                                                                          .instance
+                                                                          .collection(
+                                                                              'users')
+                                                                          .doc(place!
+                                                                              .get('owner_id'))
+                                                                          .get();
+                                                                      if (owner.get("fcm_token_web") !=
+                                                                              null &&
+                                                                          owner.get("fcm_token_web") !=
+                                                                              "") {
+                                                                        tokens.add(
+                                                                            owner.get("fcm_token_web"));
                                                                       }
-                                                                      if(owner.get("fcm_token_android") != null){
-                                                                        tokens.add(owner.get("fcm_token_andoid"));
+                                                                      if (owner.get("fcm_token_android") !=
+                                                                              null &&
+                                                                          owner.get("fcm_token_android") !=
+                                                                              "") {
+                                                                        tokens.add(
+                                                                            owner.get("fcm_token_android"));
                                                                       }
-                                                                      if(owner.get("fcm_token_ios") != null){
-                                                                        tokens.add(owner.get("fcm_token_ios"));
+                                                                      if (owner.get("fcm_token_ios") !=
+                                                                              null &&
+                                                                          owner.get("fcm_token_ios") !=
+                                                                              "") {
+                                                                        tokens.add(
+                                                                            owner.get("fcm_token_ios"));
                                                                       }
-                                                                      
-                                                                      sendMessage(tokens, "New booking", "You have new booking at " + place!.get("name"));
+
+                                                                      sendMessage(
+                                                                          tokens,
+                                                                          "New booking",
+                                                                          "You have new booking at " +
+                                                                              place!.get("name"));
 
                                                                       // Here comes notification
                                                                       PushNotificationMessage
-                                                                            notification =
-                                                                            PushNotificationMessage(
-                                                                          title:
-                                                                              'Success',
-                                                                          body:
-                                                                              'Booking was successful',
-                                                                        );
-                                                                        showSimpleNotification(
-                                                                          Text(notification
-                                                                              .body),
-                                                                          position:
-                                                                              NotificationPosition.top,
-                                                                          background:
-                                                                              darkColor,
-                                                                        );
+                                                                          notification =
+                                                                          PushNotificationMessage(
+                                                                        title:
+                                                                            'Success',
+                                                                        body:
+                                                                            'Booking was successful',
+                                                                      );
+                                                                      showSimpleNotification(
+                                                                        Text(notification
+                                                                            .body),
+                                                                        position:
+                                                                            NotificationPosition.top,
+                                                                        background:
+                                                                            greenColor,
+                                                                      );
 
                                                                       setState(
                                                                           () {

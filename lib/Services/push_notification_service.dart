@@ -44,6 +44,9 @@ class PushNotificationService {
             .doc(FirebaseAuth.instance.currentUser?.uid)
             .update({
           'fcm_token_android': token,
+          'fcm_token_ios': "",
+          'fcm_token_web': "",
+
         });
       }
       if (Platform.isIOS) {
@@ -51,7 +54,9 @@ class PushNotificationService {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser?.uid)
             .update({
+          'fcm_token_android': "",
           'fcm_token_ios': token,
+          'fcm_token_web': "",
         });
       }
     }
