@@ -56,6 +56,7 @@ class _BusinessScheduleState extends State<BusinessSchedule>
 
   Future<void> ordinaryBookPrep(List<QueryDocumentSnapshot> _bookings) async {
     DocumentSnapshot customOB;
+    upcomingPlaces.clear();
     for (QueryDocumentSnapshot book in _bookings) {
       customOB = await FirebaseFirestore.instance
           .collection('parking_places')
@@ -105,6 +106,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
 
   Future<void> inprocessBookPrep(List<QueryDocumentSnapshot> _bookings) async {
     DocumentSnapshot customIB;
+    inprocessBookSlivers.clear();
+    inprocessPlacesSlivers.clear();
     if (_bookings.isNotEmpty) {
       for (QueryDocumentSnapshot book in _bookings) {
         customIB = await FirebaseFirestore.instance
@@ -156,6 +159,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
   Future<void> unpaidBookPrep(
       List<QueryDocumentSnapshot> unpaidBookings) async {
     DocumentSnapshot customOB;
+    unpaidBookingsSlivers.clear();
+    unpaidPlacesSlivers.clear();
     for (QueryDocumentSnapshot book in unpaidBookings) {
       customOB = await FirebaseFirestore.instance
           .collection('parking_places')
@@ -184,6 +189,8 @@ class _BusinessScheduleState extends State<BusinessSchedule>
   Future<void> unratedBookPrep(
       List<QueryDocumentSnapshot> _unrbookings1) async {
     DocumentSnapshot customUB;
+    unratedBooks.clear();
+    unratedPlacesSlivers.clear();
     if (_unrbookings1.isNotEmpty) {
       for (QueryDocumentSnapshot book in _unrbookings1) {
         customUB = await FirebaseFirestore.instance
