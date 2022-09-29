@@ -84,6 +84,52 @@ class _MapScreenState extends State<MapScreen> {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                // title: Text(
+                //     Languages.of(context).profileScreenSignOut),
+                // content: Text(
+                //     Languages.of(context)!.profileScreenWantToLeave),
+                title: Text(
+                  'Enable location',
+                  style: TextStyle(color: Colors.red),
+                ),
+                content: Text(
+                    'Our app needs your location to work. Please turn on your location. We will not share your location with anyone and will not store it anywhere except your phone.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () async {
+                      setState(() {
+                        loading = true;
+                      });
+                      _permissionGranted = await location.hasPermission();
+                      if (_permissionGranted == PermissionStatus.granted) {
+                        Navigator.of(context).pop(false);
+                        _refresh();
+                      }
+                      setState(() {
+                        loading = false;
+                      });
+                    },
+                    child: const Text(
+                      'I turned on location',
+                      style: TextStyle(color: darkColor),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
         return;
       }
     }
@@ -92,6 +138,52 @@ class _MapScreenState extends State<MapScreen> {
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                // title: Text(
+                //     Languages.of(context).profileScreenSignOut),
+                // content: Text(
+                //     Languages.of(context)!.profileScreenWantToLeave),
+                title: Text(
+                  'Location access',
+                  style: TextStyle(color: Colors.red),
+                ),
+                content: Text(
+                    'Our app needs your PRECISE location to work. Please grant access to it in settings of the phone. We will not share your location with anyone and will not store it anywhere except your phone.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () async {
+                      setState(() {
+                        loading = true;
+                      });
+                      _permissionGranted = await location.hasPermission();
+                      if (_permissionGranted == PermissionStatus.granted) {
+                        Navigator.of(context).pop(false);
+                        _refresh();
+                      }
+                      setState(() {
+                        loading = false;
+                      });
+                    },
+                    child: const Text(
+                      'I gave access',
+                      style: TextStyle(color: darkColor),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
         return;
       }
     }

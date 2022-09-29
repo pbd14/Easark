@@ -1104,6 +1104,31 @@ class _SpaceInfoScreenType2State extends State<SpaceInfoScreenType2> {
                                                                         .doc(widget
                                                                             .placeId)
                                                                         .get();
+                                                                    if (!checkPlace
+                                                                        .get(
+                                                                            "is_active")) {
+                                                                      setState(
+                                                                          () {
+                                                                        can =
+                                                                            false;
+                                                                      });
+                                                                      PushNotificationMessage
+                                                                          notification =
+                                                                          PushNotificationMessage(
+                                                                        title:
+                                                                            'Failed',
+                                                                        body:
+                                                                            'Owner closed parking',
+                                                                      );
+                                                                      showSimpleNotification(
+                                                                        Text(notification
+                                                                            .body),
+                                                                        position:
+                                                                            NotificationPosition.top,
+                                                                        background:
+                                                                            Colors.red,
+                                                                      );
+                                                                    }
                                                                     for (Map space
                                                                         in checkPlace
                                                                             .get('spaces')) {
